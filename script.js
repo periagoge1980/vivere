@@ -1,7 +1,11 @@
 // Initialize and add the map
+let map;
+let geocoder;
+
 function initMap() {
   console.log("Initializing map...");
-  const map = new google.maps.Map(document.getElementById("map"), {
+  geocoder = new google.maps.Geocoder();
+  map = new google.maps.Map(document.getElementById("map"), {
     zoom: 10,
     center: { lat: 46.8139, lng: -71.2082 } // Quebec City
   });
@@ -15,12 +19,29 @@ document.getElementById('resourceForm').addEventListener('submit', function (e) 
   const dependency = document.getElementById('dependency').value;
   const postalCode = document.getElementById('postalCode').value;
   console.log(`Fetching resources for dependency: ${dependency}, postal code: ${postalCode}`);
-  const filteredResources = resources.filter(resource => 
-    resource.type === dependency && resource.postal_code.startsWith(postalCode.slice(0, 3))
-  );
-  displayResources(filteredResources);
-  console.log(`Resources fetched: ${filteredResources.length} items`);
+
+  // Geocode the postal code to get the location
+  geocodePostalCode(postalCode, function(location) {
+    map.setCenter(location);
+    const filteredResources = resources.filter(resource => 
+      resource.type === dependency && resource.postal_code.startsWith(postalCode.slice(0, 3))
+    );
+    displayResources(filteredResources);
+    console.log(`Resources fetched: ${filteredResources.length} items`);
+  });
 });
+
+// Geocode the postal code to get the location
+function geocodePostalCode(postalCode, callback) {
+  geocoder.geocode({ 'address': postalCode }, function(results, status) {
+    if (status === 'OK') {
+      const location = results[0].geometry.location;
+      callback(location);
+    } else {
+      console.error('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+}
 
 // Display resources on the map and in the list
 function displayResources(resources) {
@@ -32,10 +53,22 @@ function displayResources(resources) {
     li.innerHTML = `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.online_url}">Website</a>`;
     resourceList.appendChild(li);
 
-    new google.maps.Marker({
+    const marker = new google.maps.Marker({
       position: { lat: resource.latitude, lng: resource.longitude },
       map: window.map,
       title: resource.name
+    });
+
+    const infoWindow = new google.maps.InfoWindow({
+      content: `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.online_url}">Website</a>`
+    });
+
+    marker.addListener('mouseover', function() {
+      infoWindow.open(map, marker);
+    });
+
+    marker.addListener('mouseout', function() {
+      infoWindow.close();
     });
   });
   console.log("Resources displayed.");
