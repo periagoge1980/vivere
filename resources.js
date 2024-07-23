@@ -4,12 +4,12 @@ const resources = [
   {
     "type": "Alcohol",
     "name": "Resource Name 1",
-    "address": "8666 Avenue Henri-Julie, Montreal, Quebec",
+    "address": "8666 Avenue Henri-Julien, Montreal, Quebec",
     "postal_code": "H2P 2J7",
     "online_url": "http://resource-website1.com",
     "phone": "123-456-7890",
     "latitude": 45.5434,
-    "longitude": 73.6378
+    "longitude": -73.6378
   },
   {
     "type": "Drugs",
