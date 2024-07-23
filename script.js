@@ -40,3 +40,17 @@ function displayResources(resources) {
   });
   console.log("Resources displayed.");
 }
+
+// In your JavaScript file (e.g., script.js)
+
+async function loadGoogleMaps() {
+  const response = await fetch('/.netlify/functions/getApiKey');
+  const data = await response.json();
+  const script = document.createElement('script');
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${data.key}&callback=initMap`;
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script);
+}
+
+loadGoogleMaps();
