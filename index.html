@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Addiction Resource Finder</title>
-  <script type="text/javascript" src="script.js"></script>
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -82,44 +80,22 @@
     <ul id="resourceList"></ul>
   </div>
 
+  <!-- Include the resources.js file -->
+  <script src="resources.js"></script>
+  <!-- Include the main JavaScript file -->
+  <script src="script.js"></script>
+  
   <script>
-    // Initialize and add the map
-    function initMap() {
-      const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 10,
-        center: { lat: 46.8139, lng: -71.2082 } // Quebec City
-      });
-      window.map = map; // Make map globally accessible
+    // Load the Google Maps script asynchronously
+    function loadGoogleMaps() {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
     }
 
-    // Fetch and display resources
-    document.getElementById('resourceForm').addEventListener('submit', async function (e) {
-      e.preventDefault();
-      const dependency = document.getElementById('dependency').value;
-      const postalCode = document.getElementById('postalCode').value;
-      const response = await fetch(`/api/resources?dependency=${dependency}&postalCode=${postalCode}`);
-      const resources = await response.json();
-      displayResources(resources);
-    });
-
-    // Display resources on the map and in the list
-    function displayResources(resources) {
-      const resourceList = document.getElementById('resourceList');
-      resourceList.innerHTML = '';
-      resources.forEach(resource => {
-        const li = document.createElement('li');
-        li.innerHTML = `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.online_url}">Website</a>`;
-        resourceList.appendChild(li);
-
-        new google.maps.Marker({
-          position: { lat: resource.latitude, lng: resource.longitude },
-          map: window.map,
-          title: resource.name
-        });
-      });
-    }
+    loadGoogleMaps();
   </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
 </body>
 </html>
-
