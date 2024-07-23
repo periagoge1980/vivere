@@ -9,17 +9,14 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
       margin: 0;
       padding: 0;
+      background-color: #f9f9f9;
     }
     .container {
       max-width: 800px;
-      margin: 50px auto;
+      margin: 0 auto;
       padding: 20px;
-      background-color: #fff;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
     }
     h1 {
       text-align: center;
@@ -28,5 +25,101 @@
     form {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-     
+      margin-bottom: 20px;
+    }
+    select, input[type="text"], button {
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #map {
+      width: 100%;
+      height: 400px;
+      margin-bottom: 20px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      background-color: white;
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    li h2 {
+      margin: 0 0 10px;
+    }
+    li p {
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Find Addiction Resources</h1>
+    <form id="resourceForm">
+      <select id="dependency" required>
+        <option value="">Select Dependency</option>
+        <option value="Alcohol">Alcohol</option>
+        <option value="Drugs">Drugs</option>
+        <option value="Gambling">Gambling</option>
+      </select>
+      <input type="text" id="postalCode" placeholder="Enter Postal Code" required>
+      <button type="submit">Search</button>
+    </form>
+    <div id="map"></div>
+    <ul id="resourceList"></ul>
+  </div>
+
+  <script>
+    // Initialize and add the map
+    function initMap() {
+      const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 10,
+        center: { lat: 46.8139, lng: -71.2082 } // Quebec City
+      });
+      window.map = map; // Make map globally accessible
+    }
+
+    // Fetch and display resources
+    document.getElementById('resourceForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const dependency = document.getElementById('dependency').value;
+      const postalCode = document.getElementById('postalCode').value;
+      const response = await fetch(`/api/resources?dependency=${dependency}&postalCode=${postalCode}`);
+      const resources = await response.json();
+      displayResources(resources);
+    });
+
+    // Display resources on the map and in the list
+    function displayResources(resources) {
+      const resourceList = document.getElementById('resourceList');
+      resourceList.innerHTML = '';
+      resources.forEach(resource => {
+        const li = document.createElement('li');
+        li.innerHTML = `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.online_url}">Website</a>`;
+        resourceList.appendChild(li);
+
+        new google.maps.Marker({
+          position: { lat: resource.latitude, lng: resource.longitude },
+          map: window.map,
+          title: resource.name
+        });
+      });
+    }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+</body>
+</html>
+
