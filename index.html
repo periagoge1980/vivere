@@ -84,18 +84,5 @@
   <script src="resources.js"></script>
   <!-- Include the main JavaScript file -->
   <script src="script.js"></script>
-  
-  <script>
-    // Load the Google Maps script asynchronously
-    function loadGoogleMaps() {
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap`;
-      script.async = true;
-      script.defer = true;
-      document.head.appendChild(script);
-    }
-
-    loadGoogleMaps();
-  </script>
 </body>
 </html>
