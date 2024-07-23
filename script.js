@@ -41,8 +41,7 @@ function displayResources(resources) {
   console.log("Resources displayed.");
 }
 
-// In your JavaScript file (e.g., script.js)
-
+// Load Google Maps API with the key fetched from Netlify function
 async function loadGoogleMaps() {
   const response = await fetch('/.netlify/functions/getApiKey');
   const data = await response.json();
