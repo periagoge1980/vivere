@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resources</title>
+  <title>Addiction Resource Finder</title>
   <style>
-    /* Add your styles here */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -16,48 +15,100 @@
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
-      text-align: center;
     }
-    button, a {
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    nav {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #007BFF;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+    select, input[type="text"], button {
       padding: 10px;
-      margin: 10px;
+      margin: 10px 0;
       font-size: 16px;
-      cursor: pointer;
     }
     button {
       background-color: #007BFF;
       color: white;
       border: none;
+      cursor: pointer;
     }
     button:hover {
       background-color: #0056b3;
     }
-    a {
-      text-decoration: none;
-      color: #007BFF;
-      border: 1px solid #007BFF;
+    #map {
+      width: 100%;
+      height: 400px;
+      margin-bottom: 20px;
     }
-    a:hover {
-      background-color: #007BFF;
-      color: white;
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      background-color: white;
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    li h2 {
+      margin: 0 0 10px;
+    }
+    li p {
+      margin: 0;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Resources</h1>
-    <button id="login">Login/Signup</button>
-    <a href="index.html">Home</a>
-    <a href="myplan.html">My Plan</a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="resources.html">Resources</a>
+      <a href="myplan.html">My Plan</a>
+      <button id="login" style="float: right;">Login/Signup</button>
+    </nav>
+    <h1>Find Addiction Resources</h1>
+    <form id="resourceForm">
+      <select id="dependency" required>
+        <option value="">Select Dependency</option>
+        <option value="Alcohol">Alcohol</option>
+        <option value="Drugs">Drugs</option>
+        <option value="Gambling">Gambling</option>
+        <option value="Sex">Sex</option>
+      </select>
+      <input type="text" id="postalCode" placeholder="Enter Postal Code" required>
+      <button type="submit">Search</button>
+    </form>
+    <div id="map"></div>
+    <ul id="resourceList"></ul>
   </div>
 
+  <!-- Include the resources.js file -->
+  <script src="resources.js"></script>
+  <!-- Include the main JavaScript file -->
+  <script src="script.js"></script>
+  <!-- Include Netlify Identity script -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script>
     const loginButton = document.getElementById('login');
 
     netlifyIdentity.on('init', user => {
       if (!user) {
-        netlifyIdentity.open();
+        // Uncomment the line below if you want to open the login modal automatically when there's no user
+        // netlifyIdentity.open();
       }
     });
 
