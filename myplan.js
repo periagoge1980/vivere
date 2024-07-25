@@ -1,47 +1,25 @@
 $(document).ready(function() {
-  // Initialize the small calendar
-  let smallCalendarEl = document.getElementById('smallCalendar');
-  let smallCalendar = new FullCalendar.Calendar(smallCalendarEl, {
-    initialView: 'dayGridMonth',
-    dateClick: function(info) {
-      $('#commitDate').val(info.dateStr);
+  $('#dateForm').on('submit', function(e) {
+    e.preventDefault();
+    var selectedDate = $('#startDate').val();
+    if (selectedDate) {
+      displayCalendar(selectedDate);
     }
   });
-
-  smallCalendar.render();
-
-  // Initialize the large calendar
-  let largeCalendarEl = document.getElementById('largeCalendar');
-  let largeCalendar = new FullCalendar.Calendar(largeCalendarEl, {
-    initialView: 'dayGridMonth'
-  });
-
-  // Set default date to today
-  let today = new Date().toISOString().split('T')[0];
-  $('#commitDate').val(today);
-
-  // Handle the commit button click
-  $('#commitButton').on('click', function() {
-    let selectedDate = $('#commitDate').val();
-    highlightCommitDate(selectedDate);
-    $('#largeCalendar').show(); // Show the large calendar
-    largeCalendar.render();
-  });
-
-  // Highlight the selected date on both calendars
-  function highlightCommitDate(date) {
-    smallCalendar.removeAllEvents();
-    largeCalendar.removeAllEvents();
-
-    let event = {
-      title: 'Commitment Start',
-      start: date,
-      display: 'background',
-      backgroundColor: '#00FF00',
-      borderColor: '#00FF00'
-    };
-
-    smallCalendar.addEvent(event);
-    largeCalendar.addEvent(event);
-  }
 });
+
+function displayCalendar(date) {
+  $('#calendar').fullCalendar('destroy'); // Destroy any existing calendar
+  $('#calendar').fullCalendar({
+    defaultDate: date,
+    editable: true,
+    eventLimit: true, // allow "more" link when too many events
+    events: [
+      {
+        title: 'Start of Addiction-Free Life',
+        start: date,
+        color: 'red',    // Highlight color
+      }
+    ]
+  });
+}
