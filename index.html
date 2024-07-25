@@ -3,43 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Intro Page</title>
+  <title>Welcome to Our Site</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    nav {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    nav a {
-      margin: 0 15px;
-      text-decoration: none;
-      color: #007BFF;
-    }
+    /* Add your styles here */
   </style>
 </head>
 <body>
-  <div class="container">
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="resources.html">Resources</a>
-      <a href="myplan.html">My Plan</a>
-    </nav>
-    <h1>Welcome to the Intro Page</h1>
-    <p>This is the introduction to the Addiction Resource Finder website.</p>
-  </div>
+  <h1>Welcome to Our Site</h1>
+  <button id="login">Login/Signup</button>
+  <a href="resources.html">Resources</a>
+  <a href="myplan.html">My Plan</a>
+
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script>
+    const loginButton = document.getElementById('login');
+
+    netlifyIdentity.on('init', user => {
+      if (!user) {
+        netlifyIdentity.open();
+      }
+    });
+
+    netlifyIdentity.init();
+
+    loginButton.addEventListener('click', () => {
+      netlifyIdentity.open();
+    });
+
+    netlifyIdentity.on('login', user => {
+      console.log('User logged in:', user);
+    });
+
+    netlifyIdentity.on('logout', () => {
+      console.log('User logged out');
+    });
+  </script>
 </body>
 </html>
