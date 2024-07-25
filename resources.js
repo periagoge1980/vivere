@@ -1,6 +1,6 @@
 // resources.js
 
-const resources = [
+const resources = 
 [
   {
     "data_source":"https://www.msss.gouv.qc.ca/repertoires/dependances/fiche_public.php?nofiche=190",
