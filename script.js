@@ -1,3 +1,4 @@
+// Initialize and add the map
 let map;
 let geocoder;
 
@@ -23,8 +24,7 @@ document.getElementById('resourceForm').addEventListener('submit', function (e) 
   geocodePostalCode(postalCode, function(location) {
     map.setCenter(location);
     const filteredResources = resources.filter(resource => 
-      (dependency === "" || (resource.dependency_category && resource.dependency_category.includes(dependency))) &&
-      (postalCode === "" || resource.postal_code.startsWith(postalCode.slice(0, 3)))
+      resource.dependency_category.includes(dependency) && resource.postal_code.startsWith(postalCode.slice(0, 3))
     );
     displayResources(filteredResources);
     console.log(`Resources fetched: ${filteredResources.length} items`);
@@ -50,7 +50,7 @@ function displayResources(resources) {
   resourceList.innerHTML = '';
   resources.forEach(resource => {
     const li = document.createElement('li');
-    li.innerHTML = `<h2>${resource.name}</h2><p>${resource.address}</p><a href="http://${resource.website}" target="_blank">Website</a>`;
+    li.innerHTML = `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.website}">Website</a>`;
     resourceList.appendChild(li);
 
     const marker = new google.maps.Marker({
@@ -60,7 +60,7 @@ function displayResources(resources) {
     });
 
     const infoWindow = new google.maps.InfoWindow({
-      content: `<h2>${resource.name}</h2><p>${resource.address}</p><a href="http://${resource.website}" target="_blank">Website</a>`
+      content: `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.website}">Website</a>`
     });
 
     marker.addListener('mouseover', function() {
@@ -74,10 +74,12 @@ function displayResources(resources) {
   console.log("Resources displayed.");
 }
 
-// Load Google Maps API with the key
-function loadGoogleMaps() {
+// Load Google Maps API with the key fetched from Netlify function
+async function loadGoogleMaps() {
+  const response = await fetch('/.netlify/functions/getApiKey');
+  const data = await response.json();
   const script = document.createElement('script');
-  script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap`;
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${data.key}&callback=initMap`;
   script.async = true;
   script.defer = true;
   document.head.appendChild(script);
