@@ -1,6 +1,7 @@
 // Initialize and add the map
 let map;
 let geocoder;
+let resources = []; // This will be populated by the JSON data
 
 function initMap() {
   console.log("Initializing map...");
@@ -24,8 +25,9 @@ document.getElementById('resourceForm').addEventListener('submit', function (e) 
   geocodePostalCode(postalCode, function(location) {
     map.setCenter(location);
     const filteredResources = resources.filter(resource => 
-      resource.type === dependency && resource.postal_code.startsWith(postalCode.slice(0, 3))
+      resource.dependency_category === dependency && resource.postal_code.startsWith(postalCode.slice(0, 3))
     );
+    console.log(`Filtered resources:`, filteredResources);
     displayResources(filteredResources);
     console.log(`Resources fetched: ${filteredResources.length} items`);
   });
@@ -50,7 +52,14 @@ function displayResources(resources) {
   resourceList.innerHTML = '';
   resources.forEach(resource => {
     const li = document.createElement('li');
-    li.innerHTML = `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.online_url}">Website</a>`;
+    li.innerHTML = `
+      <h2>${resource.name}</h2>
+      <p>${resource.address}</p>
+      <a href="${resource.website}" target="_blank">Website</a>
+      <p>${resource.phone}</p>
+      <p>${resource.services}</p>
+      <p>${resource.clientele}</p>
+    `;
     resourceList.appendChild(li);
 
     const marker = new google.maps.Marker({
@@ -60,7 +69,14 @@ function displayResources(resources) {
     });
 
     const infoWindow = new google.maps.InfoWindow({
-      content: `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.online_url}">Website</a>`
+      content: `
+        <h2>${resource.name}</h2>
+        <p>${resource.address}</p>
+        <a href="${resource.website}" target="_blank">Website</a>
+        <p>${resource.phone}</p>
+        <p>${resource.services}</p>
+        <p>${resource.clientele}</p>
+      `
     });
 
     marker.addListener('mouseover', function() {
@@ -74,6 +90,16 @@ function displayResources(resources) {
   console.log("Resources displayed.");
 }
 
+// Load resources from JSON (resources.js is included in the HTML)
+async function loadResources() {
+  try {
+    // resources is already defined in resources.js
+    console.log("Resources loaded:", resources);
+  } catch (error) {
+    console.error("Error loading resources:", error);
+  }
+}
+
 // Load Google Maps API with the key fetched from Netlify function
 async function loadGoogleMaps() {
   const response = await fetch('/.netlify/functions/getApiKey');
@@ -85,4 +111,6 @@ async function loadGoogleMaps() {
   document.head.appendChild(script);
 }
 
+// Initial load
+loadResources();
 loadGoogleMaps();
