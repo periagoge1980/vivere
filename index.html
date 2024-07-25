@@ -6,13 +6,50 @@
   <title>Welcome to Our Site</title>
   <style>
     /* Add your styles here */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+    button, a {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    a {
+      text-decoration: none;
+      color: #007BFF;
+      border: 1px solid #007BFF;
+    }
+    a:hover {
+      background-color: #007BFF;
+      color: white;
+    }
   </style>
 </head>
 <body>
-  <h1>Welcome to Our Site</h1>
-  <button id="login">Login/Signup</button>
-  <a href="resources.html">Resources</a>
-  <a href="myplan.html">My Plan</a>
+  <div class="container">
+    <h1>Welcome to Our Site</h1>
+    <button id="login">Login/Signup</button>
+    <a href="resources.html">Resources</a>
+    <a href="myplan.html">My Plan</a>
+  </div>
 
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script>
@@ -32,6 +69,7 @@
 
     netlifyIdentity.on('login', user => {
       console.log('User logged in:', user);
+      netlifyIdentity.close();
     });
 
     netlifyIdentity.on('logout', () => {
