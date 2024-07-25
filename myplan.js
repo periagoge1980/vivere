@@ -17,7 +17,7 @@ function displayCalendar(date) {
     eventLimit: true, // allow "more" link when too many events
     events: [
       {
-        title: 'Start of Addiction-Free Life',
+        title: 'A New Start!',
         start: date,
         color: 'red',    // Highlight color
       }
