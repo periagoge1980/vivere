@@ -3,7 +3,6 @@ let map;
 let geocoder;
 let resources = []; // This will be populated by the JSON data
 
-// Initialize the map
 function initMap() {
   console.log("Initializing map...");
   geocoder = new google.maps.Geocoder();
@@ -92,7 +91,7 @@ function displayResources(resources) {
 }
 
 // Load resources from JSON (resources.js is included in the HTML)
-function loadResources() {
+async function loadResources() {
   try {
     // resources is already defined in resources.js
     console.log("Resources loaded:", resources);
@@ -103,17 +102,13 @@ function loadResources() {
 
 // Load Google Maps API with the key fetched from Netlify function
 async function loadGoogleMaps() {
-  try {
-    const response = await fetch('/.netlify/functions/getApiKey');
-    const data = await response.json();
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${data.key}&callback=initMap`;
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
-  } catch (error) {
-    console.error("Error loading Google Maps:", error);
-  }
+  const response = await fetch('/.netlify/functions/getApiKey');
+  const data = await response.json();
+  const script = document.createElement('script');
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${data.key}&callback=initMap`;
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script);
 }
 
 // Initial load
