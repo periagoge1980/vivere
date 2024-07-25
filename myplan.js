@@ -4,6 +4,7 @@ $(document).ready(function() {
     var selectedDate = $('#startDate').val();
     if (selectedDate) {
       displayCalendar(selectedDate);
+      startTimer();
     }
   });
 });
@@ -22,4 +23,23 @@ function displayCalendar(date) {
       }
     ]
   });
+}
+
+let timerInterval;
+
+function startTimer() {
+  clearInterval(timerInterval); // Clear any existing timer
+  const startTime = new Date();
+  timerInterval = setInterval(function() {
+    const currentTime = new Date();
+    const timeDiff = currentTime - startTime;
+    const hours = Math.floor(timeDiff / 3600000);
+    const minutes = Math.floor((timeDiff % 3600000) / 60000);
+    const seconds = Math.floor((timeDiff % 60000) / 1000);
+    $('#timeCounter').text(`Time since commit: ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
+  }, 1000);
+}
+
+function formatTime(unit) {
+  return unit < 10 ? '0' + unit : unit;
 }
