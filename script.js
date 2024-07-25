@@ -50,7 +50,7 @@ function displayResources(resources) {
   resourceList.innerHTML = '';
   resources.forEach(resource => {
     const li = document.createElement('li');
-    li.innerHTML = `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.online_url}">Website</a>`;
+    li.innerHTML = `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.website}">Website</a>`;
     resourceList.appendChild(li);
 
     const marker = new google.maps.Marker({
@@ -60,7 +60,7 @@ function displayResources(resources) {
     });
 
     const infoWindow = new google.maps.InfoWindow({
-      content: `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.online_url}">Website</a>`
+      content: `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.website}">Website</a>`
     });
 
     marker.addListener('mouseover', function() {
