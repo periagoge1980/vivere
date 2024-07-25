@@ -5,40 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome to Our Site</title>
   <style>
-    /* Add your styles here */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
       background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
     }
     .container {
+      flex: 1;
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
       text-align: center;
     }
-    nav {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    .links {
-      margin-right: auto;
-    }
-    .links a {
-      margin: 0 15px;
-      text-decoration: none;
-      color: #007BFF;
-    }
-    .links a:hover {
-      text-decoration: underline;
-    }
-    .login {
-      margin-left: auto;
+    .button-container {
+      margin-top: 30px;
     }
     button, .link-button {
-      padding: 10px;
+      padding: 10px 20px;
       margin: 10px;
       font-size: 16px;
       cursor: pointer;
@@ -47,53 +45,61 @@
       color: white;
       border: none;
       text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
     }
     button:hover, .link-button:hover {
       background-color: #0056b3;
     }
+    .login-link {
+      color: white;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    footer {
+      background-color: #f1f1f1;
+      padding: 10px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <header>
     <h1>Welcome to Our Site</h1>
-    <nav>
-      <div class="links">
-        <a href="resources.html" class="link-button">Resources</a>
-        <a href="myplan.html" class="link-button">My Plan</a>
-      </div>
-      <div class="login">
-        <button id="login">Login/Signup</button>
-      </div>
-    </nav>
+    <a id="login" class="login-link">Login/Signup</a>
+  </header>
+  <div class="container">
+    <div class="button-container">
+      <a href="https://viverehelp.netlify.app/resources.html" class="link-button">Resources</a>
+      <a href="https://viverehelp.netlify.app/myplan.html" class="link-button">My Plan</a>
+    </div>
   </div>
+  <footer>
+    &copy; 2023 Our Site. All rights reserved.
+  </footer>
 
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script>
     const loginButton = document.getElementById('login');
 
-    // Initialize Netlify Identity
     netlifyIdentity.on('init', user => {
       if (!user) {
-        console.log('No user is logged in');
-      } else {
-        console.log('User logged in:', user);
+        netlifyIdentity.open();
       }
     });
 
     netlifyIdentity.init();
 
-    // Handle login button click
     loginButton.addEventListener('click', () => {
       netlifyIdentity.open();
     });
 
-    // Listen for login events
     netlifyIdentity.on('login', user => {
       console.log('User logged in:', user);
       netlifyIdentity.close();
     });
 
-    // Listen for logout events
     netlifyIdentity.on('logout', () => {
       console.log('User logged out');
     });
