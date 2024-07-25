@@ -18,28 +18,19 @@
       padding: 20px;
       text-align: center;
     }
-    button, a {
+    button, .link-button {
       padding: 10px;
       margin: 10px;
       font-size: 16px;
       cursor: pointer;
-    }
-    button {
+      display: inline-block;
       background-color: #007BFF;
       color: white;
       border: none;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    a {
       text-decoration: none;
-      color: #007BFF;
-      border: 1px solid #007BFF;
     }
-    a:hover {
-      background-color: #007BFF;
-      color: white;
+    button:hover, .link-button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
@@ -47,8 +38,8 @@
   <div class="container">
     <h1>Welcome to Our Site</h1>
     <button id="login">Login/Signup</button>
-    <a href="resources.html">Resources</a>
-    <a href="myplan.html">My Plan</a>
+    <a href="resources.html" class="link-button">Resources</a>
+    <a href="myplan.html" class="link-button">My Plan</a>
   </div>
 
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
