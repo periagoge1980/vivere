@@ -1,6 +1,6 @@
-// Initialize and add the map
 let map;
 let geocoder;
+let allResources = []; // To store all resources
 
 function initMap() {
   console.log("Initializing map...");
@@ -11,6 +11,9 @@ function initMap() {
   });
   window.map = map; // Make map globally accessible
   console.log("Map initialized.");
+
+  // Add event listener for map bounds changed
+  google.maps.event.addListener(map, 'bounds_changed', displayResourcesWithinBounds);
 }
 
 // Fetch and display resources
@@ -23,11 +26,11 @@ document.getElementById('resourceForm').addEventListener('submit', function (e) 
   // Geocode the postal code to get the location
   geocodePostalCode(postalCode, function(location) {
     map.setCenter(location);
-    const filteredResources = resources.filter(resource => 
-      resource.dependency_category.includes(dependency) && resource.postal_code.startsWith(postalCode.slice(0, 3))
+    allResources = resources.filter(resource => 
+      resource.dependency_category.includes(dependency)
     );
-    displayResources(filteredResources);
-    console.log(`Resources fetched: ${filteredResources.length} items`);
+    displayResourcesWithinBounds();
+    console.log(`Resources fetched: ${allResources.length} items`);
   });
 });
 
@@ -44,32 +47,37 @@ function geocodePostalCode(postalCode, callback) {
 }
 
 // Display resources on the map and in the list
-function displayResources(resources) {
-  console.log("Displaying resources...");
+function displayResourcesWithinBounds() {
+  console.log("Displaying resources within bounds...");
+  const bounds = map.getBounds();
   const resourceList = document.getElementById('resourceList');
   resourceList.innerHTML = '';
-  resources.forEach(resource => {
-    const li = document.createElement('li');
-    li.innerHTML = `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.website}">Website</a>`;
-    resourceList.appendChild(li);
 
-    const marker = new google.maps.Marker({
-      position: { lat: resource.latitude, lng: resource.longitude },
-      map: window.map,
-      title: resource.name
-    });
+  allResources.forEach(resource => {
+    const resourceLocation = new google.maps.LatLng(resource.latitude, resource.longitude);
+    if (bounds.contains(resourceLocation)) {
+      const li = document.createElement('li');
+      li.innerHTML = `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.website}">Website</a>`;
+      resourceList.appendChild(li);
 
-    const infoWindow = new google.maps.InfoWindow({
-      content: `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.website}">Website</a>`
-    });
+      const marker = new google.maps.Marker({
+        position: { lat: resource.latitude, lng: resource.longitude },
+        map: window.map,
+        title: resource.name
+      });
 
-    marker.addListener('mouseover', function() {
-      infoWindow.open(map, marker);
-    });
+      const infoWindow = new google.maps.InfoWindow({
+        content: `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.website}">Website</a>`
+      });
 
-    marker.addListener('mouseout', function() {
-      infoWindow.close();
-    });
+      marker.addListener('mouseover', function() {
+        infoWindow.open(map, marker);
+      });
+
+      marker.addListener('mouseout', function() {
+        infoWindow.close();
+      });
+    }
   });
   console.log("Resources displayed.");
 }
