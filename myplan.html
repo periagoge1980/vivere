@@ -43,9 +43,13 @@
       padding: 10px;
       font-size: 16px;
     }
-    #calendar {
+    #smallCalendar, #largeCalendar {
       max-width: 800px;
       margin: 0 auto;
+      margin-bottom: 20px;
+    }
+    #largeCalendar {
+      height: 600px; /* Adjust the height as needed */
     }
   </style>
 </head>
@@ -61,7 +65,8 @@
       <label for="commitDate">Commit! Select the first day of your addiction-free life:</label>
       <input type="date" id="commitDate" value="">
     </div>
-    <div id="calendar"></div>
+    <div id="smallCalendar"></div>
+    <div id="largeCalendar"></div>
   </div>
   
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
