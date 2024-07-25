@@ -70,6 +70,62 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
-  <script src="myplan.js"></script>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script>
+    // Redirect to index.html if not authenticated
+    netlifyIdentity.on('init', user => {
+      if (!user) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    netlifyIdentity.init();
+
+    $(document).ready(function() {
+      $('#dateForm').on('submit', function(e) {
+        e.preventDefault();
+        var selectedDate = $('#startDate').val();
+        if (selectedDate) {
+          displayCalendar(selectedDate);
+          startTimer();
+        }
+      });
+    });
+
+    function displayCalendar(date) {
+      $('#calendar').fullCalendar('destroy'); // Destroy any existing calendar
+      $('#calendar').fullCalendar({
+        defaultDate: date,
+        editable: true,
+        eventLimit: true, // allow "more" link when too many events
+        events: [
+          {
+            title: 'Start of Addiction-Free Life',
+            start: date,
+            color: 'red',    // Highlight color
+          }
+        ]
+      });
+    }
+
+    let timerInterval;
+
+    function startTimer() {
+      clearInterval(timerInterval); // Clear any existing timer
+      const startTime = new Date();
+      timerInterval = setInterval(function() {
+        const currentTime = new Date();
+        const timeDiff = currentTime - startTime;
+        const hours = Math.floor(timeDiff / 3600000);
+        const minutes = Math.floor((timeDiff % 3600000) / 60000);
+        const seconds = Math.floor((timeDiff % 60000) / 1000);
+        $('#timeCounter').text(`Time since commit: ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
+      }, 1000);
+    }
+
+    function formatTime(unit) {
+      return unit < 10 ? '0' + unit : unit;
+    }
+  </script>
 </body>
 </html>
