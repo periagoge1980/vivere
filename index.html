@@ -18,6 +18,25 @@
       padding: 20px;
       text-align: center;
     }
+    nav {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .links {
+      margin-right: auto;
+    }
+    .links a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #007BFF;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+    .login {
+      margin-left: auto;
+    }
     button, .link-button {
       padding: 10px;
       margin: 10px;
@@ -37,32 +56,44 @@
 <body>
   <div class="container">
     <h1>Welcome to Our Site</h1>
-    <button id="login">Login/Signup</button>
-    <a href="https://viverehelp.netlify.app/resources.html" class="link-button">Resources</a>
-    <a href="https://viverehelp.netlify.app/myplan.html" class="link-button">My Plan</a>
+    <nav>
+      <div class="links">
+        <a href="resources.html" class="link-button">Resources</a>
+        <a href="myplan.html" class="link-button">My Plan</a>
+      </div>
+      <div class="login">
+        <button id="login">Login/Signup</button>
+      </div>
+    </nav>
   </div>
 
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script>
     const loginButton = document.getElementById('login');
 
+    // Initialize Netlify Identity
     netlifyIdentity.on('init', user => {
       if (!user) {
-        netlifyIdentity.open();
+        console.log('No user is logged in');
+      } else {
+        console.log('User logged in:', user);
       }
     });
 
     netlifyIdentity.init();
 
+    // Handle login button click
     loginButton.addEventListener('click', () => {
       netlifyIdentity.open();
     });
 
+    // Listen for login events
     netlifyIdentity.on('login', user => {
       console.log('User logged in:', user);
       netlifyIdentity.close();
     });
 
+    // Listen for logout events
     netlifyIdentity.on('logout', () => {
       console.log('User logged out');
     });
