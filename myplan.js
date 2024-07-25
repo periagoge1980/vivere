@@ -5,7 +5,6 @@ $(document).ready(function() {
     initialView: 'dayGridMonth',
     dateClick: function(info) {
       $('#commitDate').val(info.dateStr);
-      highlightCommitDate(info.dateStr);
     }
   });
 
@@ -17,12 +16,17 @@ $(document).ready(function() {
     initialView: 'dayGridMonth'
   });
 
-  largeCalendar.render();
-
   // Set default date to today
   let today = new Date().toISOString().split('T')[0];
   $('#commitDate').val(today);
-  highlightCommitDate(today);
+
+  // Handle the commit button click
+  $('#commitButton').on('click', function() {
+    let selectedDate = $('#commitDate').val();
+    highlightCommitDate(selectedDate);
+    $('#largeCalendar').show(); // Show the large calendar
+    largeCalendar.render();
+  });
 
   // Highlight the selected date on both calendars
   function highlightCommitDate(date) {
@@ -40,10 +44,4 @@ $(document).ready(function() {
     smallCalendar.addEvent(event);
     largeCalendar.addEvent(event);
   }
-
-  // Update calendars when date is changed
-  $('#commitDate').on('change', function() {
-    let selectedDate = $(this).val();
-    highlightCommitDate(selectedDate);
-  });
 });
