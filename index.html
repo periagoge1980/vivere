@@ -96,6 +96,10 @@
         width: auto;
       }
     }
+    .message {
+      color: red;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -110,9 +114,10 @@
       <div class="links">
         <a href="index.html">Home</a>
         <a href="resources.html">Resources</a>
-        <a href="myplan.html">My Plan</a>
+        <a href="#" id="myPlanLink">My Plan</a>
       </div>
     </nav>
+    <div id="message" class="message" style="display: none;">Please log in to access this member-only feature.</div>
   </div>
   <footer>
     &copy; 2024 The Vivere Project. All rights reserved.
@@ -121,6 +126,8 @@
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script>
     const loginButton = document.getElementById('login');
+    const myPlanLink = document.getElementById('myPlanLink');
+    const message = document.getElementById('message');
 
     netlifyIdentity.on('init', user => {
       if (!user) {
@@ -142,6 +149,19 @@
 
     netlifyIdentity.on('logout', () => {
       console.log('User logged out');
+    });
+
+    myPlanLink.addEventListener('click', (e) => {
+      const user = netlifyIdentity.currentUser();
+      if (!user) {
+        e.preventDefault();
+        message.style.display = 'block';
+        setTimeout(() => {
+          message.style.display = 'none';
+        }, 3000);
+      } else {
+        window.location.href = 'myplan.html';
+      }
     });
   </script>
 </body>
