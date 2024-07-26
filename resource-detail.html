@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resource Detail</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    nav {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #007BFF;
+    }
+    .resource-detail {
+      background-color: white;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .resource-detail h2 {
+      margin: 0 0 10px;
+    }
+    .resource-detail p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="resources.html">Resources</a>
+      <a href="myplan.html">My Plan</a>
+      <button id="login" style="float: right;">Login/Signup</button>
+    </nav>
+    <h1>Resource Detail</h1>
+    <div class="resource-detail" id="resourceDetail"></div>
+  </div>
+
+  <script>
+    const resource = JSON.parse(localStorage.getItem('selectedResource'));
+    const resourceDetail = document.getElementById('resourceDetail');
+
+    if (resource) {
+      resourceDetail.innerHTML = `
+        <h2>${resource.name}</h2>
+        <p><strong>Address:</strong> ${resource.address}</p>
+        <p><strong>Phone:</strong> ${resource.phone}</p>
+        <p><strong>Website:</strong> <a href="http://${resource.website}" target="_blank">${resource.website}</a></p>
+        <p><strong>Services:</strong> ${resource.services || 'N/A'}</p>
+        <p><strong>Clientele:</strong> ${resource.clientele || 'N/A'}</p>
+        <p><strong>Capacity:</strong> ${resource.capacity || 'N/A'}</p>
+        <p><strong>Program Duration:</strong> ${resource.program_duration || 'N/A'}</p>
+        <p><strong>Approach:</strong> ${resource.approach || 'N/A'}</p>
+        <p><strong>Dependency Category:</strong> ${resource.dependency_category.join(', ')}</p>
+      `;
+    } else {
+      resourceDetail.innerHTML = '<p>No resource selected.</p>';
+    }
+  </script>
+</body>
+</html>
