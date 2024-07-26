@@ -22,10 +22,6 @@
       justify-content: space-between;
       align-items: center;
     }
-    header img {
-      max-height: 50px;
-      margin-right: 20px;
-    }
     header h1 {
       margin: 0;
       font-size: 1.5rem;
@@ -38,6 +34,13 @@
       padding: 20px;
       text-align: center;
       width: 100%;
+    }
+    .blurb-box {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 20px 0;
     }
     nav {
       display: flex;
@@ -84,20 +87,11 @@
       padding: 10px;
       text-align: center;
     }
-    @media (min-width: 600px) {
-      header h1 {
-        font-size: 2rem;
-      }
-      .login button {
-        width: auto;
-      }
-    }
     .message {
       color: red;
       margin-top: 10px;
     }
     .blurb {
-      margin-bottom: 20px;
       text-align: left;
       font-size: 1rem;
     }
@@ -107,22 +101,50 @@
     .note {
       font-size: 0.8rem;
     }
+    .patreon {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .patreon a {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #f96854;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    .patreon a:hover {
+      background-color: #c65042;
+    }
+    .logo {
+      margin: 20px auto;
+      text-align: center;
+    }
+    .logo img {
+      max-width: 200px;
+    }
   </style>
 </head>
 <body>
   <header>
-    <img src="logo.webp" alt="Vivere Project Logo">
     <h1>Welcome to the Vivere Project</h1>
     <div class="login">
       <button id="login">Login/Signup</button>
     </div>
   </header>
   <div class="container">
-    <div class="blurb">
-      <p>Welcome to The Vivere Project. Our mission is to provide comprehensive online resources for individuals struggling with various forms of addiction. We understand the challenges and the courage it takes to seek help and make a change.</p>
-      <p>This project is born out of personal experience and a deep desire to give back to the community. As someone who has faced addiction firsthand, I know the journey to recovery is not easy. This site is a small contribution to help others find their path to a healthier, addiction-free life.</p>
-      <p>The Vivere Project is entirely free to use. We believe that support should be accessible to everyone without financial barriers.</p>
-      <p class="note">*Note: While the information found on the 'Resources' page is currently focused on Quebec, the rest of the site is designed to be useful to everyone, regardless of location. We are dedicated to expanding our resources to include more regions in the future.*</p>
+    <div class="logo">
+      <img src="logo.webp" alt="Vivere Project Logo">
+    </div>
+    <div class="blurb-box">
+      <div class="blurb">
+        <p>Welcome to The Vivere Project. Our mission is to provide comprehensive online resources for individuals struggling with various forms of addiction. We understand the challenges and the courage it takes to seek help and make a change.</p>
+        <p>This project is born out of personal experience and a deep desire to give back to the community. As someone who has faced addiction firsthand, I know the journey to recovery is not easy. This site is a small contribution to help others find their path to a healthier, addiction-free life.</p>
+        <p>The Vivere Project is entirely free to use. We believe that support should be accessible to everyone without financial barriers.</p>
+        <p class="note">*Note: While the information found on the 'Resources' page is currently focused on Quebec, the rest of the site is designed to be useful to everyone, regardless of location. We are dedicated to expanding our resources to include more regions in the future.*</p>
+      </div>
     </div>
     <nav>
       <div class="links">
@@ -132,6 +154,9 @@
       </div>
     </nav>
     <div id="message" class="message" style="display: none;">Please log in to access this member-only feature.</div>
+    <div class="patreon">
+      <a href="https://www.patreon.com/yourpatreonlink" target="_blank">Support Us on Patreon</a>
+    </div>
   </div>
   <footer>
     &copy; 2024 The Vivere Project. All rights reserved.
