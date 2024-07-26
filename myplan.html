@@ -138,11 +138,8 @@
         var selectedDate = $('#startDate').val();
         if (selectedDate) {
           const commitTime = new Date(); // Capture the exact time of commit
-          commitTime.setFullYear(
-            selectedDate.split('-')[0],
-            selectedDate.split('-')[1] - 1,
-            selectedDate.split('-')[2]
-          );
+          const selectedDateParts = selectedDate.split('-');
+          commitTime.setFullYear(selectedDateParts[0], selectedDateParts[1] - 1, selectedDateParts[2]);
           localStorage.setItem('commitTime', commitTime.toISOString());
           displayCalendar(selectedDate);
           startTimer(commitTime);
