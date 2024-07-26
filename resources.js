@@ -156,3 +156,38 @@ const resources =
     "postal_code": "G1J 2G3"
   }
 ];
+
+
+function renderResourceList(resources) {
+  const resourceList = document.getElementById('resourceList');
+  resourceList.innerHTML = '';
+
+  resources.forEach((resource, index) => {
+    const listItem = document.createElement('li');
+    listItem.innerHTML = `
+      <h2>${resource.name}</h2>
+      <p>${resource.address}</p>
+      <button onclick="viewResourceDetail(${index})">View Details</button>
+    `;
+    resourceList.appendChild(listItem);
+  });
+}
+
+function viewResourceDetail(index) {
+  const resource = resources[index];
+  localStorage.setItem('selectedResource', JSON.stringify(resource));
+  window.location.href = 'resource-detail.html';
+}
+
+document.getElementById('resourceForm').addEventListener('submit', function (event) {
+  event.preventDefault();
+  const dependency = document.getElementById('dependency').value;
+  const postalCode = document.getElementById('postalCode').value;
+
+  const filteredResources = resources.filter(resource => 
+    resource.dependency_category.includes(dependency) &&
+    resource.postal_code.startsWith(postalCode)
+  );
+
+  renderResourceList(filteredResources);
+});
