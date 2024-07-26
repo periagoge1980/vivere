@@ -12,15 +12,22 @@
       padding: 0;
       background-color: #f9f9f9;
     }
+    header {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+    }
     .container {
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
       text-align: center;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
     }
     form {
       display: flex;
@@ -67,8 +74,11 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <header>
     <h1>My Plan</h1>
+    <a id="login" class="login-link">Login/Signup</a>
+  </header>
+  <div class="container">
     <form id="dateForm">
       <input type="date" id="startDate" value="">
       <button type="submit">Commit!</button>
@@ -126,7 +136,7 @@
         eventLimit: true, // allow "more" link when too many events
         events: [
           {
-            title: 'A New Beginning!',
+            title: 'A new beginning!',
             start: date,
             color: 'red',    // Highlight color
           }
