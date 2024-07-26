@@ -11,6 +11,9 @@
       margin: 0;
       padding: 0;
       background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
     header {
       background-color: #007BFF;
@@ -24,6 +27,7 @@
       margin: 0;
     }
     .container {
+      flex: 1;
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
@@ -66,10 +70,25 @@
       text-decoration: none;
       color: #007BFF;
       border: 1px solid #007BFF;
+      padding: 10px 20px;
+      margin: 5px;
+      display: inline-block;
     }
     a:hover {
       background-color: #007BFF;
       color: white;
+    }
+    footer {
+      background-color: #f1f1f1;
+      padding: 10px;
+      text-align: center;
+      margin-top: auto;
+    }
+    .login-link {
+      color: white;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -88,6 +107,9 @@
     <a href="index.html">Home</a>
     <a href="resources.html">Resources</a>
   </div>
+  <footer>
+    &copy; 2024 The Vivere Project. All rights reserved.
+  </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -136,7 +158,7 @@
         eventLimit: true, // allow "more" link when too many events
         events: [
           {
-            title: 'A new beginning!',
+            title: 'Start of Addiction-Free Life',
             start: date,
             color: 'red',    // Highlight color
           }
@@ -163,6 +185,20 @@
     function formatTime(unit) {
       return unit < 10 ? '0' + unit : unit;
     }
+    
+    const loginButton = document.getElementById('login');
+    loginButton.addEventListener('click', () => {
+      netlifyIdentity.open();
+    });
+
+    netlifyIdentity.on('login', user => {
+      console.log('User logged in:', user);
+      netlifyIdentity.close();
+    });
+
+    netlifyIdentity.on('logout', () => {
+      console.log('User logged out');
+    });
   </script>
 </body>
 </html>
