@@ -141,11 +141,11 @@
     });
 
     function loadMap(resources) {
-      fetch('/.netlify/functions/getGoogleMapsApiKey')
+      fetch('/.netlify/functions/getApiKey')
         .then(response => response.json())
         .then(data => {
           const script = document.createElement('script');
-          script.src = `https://maps.googleapis.com/maps/api/js?key=${data.apiKey}&callback=initMap`;
+          script.src = `https://maps.googleapis.com/maps/api/js?key=${data.key}&callback=initMap`;
           script.async = true;
           script.defer = true;
           document.head.appendChild(script);
