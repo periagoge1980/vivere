@@ -7,7 +7,7 @@ const resources =
     "name":"Mission Bon Accueil - Résidences Bon accueil",
     "phone":"514 523-5288",
     "address":"4755A, rue Acorn, Montréal (Québec) H4C 3L6",
-    "website":"www.missionbonaccueil.com/services-fr/soins-et-soutien/",
+    "website":"https://missionbonaccueil.com/services-fr/soins-et-soutien/",
     "services":null,
     "clientele":"Clientèle : Hommes (18 ans et plus), personnes judiciarisées, personnes en traitement de substitution",
     "capacity":"Capacité: 28 personnes",
