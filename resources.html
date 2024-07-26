@@ -100,10 +100,6 @@
   <script src="resources.js"></script>
   <!-- Include the main JavaScript file -->
   <script>
-    const resources = [
-      // Add your JSON data here...
-    ];
-
     function renderResourceList(resources) {
       const resourceList = document.getElementById('resourceList');
       resourceList.innerHTML = '';
@@ -136,11 +132,41 @@
       );
 
       renderResourceList(filteredResources);
+      loadMap(filteredResources);
     });
 
     document.addEventListener('DOMContentLoaded', () => {
       renderResourceList(resources);
+      loadMap(resources);
     });
+
+    function loadMap(resources) {
+      fetch('/.netlify/functions/getGoogleMapsApiKey')
+        .then(response => response.json())
+        .then(data => {
+          const script = document.createElement('script');
+          script.src = `https://maps.googleapis.com/maps/api/js?key=${data.apiKey}&callback=initMap`;
+          script.async = true;
+          script.defer = true;
+          document.head.appendChild(script);
+        })
+        .catch(error => console.error('Error fetching Google Maps API key:', error));
+    }
+
+    function initMap() {
+      const map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 10,
+        center: { lat: 45.5017, lng: -73.5673 } // Center the map on Montreal
+      });
+
+      resources.forEach(resource => {
+        new google.maps.Marker({
+          position: { lat: resource.latitude, lng: resource.longitude },
+          map: map,
+          title: resource.name
+        });
+      });
+    }
   </script>
   <!-- Include Netlify Identity script -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
