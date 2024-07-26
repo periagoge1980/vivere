@@ -97,8 +97,9 @@
         e.preventDefault();
         var selectedDate = $('#startDate').val();
         if (selectedDate) {
+          const commitTime = new Date(); // Capture the exact time of commit
           displayCalendar(selectedDate);
-          startTimer(selectedDate);
+          startTimer(commitTime, selectedDate);
         }
       });
     });
@@ -121,12 +122,15 @@
 
     let timerInterval;
 
-    function startTimer(startDate) {
+    function startTimer(commitTime, selectedDate) {
       clearInterval(timerInterval); // Clear any existing timer
-      const startTime = new Date(startDate);
+
+      const selectedDateTime = new Date(selectedDate);
+      selectedDateTime.setHours(commitTime.getHours(), commitTime.getMinutes(), commitTime.getSeconds());
+
       timerInterval = setInterval(function() {
         const currentTime = new Date();
-        const timeDiff = currentTime - startTime;
+        const timeDiff = currentTime - selectedDateTime;
         const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
