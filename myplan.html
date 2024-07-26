@@ -116,6 +116,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script>
+    let timerInterval;
+
     netlifyIdentity.on('init', user => {
       if (!user) {
         window.location.href = 'index.html';
@@ -138,11 +140,13 @@
         var selectedDate = $('#startDate').val();
         if (selectedDate) {
           const commitTime = new Date(); // Capture the exact time of commit
+          const selectedDateArray = selectedDate.split('-');
           commitTime.setFullYear(
-            selectedDate.split('-')[0],
-            selectedDate.split('-')[1] - 1,
-            selectedDate.split('-')[2]
+            selectedDateArray[0],
+            selectedDateArray[1] - 1,
+            selectedDateArray[2]
           );
+          commitTime.setHours(0, 0, 0, 0);
           localStorage.setItem('commitTime', commitTime.toISOString());
           displayCalendar(selectedDate);
           startTimer(commitTime);
@@ -165,8 +169,6 @@
         ]
       });
     }
-
-    let timerInterval;
 
     function startTimer(commitTime) {
       clearInterval(timerInterval); // Clear any existing timer
