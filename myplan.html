@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -90,6 +90,23 @@
       text-decoration: none;
       font-weight: bold;
     }
+    .lang-switch {
+      display: flex;
+      align-items: center;
+    }
+    .lang-switch button {
+      margin: 0 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .lang-switch button:hover {
+      background-color: #0056b3;
+    }
     #note-popup, #note-input-popup, #journal-popup {
       display: none;
       position: fixed;
@@ -134,18 +151,24 @@
 </head>
 <body>
   <header>
-    <h1>My Plan</h1>
-    <a id="login" class="login-link">Login/Signup</a>
+    <h1 id="header-title">My Plan</h1>
+    <div class="login">
+      <a id="login" class="login-link">Login/Signup</a>
+      <div class="lang-switch">
+        <button id="lang-en">EN</button>
+        <button id="lang-fr">FR</button>
+      </div>
+    </div>
   </header>
   <div class="container">
     <form id="dateForm">
       <input type="date" id="startDate" value="">
-      <button type="submit">Commit!</button>
+      <button type="submit" id="commit-button">Commit!</button>
     </form>
     <div id="timeCounter">Time since commit: 00:00:00</div>
     <div id="calendar"></div>
-    <a href="index.html">Home</a>
-    <a href="resources.html">Resources</a>
+    <a href="index.html" id="home-link">Home</a>
+    <a href="resources.html" id="resources-link">Resources</a>
   </div>
   <footer>
     &copy; 2024 The Vivere Project. All rights reserved.
@@ -153,7 +176,7 @@
 
   <div id="note-popup-overlay"></div>
   <div id="note-popup">
-    <p>How was that day?</p>
+    <p id="popup-title">How was that day?</p>
     <button id="positive">Positive</button>
     <button id="triggered">Triggered</button>
     <button id="relapsed">Relapsed</button>
@@ -164,16 +187,16 @@
   </div>
 
   <div id="note-input-popup">
-    <p>Add your custom note:</p>
+    <p id="note-input-title">Add your custom note:</p>
     <textarea id="custom-note" rows="4" cols="50"></textarea>
     <button id="save-note">Save Note</button>
     <button id="cancel-note">Cancel</button>
   </div>
 
   <div id="journal-popup">
-    <p>Journal Entries</p>
+    <p id="journal-title">Journal Entries</p>
     <div id="day-journal"></div>
-    <button>Close</button>
+    <button id="close-journal">Close</button>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
