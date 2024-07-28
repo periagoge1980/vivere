@@ -99,4 +99,48 @@ $(document).ready(function() {
       const currentTime = new Date();
       const timeDiff = currentTime - commitTime;
       const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeDiff %
+      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+      $('#timeCounter').text(`Time since commit: ${days}d ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
+    }, 1000);
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval);
+    const newCommitTime = new Date();
+    localStorage.setItem('commitTime', newCommitTime.toISOString());
+    startTimer(newCommitTime);
+  }
+
+  function formatTime(unit) {
+    return unit < 10 ? '0' + unit : unit;
+  }
+
+  const loginButton = document.getElementById('login');
+  loginButton.addEventListener('click', () => {
+    netlifyIdentity.open();
+  });
+
+  netlifyIdentity.on('login', user => {
+    console.log('User logged in:', user);
+    netlifyIdentity.close();
+  });
+
+  netlifyIdentity.on('logout', () => {
+    console.log('User logged out');
+    window.location.href = 'index.html';
+  });
+
+  // Initialize the calendar with stored events
+  const storedCommitTime = localStorage.getItem('commitTime');
+  if (storedCommitTime) {
+    const commitTime = new Date(storedCommitTime);
+    $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
+    displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
+    startTimer(commitTime);
+  } else {
+    displayCalendar(new Date());
+  }
+});
+
