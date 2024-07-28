@@ -1,4 +1,7 @@
 $(document).ready(function() {
+  const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
+  const storedCommitTime = localStorage.getItem('commitTime');
+
   $('#dateForm').on('submit', function(e) {
     e.preventDefault();
     var selectedDate = $('#startDate').val();
@@ -16,6 +19,13 @@ $(document).ready(function() {
     }
   });
 
+  if (storedCommitTime) {
+    const commitTime = new Date(storedCommitTime);
+    $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
+    displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
+    startTimer(commitTime);
+  }
+
   function displayCalendar(date) {
     $('#calendar').fullCalendar('destroy'); // Destroy any existing calendar
     $('#calendar').fullCalendar({
@@ -24,72 +34,57 @@ $(document).ready(function() {
       eventLimit: true, // allow "more" link when too many events
       dayClick: function(date) {
         const selectedDate = date.format('YYYY-MM-DD');
-        const existingNote = localStorage.getItem(selectedDate);
+        $('#note-popup').data('date', selectedDate).show();
         $('#note-popup-overlay').show();
-        $('#note-popup').show();
-        $('#positive').off().on('click', function() {
-          saveNoteAndStyleDay(selectedDate, 'positive', 'green');
-        });
-        $('#triggered').off().on('click', function() {
-          saveNoteAndStyleDay(selectedDate, 'triggered', 'red');
-        });
-        $('#relapsed').off().on('click', function() {
-          resetTimer();
-          saveNoteAndStyleDay(selectedDate, 'relapsed', 'orange');
-        });
-        if (existingNote) {
-          $('#remove-note').show().off().on('click', function() {
-            removeNoteAndStyleDay(selectedDate);
-          });
+        if (storedNotes[selectedDate]) {
+          $('#remove-note').show();
         } else {
           $('#remove-note').hide();
         }
       },
-      events: getStoredEvents()
+      events: Object.keys(storedNotes).map(date => ({
+        title: storedNotes[date],
+        start: date,
+        color: storedNotes[date] === 'Positive' ? 'green' : (storedNotes[date] === 'Triggered' ? 'red' : 'orange')
+      }))
     });
   }
 
-  function saveNoteAndStyleDay(date, note, color) {
-    localStorage.setItem(date, note);
-    $('#calendar').fullCalendar('renderEvent', {
-      title: note.charAt(0).toUpperCase() + note.slice(1),
-      start: date,
-      color: color
-    }, true);
-    closePopup(); // Close the popup
+  $('#positive').click(() => saveNoteToCalendar('Positive'));
+  $('#triggered').click(() => saveNoteToCalendar('Triggered'));
+  $('#relapsed').click(() => {
+    saveNoteToCalendar('Relapsed');
+    resetTimer();
+  });
+  $('#remove-note').click(() => removeNoteFromCalendar());
+
+  function saveNoteToCalendar(note) {
+    const selectedDate = $('#note-popup').data('date');
+    storedNotes[selectedDate] = note;
+    localStorage.setItem('notes', JSON.stringify(storedNotes));
+    $('#note-popup').hide();
+    $('#note-popup-overlay').hide();
+    displayCalendar($('#startDate').val());
   }
 
-  function removeNoteAndStyleDay(date) {
-    localStorage.removeItem(date);
-    $('#calendar').fullCalendar('removeEvents', function(event) {
-      return event.start.format('YYYY-MM-DD') === date;
-    });
-    closePopup(); // Close the popup
+  function removeNoteFromCalendar() {
+    const selectedDate = $('#note-popup').data('date');
+    delete storedNotes[selectedDate];
+    localStorage.setItem('notes', JSON.stringify(storedNotes));
+    $('#note-popup').hide();
+    $('#note-popup-overlay').hide();
+    displayCalendar($('#startDate').val());
   }
+
+  $('#note-popup-overlay').on('click', closePopup);
+  $('#note-popup button').click(closePopup);
 
   function closePopup() {
     $('#note-popup').hide();
     $('#note-popup-overlay').hide();
   }
 
-  $('#note-popup-overlay').on('click', closePopup);
-
-  function getStoredEvents() {
-    let events = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      let date = localStorage.key(i);
-      let note = localStorage.getItem(date);
-      if (date && note && date !== 'commitTime') {
-        let color = note === 'positive' ? 'green' : note === 'triggered' ? 'red' : 'orange';
-        events.push({
-          title: note.charAt(0).toUpperCase() + note.slice(1),
-          start: date,
-          color: color
-        });
-      }
-    }
-    return events;
-  }
+  let timerInterval;
 
   function startTimer(commitTime) {
     clearInterval(timerInterval); // Clear any existing timer
@@ -132,7 +127,6 @@ $(document).ready(function() {
   });
 
   // Initialize the calendar with stored events
-  const storedCommitTime = localStorage.getItem('commitTime');
   if (storedCommitTime) {
     const commitTime = new Date(storedCommitTime);
     $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
@@ -142,4 +136,3 @@ $(document).ready(function() {
     displayCalendar(new Date());
   }
 });
-
