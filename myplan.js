@@ -2,6 +2,79 @@ $(document).ready(function() {
   const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
   const storedCommitTime = localStorage.getItem('commitTime');
 
+  const translations = {
+    en: {
+      headerTitle: 'My Plan',
+      commitButton: 'Commit!',
+      homeLink: 'Home',
+      resourcesLink: 'Resources',
+      popupTitle: 'How was that day?',
+      positiveButton: 'Positive',
+      triggeredButton: 'Triggered',
+      relapsedButton: 'Relapsed',
+      addNoteButton: 'Add a Note',
+      viewDayButton: 'View Day',
+      removeNoteButton: 'Remove Note',
+      noteInputTitle: 'Add your custom note:',
+      saveNoteButton: 'Save Note',
+      cancelNoteButton: 'Cancel',
+      journalTitle: 'Journal Entries',
+      closeJournalButton: 'Close',
+    },
+    fr: {
+      headerTitle: 'Mon Plan',
+      commitButton: 'Valider!',
+      homeLink: 'Accueil',
+      resourcesLink: 'Ressources',
+      popupTitle: 'Comment était cette journée?',
+      positiveButton: 'Positive',
+      triggeredButton: 'Déclenché',
+      relapsedButton: 'Rechuté',
+      addNoteButton: 'Ajouter une note',
+      viewDayButton: 'Voir la journée',
+      removeNoteButton: 'Supprimer la note',
+      noteInputTitle: 'Ajoutez votre note personnalisée:',
+      saveNoteButton: 'Enregistrer la note',
+      cancelNoteButton: 'Annuler',
+      journalTitle: 'Entrées du journal',
+      closeJournalButton: 'Fermer',
+    }
+  };
+
+  const setLanguage = (lang) => {
+    const elements = {
+      headerTitle: $('#header-title'),
+      commitButton: $('#commit-button'),
+      homeLink: $('#home-link'),
+      resourcesLink: $('#resources-link'),
+      popupTitle: $('#popup-title'),
+      positiveButton: $('#positive'),
+      triggeredButton: $('#triggered'),
+      relapsedButton: $('#relapsed'),
+      addNoteButton: $('#add-note'),
+      viewDayButton: $('#view-day'),
+      removeNoteButton: $('#remove-note'),
+      noteInputTitle: $('#note-input-title'),
+      saveNoteButton: $('#save-note'),
+      cancelNoteButton: $('#cancel-note'),
+      journalTitle: $('#journal-title'),
+      closeJournalButton: $('#close-journal'),
+    };
+
+    const textContent = translations[lang];
+    for (const [key, element] of Object.entries(elements)) {
+      element.text(textContent[key]);
+    }
+
+    localStorage.setItem('language', lang); // Store the selected language
+  };
+
+  const storedLanguage = localStorage.getItem('language') || 'fr'; // Default to French if no language is stored
+  setLanguage(storedLanguage);
+
+  $('#lang-en').click(() => setLanguage('en'));
+  $('#lang-fr').click(() => setLanguage('fr'));
+
   $('#dateForm').on('submit', function(e) {
     e.preventDefault();
     var selectedDate = $('#startDate').val();
@@ -202,3 +275,4 @@ $(document).ready(function() {
     displayCalendar(new Date());
   }
 });
+
