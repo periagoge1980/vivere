@@ -101,24 +101,21 @@ $(document).ready(function() {
 
   function viewDayJournal() {
     const selectedDate = $('#note-popup').data('date');
-    const note = storedNotes[selectedDate] ? storedNotes[selectedDate].note : 'No notes for this day.';
-    $('#day-journal').text(`Journal for ${selectedDate}: ${note}`);
+    const journalEntry = storedNotes[selectedDate] ? storedNotes[selectedDate].note : 'No notes for this day.';
+    $('#day-journal').text(journalEntry);
+    $('#note-popup').hide();
     $('#journal-popup').show();
   }
 
-  $('#note-popup-overlay').on('click', closePopup);
-  $('#journal-popup-overlay').on('click', closeJournalPopup);
-  $('#journal-popup button').on('click', closeJournalPopup);
-
-  function closePopup() {
-    $('#note-popup').hide();
-    $('#note-popup-overlay').hide();
-  }
-
-  function closeJournalPopup() {
+  $('#journal-popup button').click(() => {
     $('#journal-popup').hide();
-    $('#journal-popup-overlay').hide();
-  }
+  });
+
+  $('#popup-overlay, #note-popup-overlay').on('click', () => {
+    $('#note-popup').hide();
+    $('#journal-popup').hide();
+    $('#note-input-popup').hide();
+  });
 
   let timerInterval;
 
@@ -163,12 +160,10 @@ $(document).ready(function() {
   });
 
   // Initialize the calendar with stored events
-  const storedCommitTime = localStorage.getItem('commitTime');
-  if (storedCommitTime) {
-    const commitTime = new Date(storedCommitTime);
-    $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
+  const commitTime = localStorage.getItem('commitTime');
+  if (commitTime) {
     displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
-    startTimer(commitTime);
+    startTimer(new Date(commitTime));
   } else {
     displayCalendar(new Date());
   }
