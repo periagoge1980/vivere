@@ -90,16 +90,40 @@
       text-decoration: none;
       font-weight: bold;
     }
-    #popup {
+    #note-popup {
       display: none;
       position: fixed;
-      left: 50%;
       top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
       background-color: white;
+      border: 1px solid #ccc;
       padding: 20px;
-      border: 1px solid #ddd;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       z-index: 1000;
+    }
+    #note-popup button {
+      margin: 5px;
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+    #note-popup button:hover {
+      background-color: #0056b3;
+    }
+    #note-popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
     }
   </style>
 </head>
@@ -122,12 +146,13 @@
     &copy; 2024 The Vivere Project. All rights reserved.
   </footer>
 
-  <div id="popup">
+  <div id="note-popup-overlay"></div>
+  <div id="note-popup">
     <p>How was that day?</p>
-    <button id="positiveButton">Positive</button>
-    <button id="triggeredButton">Triggered</button>
-    <button id="relapsedButton">Relapsed</button>
-    <button id="removeNoteButton" style="display: none;">Remove Note</button>
+    <button id="positive">Positive</button>
+    <button id="triggered">Triggered</button>
+    <button id="relapsed">Relapsed</button>
+    <button id="remove-note" style="display: none;">Remove Note</button>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
