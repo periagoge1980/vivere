@@ -35,7 +35,6 @@ $(document).ready(function() {
       dayClick: function(date) {
         const selectedDate = date.format('YYYY-MM-DD');
         $('#note-popup').data('date', selectedDate).show();
-        $('#note-popup-overlay').show();
         if (storedNotes[selectedDate]) {
           $('#remove-note').show();
         } else {
@@ -43,28 +42,52 @@ $(document).ready(function() {
         }
       },
       events: Object.keys(storedNotes).map(date => ({
-        title: storedNotes[date],
+        title: storedNotes[date].title,
         start: date,
-        color: storedNotes[date] === 'Positive' ? 'green' : (storedNotes[date] === 'Triggered' ? 'red' : 'orange')
+        color: storedNotes[date].color
       }))
     });
   }
 
-  $('#positive').click(() => saveNoteToCalendar('Positive'));
-  $('#triggered').click(() => saveNoteToCalendar('Triggered'));
+  $('#positive').click(() => saveNoteToCalendar('Positive', 'green'));
+  $('#triggered').click(() => saveNoteToCalendar('Triggered', 'red'));
   $('#relapsed').click(() => {
-    saveNoteToCalendar('Relapsed');
+    saveNoteToCalendar('Relapsed', 'orange');
     resetTimer();
+  });
+  $('#add-note').click(() => {
+    $('#note-popup').hide();
+    $('#note-input-popup').show();
   });
   $('#remove-note').click(() => removeNoteFromCalendar());
   $('#view-day').click(() => viewDayJournal());
 
-  function saveNoteToCalendar(note) {
+  $('#save-note').click(() => {
     const selectedDate = $('#note-popup').data('date');
-    storedNotes[selectedDate] = note;
+    const customNote = $('#custom-note').val();
+    storedNotes[selectedDate] = {
+      title: customNote,
+      color: 'blue',
+      note: customNote
+    };
+    localStorage.setItem('notes', JSON.stringify(storedNotes));
+    $('#note-input-popup').hide();
+    displayCalendar($('#startDate').val());
+  });
+
+  $('#cancel-note').click(() => {
+    $('#note-input-popup').hide();
+  });
+
+  function saveNoteToCalendar(note, color) {
+    const selectedDate = $('#note-popup').data('date');
+    storedNotes[selectedDate] = {
+      title: note,
+      color: color,
+      note: note
+    };
     localStorage.setItem('notes', JSON.stringify(storedNotes));
     $('#note-popup').hide();
-    $('#note-popup-overlay').hide();
     displayCalendar($('#startDate').val());
   }
 
@@ -73,24 +96,19 @@ $(document).ready(function() {
     delete storedNotes[selectedDate];
     localStorage.setItem('notes', JSON.stringify(storedNotes));
     $('#note-popup').hide();
-    $('#note-popup-overlay').hide();
     displayCalendar($('#startDate').val());
   }
 
   function viewDayJournal() {
     const selectedDate = $('#note-popup').data('date');
-    const note = storedNotes[selectedDate] || 'No notes for this day.';
+    const note = storedNotes[selectedDate] ? storedNotes[selectedDate].note : 'No notes for this day.';
     $('#day-journal').text(`Journal for ${selectedDate}: ${note}`);
     $('#journal-popup').show();
-    $('#journal-popup-overlay').show();
-    $('#note-popup').hide();
-    $('#note-popup-overlay').hide();
   }
 
   $('#note-popup-overlay').on('click', closePopup);
   $('#journal-popup-overlay').on('click', closeJournalPopup);
-  $('#note-popup button').click(closePopup);
-  $('#journal-popup button').click(closeJournalPopup);
+  $('#journal-popup button').on('click', closeJournalPopup);
 
   function closePopup() {
     $('#note-popup').hide();
@@ -145,6 +163,7 @@ $(document).ready(function() {
   });
 
   // Initialize the calendar with stored events
+  const storedCommitTime = localStorage.getItem('commitTime');
   if (storedCommitTime) {
     const commitTime = new Date(storedCommitTime);
     $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
