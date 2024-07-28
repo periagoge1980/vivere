@@ -24,6 +24,8 @@ $(document).ready(function() {
     $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
     displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
     startTimer(commitTime);
+  } else {
+    displayCalendar(new Date());
   }
 
   function displayCalendar(date) {
@@ -75,13 +77,16 @@ $(document).ready(function() {
   $('#save-note').click(() => {
     const selectedDate = $('#note-popup').data('date');
     const customNote = $('#custom-note').val();
-    addNoteToDate(selectedDate, {
-      title: customNote,
-      color: 'blue',
-      note: customNote
-    });
-    $('#note-input-popup').hide();
-    displayCalendar($('#startDate').val());
+    if (customNote) {
+      addNoteToDate(selectedDate, {
+        title: customNote,
+        color: 'blue',
+        note: customNote
+      });
+      $('#custom-note').val(''); // Clear the input
+      $('#note-input-popup').hide();
+      displayCalendar($('#startDate').val());
+    }
   });
 
   $('#cancel-note').click(() => {
