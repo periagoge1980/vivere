@@ -78,11 +78,12 @@ $(document).ready(function() {
   $('#calendar').fullCalendar({
     editable: true,
     eventLimit: true,
+    defaultDate: new Date(),
+    events: JSON.parse(localStorage.getItem('calendarEvents')) || [],
     dayClick: function(date, jsEvent, view) {
       selectedDate = date.format();
       $('#myModal').css('display', 'block');
-    },
-    events: JSON.parse(localStorage.getItem('calendarEvents')) || []
+    }
   });
 });
 
