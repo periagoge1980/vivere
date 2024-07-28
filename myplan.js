@@ -3,7 +3,7 @@ $(document).ready(function() {
     e.preventDefault();
     var selectedDate = $('#startDate').val();
     if (selectedDate) {
-      const commitTime = new Date(); // Capture the exact time of commit
+      const commitTime = new Date();
       const selectedDateArray = selectedDate.split('-');
       commitTime.setFullYear(
         selectedDateArray[0],
@@ -22,29 +22,30 @@ $(document).ready(function() {
       defaultDate: date,
       editable: true,
       eventLimit: true, // allow "more" link when too many events
-      dayClick: function(date) {
-        const selectedDate = date.format('YYYY-MM-DD');
-        const existingNote = localStorage.getItem(selectedDate);
-        $('#note-popup-overlay').show();
+      dayClick: function(date, jsEvent, view) {
+        const formattedDate = date.format('YYYY-MM-DD');
+        const existingNote = localStorage.getItem(formattedDate);
         $('#note-popup').show();
-        $('#positive').off().on('click', function() {
-          saveNoteAndStyleDay(selectedDate, 'positive', 'green');
+        $('#note-popup-overlay').show();
+        $('#positive-note').off('click').on('click', function() {
+          saveNoteAndStyleDay(formattedDate, 'positive', 'green');
         });
-        $('#triggered').off().on('click', function() {
-          saveNoteAndStyleDay(selectedDate, 'triggered', 'red');
+        $('#triggered-note').off('click').on('click', function() {
+          saveNoteAndStyleDay(formattedDate, 'triggered', 'red');
         });
-        $('#relapsed').off().on('click', function() {
+        $('#relapsed-note').off('click').on('click', function() {
+          saveNoteAndStyleDay(formattedDate, 'relapsed', 'orange');
           resetTimer();
-          saveNoteAndStyleDay(selectedDate, 'relapsed', 'orange');
         });
         if (existingNote) {
-          $('#remove-note').show().off().on('click', function() {
-            removeNoteAndStyleDay(selectedDate);
+          $('#remove-note').show().off('click').on('click', function() {
+            removeNoteAndStyleDay(formattedDate);
           });
         } else {
           $('#remove-note').hide();
-        },
-            events: getStoredEvents()
+        }
+      },
+      events: getStoredEvents()
     });
   }
 
