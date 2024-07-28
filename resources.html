@@ -141,6 +141,13 @@
       });
       renderResourceList(resources);
       loadMarkers(resources);
+
+      // Add event listener for bounds_changed
+      map.addListener('bounds_changed', () => {
+        const filteredResources = filterResourcesByMapBounds(resources);
+        renderResourceList(filteredResources);
+        loadMarkers(filteredResources);
+      });
     }
 
     function loadMarkers(resources) {
