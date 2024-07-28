@@ -57,6 +57,7 @@ $(document).ready(function() {
     resetTimer();
   });
   $('#remove-note').click(() => removeNoteFromCalendar());
+  $('#view-day').click(() => viewDayJournal());
 
   function saveNoteToCalendar(note) {
     const selectedDate = $('#note-popup').data('date');
@@ -76,12 +77,29 @@ $(document).ready(function() {
     displayCalendar($('#startDate').val());
   }
 
+  function viewDayJournal() {
+    const selectedDate = $('#note-popup').data('date');
+    const note = storedNotes[selectedDate] || 'No notes for this day.';
+    $('#day-journal').text(`Journal for ${selectedDate}: ${note}`);
+    $('#journal-popup').show();
+    $('#journal-popup-overlay').show();
+    $('#note-popup').hide();
+    $('#note-popup-overlay').hide();
+  }
+
   $('#note-popup-overlay').on('click', closePopup);
+  $('#journal-popup-overlay').on('click', closeJournalPopup);
   $('#note-popup button').click(closePopup);
+  $('#journal-popup button').click(closeJournalPopup);
 
   function closePopup() {
     $('#note-popup').hide();
     $('#note-popup-overlay').hide();
+  }
+
+  function closeJournalPopup() {
+    $('#journal-popup').hide();
+    $('#journal-popup-overlay').hide();
   }
 
   let timerInterval;
