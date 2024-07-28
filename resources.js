@@ -156,7 +156,7 @@ const resources =
     "postal_code": "G1J 2G3"
   }
 ];
-
+// Main JavaScript file
 
 function renderResourceList(resources) {
   const resourceList = document.getElementById('resourceList');
@@ -171,6 +171,8 @@ function renderResourceList(resources) {
     `;
     resourceList.appendChild(listItem);
   });
+
+  console.log("Resource list rendered with", resources.length, "items.");
 }
 
 function viewResourceDetail(index) {
@@ -184,10 +186,19 @@ document.getElementById('resourceForm').addEventListener('submit', function (eve
   const dependency = document.getElementById('dependency').value;
   const postalCode = document.getElementById('postalCode').value;
 
+  console.log("Selected Dependency:", dependency);
+  console.log("Entered Postal Code:", postalCode);
+
   const filteredResources = resources.filter(resource => 
     resource.dependency_category.includes(dependency) &&
     resource.postal_code.startsWith(postalCode)
   );
 
+  console.log("Filtered Resources:", filteredResources);
+
   renderResourceList(filteredResources);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderResourceList(resources);
 });
