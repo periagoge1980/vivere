@@ -41,12 +41,22 @@ $(document).ready(function() {
           $('#remove-note').hide();
         }
       },
-      events: Object.keys(storedNotes).map(date => ({
-        title: storedNotes[date].title,
-        start: date,
-        color: storedNotes[date].color
-      }))
+      events: getStoredEvents()
     });
+  }
+
+  function getStoredEvents() {
+    let events = [];
+    for (let date in storedNotes) {
+      storedNotes[date].forEach(note => {
+        events.push({
+          title: note.title,
+          start: date,
+          color: note.color
+        });
+      });
+    }
+    return events;
   }
 
   $('#positive').click(() => saveNoteToCalendar('Positive', 'green'));
@@ -65,12 +75,11 @@ $(document).ready(function() {
   $('#save-note').click(() => {
     const selectedDate = $('#note-popup').data('date');
     const customNote = $('#custom-note').val();
-    storedNotes[selectedDate] = {
+    addNoteToDate(selectedDate, {
       title: customNote,
       color: 'blue',
       note: customNote
-    };
-    localStorage.setItem('notes', JSON.stringify(storedNotes));
+    });
     $('#note-input-popup').hide();
     displayCalendar($('#startDate').val());
   });
@@ -81,14 +90,21 @@ $(document).ready(function() {
 
   function saveNoteToCalendar(note, color) {
     const selectedDate = $('#note-popup').data('date');
-    storedNotes[selectedDate] = {
+    addNoteToDate(selectedDate, {
       title: note,
       color: color,
       note: note
-    };
-    localStorage.setItem('notes', JSON.stringify(storedNotes));
+    });
     $('#note-popup').hide();
     displayCalendar($('#startDate').val());
+  }
+
+  function addNoteToDate(date, note) {
+    if (!storedNotes[date]) {
+      storedNotes[date] = [];
+    }
+    storedNotes[date].push(note);
+    localStorage.setItem('notes', JSON.stringify(storedNotes));
   }
 
   function removeNoteFromCalendar() {
@@ -101,8 +117,10 @@ $(document).ready(function() {
 
   function viewDayJournal() {
     const selectedDate = $('#note-popup').data('date');
-    const journalEntry = storedNotes[selectedDate] ? storedNotes[selectedDate].note : 'No notes for this day.';
-    $('#day-journal').text(journalEntry);
+    const journalEntries = storedNotes[selectedDate]
+      ? storedNotes[selectedDate].map(note => note.note).join('\n')
+      : 'No notes for this day.';
+    $('#day-journal').text(journalEntries);
     $('#note-popup').hide();
     $('#journal-popup').show();
   }
