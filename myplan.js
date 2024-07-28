@@ -84,38 +84,37 @@ $(document).ready(function() {
     },
     events: JSON.parse(localStorage.getItem('calendarEvents')) || []
   });
+
+  function startTimer(commitTime) {
+    clearInterval(timerInterval); // Clear any existing timer
+
+    timerInterval = setInterval(function() {
+      const currentTime = new Date();
+      const timeDiff = currentTime - commitTime;
+      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+      $('#timeCounter').text(`Time since commit: ${days}d ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
+    }, 1000);
+  }
+
+  function formatTime(unit) {
+    return unit < 10 ? '0' + unit : unit;
+  }
+
+  const loginButton = document.getElementById('login');
+  loginButton.addEventListener('click', () => {
+    netlifyIdentity.open();
+  });
+
+  netlifyIdentity.on('login', user => {
+    console.log('User logged in:', user);
+    netlifyIdentity.close();
+  });
+
+  netlifyIdentity.on('logout', () => {
+    console.log('User logged out');
+    window.location.href = 'index.html';
+  });
 });
-
-function startTimer(commitTime) {
-  clearInterval(timerInterval); // Clear any existing timer
-
-  timerInterval = setInterval(function() {
-    const currentTime = new Date();
-    const timeDiff = currentTime - commitTime;
-    const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-    $('#timeCounter').text(`Time since commit: ${days}d ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
-  }, 1000);
-}
-
-function formatTime(unit) {
-  return unit < 10 ? '0' + unit : unit;
-}
-
-const loginButton = document.getElementById('login');
-loginButton.addEventListener('click', () => {
-  netlifyIdentity.open();
-});
-
-netlifyIdentity.on('login', user => {
-  console.log('User logged in:', user);
-  netlifyIdentity.close();
-});
-
-netlifyIdentity.on('logout', () => {
-  console.log('User logged out');
-  window.location.href = 'index.html';
-});
-
