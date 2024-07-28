@@ -115,7 +115,7 @@
     #note-popup button:hover, #note-input-popup button:hover, #journal-popup button:hover {
       background-color: #0056b3;
     }
-    #note-popup-overlay, #journal-popup-overlay {
+    #note-popup-overlay, #note-input-popup-overlay {
       display: none;
       position: fixed;
       top: 0;
@@ -124,6 +124,11 @@
       height: 100%;
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 999;
+    }
+    .note-block {
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 5px;
     }
   </style>
 </head>
@@ -155,17 +160,19 @@
     <button id="add-note">Add a Note</button>
     <button id="view-day">View Day</button>
     <button id="remove-note" style="display: none;">Remove Note</button>
+    <div id="notes-container"></div>
   </div>
-  
+
   <div id="note-input-popup">
-    <textarea id="custom-note" rows="4" cols="50" placeholder="Type your note here..."></textarea>
+    <p>Add your custom note:</p>
+    <textarea id="custom-note" rows="4" cols="50"></textarea>
     <button id="save-note">Save Note</button>
     <button id="cancel-note">Cancel</button>
   </div>
-  
-  <div id="journal-popup-overlay"></div>
+
   <div id="journal-popup">
-    <p id="day-journal"></p>
+    <p>Journal Entries</p>
+    <div id="day-journal"></div>
     <button>Close</button>
   </div>
 
