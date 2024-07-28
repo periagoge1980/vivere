@@ -38,6 +38,11 @@ $(document).ready(function() {
       startTimer(commitTime);
     }
   });
+
+  // Modal event listeners
+  $('#positiveBtn').on('click', () => handleDayTagging('positive'));
+  $('#triggeredBtn').on('click', () => handleDayTagging('triggered'));
+  $('#relapsedBtn').on('click', () => handleDayTagging('relapsed'));
 });
 
 function displayCalendar(date) {
@@ -52,8 +57,39 @@ function displayCalendar(date) {
         start: date,
         color: 'red',    // Highlight color
       }
-    ]
+    ],
+    dayClick: function(date) {
+      $('#tagModal').data('date', date.format()).show();
+    }
   });
+}
+
+function handleDayTagging(tag) {
+  const date = $('#tagModal').data('date');
+  const events = $('#calendar').fullCalendar('clientEvents');
+  const eventIndex = events.findIndex(event => event.start.format() === date);
+
+  if (eventIndex !== -1) {
+    $('#calendar').fullCalendar('removeEvents', events[eventIndex]._id);
+  }
+
+  if (tag === 'relapsed') {
+    resetTimer();
+  } else {
+    $('#calendar').fullCalendar('renderEvent', {
+      title: tag.charAt(0).toUpperCase() + tag.slice(1),
+      start: date,
+      color: tag === 'positive' ? '#28a745' : '#dc3545'
+    });
+  }
+
+  $('#tagModal').hide();
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  localStorage.removeItem('commitTime');
+  $('#timeCounter').text('Time since commit: 00:00:00');
 }
 
 function startTimer(commitTime) {
