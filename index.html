@@ -1,9 +1,9 @@
-co      <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to the Vivere Project</title>
+  <title id="page-title">Welcome to the Vivere Project</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -148,7 +148,7 @@ co      <!DOCTYPE html>
 </head>
 <body>
   <header>
-    <h1>Welcome to the Vivere Project</h1>
+    <h1 id="header-title">Welcome to the Vivere Project</h1>
     <div class="login">
       <button id="login">Login/Signup</button>
       <div class="lang-switch">
@@ -180,7 +180,7 @@ co      <!DOCTYPE html>
     </div>
   </div>
   <footer>
-    &copy; 2024 The Vivere Project. All rights reserved.
+    &copy; 2024 The Vivere Project. Tous droits réservés.
   </footer>
 
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
@@ -189,30 +189,38 @@ co      <!DOCTYPE html>
     const myPlanLink = document.getElementById('myPlanLink');
     const message = document.getElementById('message');
     const blurbElement = document.getElementById('blurb');
+    const pageTitle = document.getElementById('page-title');
+    const headerTitle = document.getElementById('header-title');
 
     const translations = {
       en: {
+        title: 'Welcome to the Vivere Project',
+        header: 'Welcome to the Vivere Project',
         blurb: `
           <p>Welcome to The Vivere Project. Our mission is to provide comprehensive online resources for individuals struggling with various forms of addiction. We understand the challenges and the courage it takes to seek help and make a change.</p>
           <p>The Vivere Project is entirely free to use. We believe that support should be accessible to everyone without financial barriers.</p>
         `
       },
       fr: {
+        title: 'Bienvenue sur Le Projet Vivere',
+        header: 'Bienvenue sur Le Projet Vivere',
         blurb: `
           <p>Bienvenue sur Le Projet Vivere. Notre mission est de fournir des ressources en ligne complètes pour les personnes confrontées à divers types de dépendances. Nous comprenons les défis et le courage qu'il faut pour demander de l'aide et changer.</p>
-          <p>Le Projet Vivere est entièrement gratuit à utiliser. Nous croyons que le soutien doit être accessible à tous sans barrières financières.</p>       `
+          <p>Le Projet Vivere est entièrement gratuit à utiliser. Nous croyons que le soutien doit être accessible à tous sans barrières financières.</p>       
+        `
       }
     };
 
-const setLanguage = (lang) => {
-  if (translations[lang]) {
-    blurbElement.innerHTML = translations[lang].blurb;
-    localStorage.setItem('language', lang); // Store the selected language
-  }
-};
+    const setLanguage = (lang) => {
+      if (translations[lang]) {
+        blurbElement.innerHTML = translations[lang].blurb;
+        pageTitle.textContent = translations[lang].title;
+        headerTitle.textContent = translations[lang].header;
+      }
+    };
 
-document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
-document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
+    document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+    document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
 
     netlifyIdentity.on('init', user => {
       if (!user) {
@@ -249,9 +257,8 @@ document.getElementById('lang-fr').addEventListener('click', () => setLanguage('
       }
     });
 
-// Set default language
-const storedLanguage = localStorage.getItem('language') || 'fr'; // Default to French if no language is stored
-setLanguage(storedLanguage);
+    // Set default language
+    setLanguage('fr');      
   </script>
 </body>
 </html>
