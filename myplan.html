@@ -90,6 +90,38 @@
       text-decoration: none;
       font-weight: bold;
     }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0,0,0);
+      background-color: rgba(0,0,0,0.4);
+      padding-top: 60px;
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -111,97 +143,20 @@
     &copy; 2024 The Vivere Project. All rights reserved.
   </footer>
 
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Select Event Type</h2>
+      <button id="positiveDay" class="eventButton" data-color="green">Positive Day</button>
+      <button id="triggered" class="eventButton" data-color="red">Triggered</button>
+      <button id="relapse" class="eventButton" data-color="gray">Relapse</button>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script>
-    let timerInterval;
-
-    netlifyIdentity.on('init', user => {
-      if (!user) {
-        window.location.href = 'index.html';
-      } else {
-        const storedCommitTime = localStorage.getItem('commitTime');
-        if (storedCommitTime) {
-          const commitTime = new Date(storedCommitTime);
-          $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
-          displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
-          startTimer(commitTime);
-        }
-      }
-    });
-
-    netlifyIdentity.init();
-
-    $(document).ready(function() {
-      $('#dateForm').on('submit', function(e) {
-        e.preventDefault();
-        var selectedDate = $('#startDate').val();
-        if (selectedDate) {
-          const commitTime = new Date(); // Capture the exact time of commit
-          const selectedDateArray = selectedDate.split('-');
-          commitTime.setFullYear(
-            selectedDateArray[0],
-            selectedDateArray[1] - 1,
-            selectedDateArray[2]
-          );
-          commitTime.setHours(0, 0, 0, 0);
-          localStorage.setItem('commitTime', commitTime.toISOString());
-          displayCalendar(selectedDate);
-          startTimer(commitTime);
-        }
-      });
-    });
-
-    function displayCalendar(date) {
-      $('#calendar').fullCalendar('destroy'); // Destroy any existing calendar
-      $('#calendar').fullCalendar({
-        defaultDate: date,
-        editable: true,
-        eventLimit: true, // allow "more" link when too many events
-        events: [
-          {
-            title: 'A New Beginning!',
-            start: date,
-            color: 'red',    // Highlight color
-          }
-        ]
-      });
-    }
-
-    function startTimer(commitTime) {
-      clearInterval(timerInterval); // Clear any existing timer
-
-      timerInterval = setInterval(function() {
-        const currentTime = new Date();
-        const timeDiff = currentTime - commitTime;
-        const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-        $('#timeCounter').text(`Time since commit: ${days}d ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
-      }, 1000);
-    }
-
-    function formatTime(unit) {
-      return unit < 10 ? '0' + unit : unit;
-    }
-    
-    const loginButton = document.getElementById('login');
-    loginButton.addEventListener('click', () => {
-      netlifyIdentity.open();
-    });
-
-    netlifyIdentity.on('login', user => {
-      console.log('User logged in:', user);
-      netlifyIdentity.close();
-    });
-
-    netlifyIdentity.on('logout', () => {
-      console.log('User logged out');
-      window.location.href = 'index.html';
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
