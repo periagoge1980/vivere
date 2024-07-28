@@ -1,4 +1,7 @@
 $(document).ready(function() {
+  const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
+  const storedCommitTime = localStorage.getItem('commitTime');
+
   $('#dateForm').on('submit', function(e) {
     e.preventDefault();
     var selectedDate = $('#startDate').val();
@@ -10,12 +13,18 @@ $(document).ready(function() {
         selectedDateArray[1] - 1,
         selectedDateArray[2]
       );
-      commitTime.setHours(0, 0, 0, 0);
       localStorage.setItem('commitTime', commitTime.toISOString());
       displayCalendar(selectedDate);
       startTimer(commitTime);
     }
   });
+
+  if (storedCommitTime) {
+    const commitTime = new Date(storedCommitTime);
+    $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
+    displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
+    startTimer(commitTime);
+  }
 
   function displayCalendar(date) {
     $('#calendar').fullCalendar('destroy'); // Destroy any existing calendar
@@ -24,80 +33,58 @@ $(document).ready(function() {
       editable: true,
       eventLimit: true, // allow "more" link when too many events
       dayClick: function(date) {
-        const selectedDate = date.format('YYYY-MM-DD');
-        const existingNote = localStorage.getItem(selectedDate);
-        $('#note-popup-overlay').show();
-        $('#note-popup').show();
-        $('#positive').off().on('click', function() {
-          saveNoteAndStyleDay(selectedDate, 'positive', 'green');
-        });
-        $('#triggered').off().on('click', function() {
-          saveNoteAndStyleDay(selectedDate, 'triggered', 'red');
-        });
-        $('#relapsed').off().on('click', function() {
-          resetTimer();
-          saveNoteAndStyleDay(selectedDate, 'relapsed', 'orange');
-        });
-        if (existingNote) {
-          $('#remove-note').show().off().on('click', function() {
-            removeNoteAndStyleDay(selectedDate);
-          });
+        const selectedDate = date.format();
+        $('#popup').data('date', selectedDate).show();
+        if (storedNotes[selectedDate]) {
+          $('#removeNoteButton').show();
         } else {
-          $('#remove-note').hide();
+          $('#removeNoteButton').hide();
         }
       },
-      events: getStoredEvents()
+      events: Object.keys(storedNotes).map(date => ({
+        title: storedNotes[date],
+        start: date,
+        color: storedNotes[date] === 'Positive' ? 'green' : (storedNotes[date] === 'Triggered' ? 'red' : 'orange')
+      }))
     });
   }
 
-  function saveNoteAndStyleDay(date, note, color) {
-    localStorage.setItem(date, note);
-    $('#calendar').fullCalendar('renderEvent', {
-      title: note.charAt(0).toUpperCase() + note.slice(1),
-      start: date,
-      color: color
-    }, true);
-    closePopup(); // Close the popup
+  $('#positiveButton').click(() => saveNoteToCalendar('Positive'));
+  $('#triggeredButton').click(() => saveNoteToCalendar('Triggered'));
+  $('#relapsedButton').click(() => {
+    saveNoteToCalendar('Relapsed');
+    resetTimer();
+  });
+  $('#removeNoteButton').click(() => removeNoteFromCalendar());
+
+  function saveNoteToCalendar(note) {
+    const selectedDate = $('#popup').data('date');
+    storedNotes[selectedDate] = note;
+    localStorage.setItem('notes', JSON.stringify(storedNotes));
+    $('#popup').hide();
+    displayCalendar($('#startDate').val());
   }
 
-  function removeNoteAndStyleDay(date) {
-    localStorage.removeItem(date);
-    $('#calendar').fullCalendar('removeEvents', function(event) {
-      return event.start.format('YYYY-MM-DD') === date;
-    });
-    closePopup(); // Close the popup
+  function removeNoteFromCalendar() {
+    const selectedDate = $('#popup').data('date');
+    delete storedNotes[selectedDate];
+    localStorage.setItem('notes', JSON.stringify(storedNotes));
+    $('#popup').hide();
+    displayCalendar($('#startDate').val());
   }
 
-  function closePopup() {
-    $('#note-popup').hide();
-    $('#note-popup-overlay').hide();
-  }
+  $('#popup button').click(() => {
+    $('#popup').hide();
+  });
 
-  $('#note-popup-overlay').on('click', closePopup);
-
-  function getStoredEvents() {
-    let events = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      let date = localStorage.key(i);
-      let note = localStorage.getItem(date);
-      if (date && note) {
-        let color = note === 'positive' ? 'green' : note === 'triggered' ? 'red' : 'orange';
-        events.push({
-          title: note.charAt(0).toUpperCase() + note.slice(1),
-          start: date,
-          color: color
-        });
-      }
-    }
-    return events;
-  }
+  let timerInterval;
 
   function startTimer(commitTime) {
     clearInterval(timerInterval); // Clear any existing timer
 
     timerInterval = setInterval(function() {
       const currentTime = new Date();
-      const timeDiff = currentTime - commitTime;
+      const timeDiff = currentTime - new Date(commitTime);
       const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
@@ -108,13 +95,8 @@ $(document).ready(function() {
 
   function resetTimer() {
     clearInterval(timerInterval);
-    const newCommitTime = new Date();
-    localStorage.setItem('commitTime', newCommitTime.toISOString());
-    startTimer(newCommitTime);
-  }
-
-  function formatTime(unit) {
-    return unit < 10 ? '0' + unit : unit;
+    localStorage.removeItem('commitTime');
+    $('#timeCounter').text('Time since commit: 00:00:00');
   }
 
   const loginButton = document.getElementById('login');
@@ -131,16 +113,8 @@ $(document).ready(function() {
     console.log('User logged out');
     window.location.href = 'index.html';
   });
-
-  // Initialize the calendar with stored events
-  const storedCommitTime = localStorage.getItem('commitTime');
-  if (storedCommitTime) {
-    const commitTime = new Date(storedCommitTime);
-    $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
-    displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
-    startTimer(commitTime);
-  } else {
-    displayCalendar(new Date());
-  }
 });
 
+function formatTime(unit) {
+  return unit < 10 ? '0' + unit : unit;
+}
