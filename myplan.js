@@ -10,7 +10,6 @@ $(document).ready(function() {
         selectedDateArray[1] - 1,
         selectedDateArray[2]
       );
-      commitTime.setHours(0, 0, 0, 0);
       localStorage.setItem('commitTime', commitTime.toISOString());
       displayCalendar(selectedDate);
       startTimer(commitTime);
@@ -44,9 +43,8 @@ $(document).ready(function() {
           });
         } else {
           $('#remove-note').hide();
-        }
-      },
-      events: getStoredEvents()
+        },
+            events: getStoredEvents()
     });
   }
 
@@ -80,7 +78,7 @@ $(document).ready(function() {
     for (let i = 0; i < localStorage.length; i++) {
       let date = localStorage.key(i);
       let note = localStorage.getItem(date);
-      if (date && note) {
+      if (date && note && date !== 'commitTime') {
         let color = note === 'positive' ? 'green' : note === 'triggered' ? 'red' : 'orange';
         events.push({
           title: note.charAt(0).toUpperCase() + note.slice(1),
@@ -97,7 +95,7 @@ $(document).ready(function() {
 
     timerInterval = setInterval(function() {
       const currentTime = new Date();
-      const timeDiff = currentTime - commitTime;
+      const timeDiff = currentTime - new Date(commitTime);
       const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
