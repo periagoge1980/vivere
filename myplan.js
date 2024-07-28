@@ -1,4 +1,5 @@
 let timerInterval;
+let selectedDay;
 
 netlifyIdentity.on('init', user => {
   if (!user) {
@@ -28,21 +29,16 @@ $(document).ready(function() {
         selectedDateArray[1] - 1,
         selectedDateArray[2]
       );
-      if (selectedDate === moment().format('YYYY-MM-DD')) {
-        commitTime.setHours(new Date().getHours(), new Date().getMinutes(), new Date().getSeconds(), 0);
-      } else {
-        commitTime.setHours(0, 0, 0, 0);
-      }
       localStorage.setItem('commitTime', commitTime.toISOString());
       displayCalendar(selectedDate);
       startTimer(commitTime);
     }
   });
 
-  // Modal event listeners
-  $('#positiveBtn').on('click', () => handleDayTagging('positive'));
-  $('#triggeredBtn').on('click', () => handleDayTagging('triggered'));
-  $('#relapsedBtn').on('click', () => handleDayTagging('relapsed'));
+  $('#positiveDay').on('click', () => handleDayTagging('positive'));
+  $('#triggeredDay').on('click', () => handleDayTagging('triggered'));
+  $('#relapsedDay').on('click', () => handleDayTagging('relapsed'));
+  $('#removeNote').on('click', () => handleDayTagging('remove'));
 });
 
 function displayCalendar(date) {
@@ -51,45 +47,60 @@ function displayCalendar(date) {
     defaultDate: date,
     editable: true,
     eventLimit: true, // allow "more" link when too many events
-    events: [
-      {
-        title: 'A New Beginning!',
-        start: date,
-        color: 'red',    // Highlight color
-      }
-    ],
+    events: JSON.parse(localStorage.getItem('calendarEvents')) || [],
     dayClick: function(date) {
-      $('#tagModal').data('date', date.format()).show();
+      selectedDay = date.format();
+      const events = $('#calendar').fullCalendar('clientEvents', event => event.start.format() === selectedDay);
+      if (events.length > 0) {
+        $('#removeNote').show();
+      } else {
+        $('#removeNote').hide();
+      }
+      $('#dayTagModal').show();
     }
   });
 }
 
 function handleDayTagging(tag) {
-  const date = $('#tagModal').data('date');
   const events = $('#calendar').fullCalendar('clientEvents');
-  const eventIndex = events.findIndex(event => event.start.format() === date);
+  const newEvent = {
+    title: '',
+    start: selectedDay,
+    allDay: true
+  };
 
-  if (eventIndex !== -1) {
-    $('#calendar').fullCalendar('removeEvents', events[eventIndex]._id);
-  }
-
-  if (tag === 'relapsed') {
+  if (tag === 'positive') {
+    newEvent.title = 'Positive';
+    newEvent.color = 'green';
+  } else if (tag === 'triggered') {
+    newEvent.title = 'Triggered';
+    newEvent.color = 'red';
+  } else if (tag === 'relapsed') {
+    newEvent.title = 'Relapsed';
+    newEvent.color = 'orange';
     resetTimer();
-  } else {
-    $('#calendar').fullCalendar('renderEvent', {
-      title: tag.charAt(0).toUpperCase() + tag.slice(1),
-      start: date,
-      color: tag === 'positive' ? '#28a745' : '#dc3545'
-    });
+  } else if (tag === 'remove') {
+    const event = events.find(event => event.start.format() === selectedDay);
+    if (event) {
+      $('#calendar').fullCalendar('removeEvents', event._id);
+    }
   }
 
-  $('#tagModal').hide();
+  if (tag !== 'remove') {
+    $('#calendar').fullCalendar('renderEvent', newEvent, true);
+  }
+
+  const updatedEvents = $('#calendar').fullCalendar('clientEvents');
+  localStorage.setItem('calendarEvents', JSON.stringify(updatedEvents));
+
+  $('#dayTagModal').hide();
 }
 
 function resetTimer() {
   clearInterval(timerInterval);
-  localStorage.removeItem('commitTime');
-  $('#timeCounter').text('Time since commit: 00:00:00');
+  const commitTime = new Date();
+  localStorage.setItem('commitTime', commitTime.toISOString());
+  startTimer(commitTime);
 }
 
 function startTimer(commitTime) {
