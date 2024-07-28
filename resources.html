@@ -158,6 +158,14 @@
       });
     }
 
+    function filterResourcesByMapBounds(resources) {
+      const bounds = map.getBounds();
+      return resources.filter(resource => {
+        const position = new google.maps.LatLng(resource.latitude, resource.longitude);
+        return bounds.contains(position);
+      });
+    }
+
     document.getElementById('resourceForm').addEventListener('submit', function (event) {
       event.preventDefault();
       const dependency = document.getElementById('dependency').value;
@@ -166,15 +174,26 @@
       console.log("Selected Dependency:", dependency);
       console.log("Entered Postal Code:", postalCode);
 
-      const filteredResources = resources.filter(resource => 
-        resource.dependency_category.includes(dependency) &&
-        resource.postal_code.startsWith(postalCode)
-      );
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address: postalCode }, function(results, status) {
+        if (status === 'OK') {
+          map.setCenter(results[0].geometry.location);
+          map.fitBounds(results[0].geometry.viewport);
 
-      console.log("Filtered Resources:", filteredResources);
+          const filteredResources = resources.filter(resource => 
+            resource.dependency_category.includes(dependency)
+          );
 
-      renderResourceList(filteredResources);
-      loadMarkers(filteredResources);
+          const resourcesInBounds = filterResourcesByMapBounds(filteredResources);
+
+          console.log("Filtered Resources:", resourcesInBounds);
+
+          renderResourceList(resourcesInBounds);
+          loadMarkers(resourcesInBounds);
+        } else {
+          console.error('Geocode was not successful for the following reason:', status);
+        }
+      });
     });
 
     document.addEventListener('DOMContentLoaded', () => {
