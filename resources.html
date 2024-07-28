@@ -100,6 +100,9 @@
   <script src="resources.js"></script>
   <!-- Include the main JavaScript file -->
   <script>
+    let map;
+    let markers = [];
+
     function renderResourceList(resources) {
       const resourceList = document.getElementById('resourceList');
       resourceList.innerHTML = '';
@@ -113,6 +116,8 @@
         `;
         resourceList.appendChild(listItem);
       });
+
+      console.log("Resource list rendered with", resources.length, "items.");
     }
 
     function viewResourceDetail(index) {
@@ -121,52 +126,65 @@
       window.location.href = 'resource-detail.html';
     }
 
+    function initMap(apiKey) {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initializeMap`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+
+    function initializeMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 10,
+        center: { lat: 45.5017, lng: -73.5673 } // Center the map on Montreal
+      });
+      renderResourceList(resources);
+      loadMarkers(resources);
+    }
+
+    function loadMarkers(resources) {
+      // Clear existing markers
+      markers.forEach(marker => marker.setMap(null));
+      markers = [];
+
+      resources.forEach(resource => {
+        const marker = new google.maps.Marker({
+          position: { lat: resource.latitude, lng: resource.longitude },
+          map: map,
+          title: resource.name
+        });
+        markers.push(marker);
+      });
+    }
+
     document.getElementById('resourceForm').addEventListener('submit', function (event) {
       event.preventDefault();
       const dependency = document.getElementById('dependency').value;
       const postalCode = document.getElementById('postalCode').value;
+
+      console.log("Selected Dependency:", dependency);
+      console.log("Entered Postal Code:", postalCode);
 
       const filteredResources = resources.filter(resource => 
         resource.dependency_category.includes(dependency) &&
         resource.postal_code.startsWith(postalCode)
       );
 
+      console.log("Filtered Resources:", filteredResources);
+
       renderResourceList(filteredResources);
-      loadMap(filteredResources);
+      loadMarkers(filteredResources);
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-      renderResourceList(resources);
-      loadMap(resources);
-    });
-
-    function loadMap(resources) {
       fetch('/.netlify/functions/getApiKey')
         .then(response => response.json())
         .then(data => {
-          const script = document.createElement('script');
-          script.src = `https://maps.googleapis.com/maps/api/js?key=${data.key}&callback=initMap`;
-          script.async = true;
-          script.defer = true;
-          document.head.appendChild(script);
+          initMap(data.key);
         })
         .catch(error => console.error('Error fetching Google Maps API key:', error));
-    }
-
-    function initMap() {
-      const map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 10,
-        center: { lat: 45.5017, lng: -73.5673 } // Center the map on Montreal
-      });
-
-      resources.forEach(resource => {
-        new google.maps.Marker({
-          position: { lat: resource.latitude, lng: resource.longitude },
-          map: map,
-          title: resource.name
-        });
-      });
-    }
+    });
   </script>
   <!-- Include Netlify Identity script -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
