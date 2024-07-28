@@ -90,7 +90,7 @@
       text-decoration: none;
       font-weight: bold;
     }
-    #note-popup {
+    #note-popup, #note-input-popup, #journal-popup {
       display: none;
       position: fixed;
       top: 50%;
@@ -102,7 +102,7 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       z-index: 1000;
     }
-    #note-popup button {
+    #note-popup button, #note-input-popup button, #journal-popup button {
       margin: 5px;
       padding: 10px 20px;
       background-color: #007BFF;
@@ -112,45 +112,10 @@
       font-size: 16px;
       border-radius: 5px;
     }
-    #note-popup button:hover {
+    #note-popup button:hover, #note-input-popup button:hover, #journal-popup button:hover {
       background-color: #0056b3;
     }
-    #note-popup-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
-    #journal-popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      border: 1px solid #ccc;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
-    #journal-popup button {
-      margin: 5px;
-      padding: 10px 20px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 5px;
-    }
-    #journal-popup button:hover {
-      background-color: #0056b3;
-    }
-    #journal-popup-overlay {
+    #note-popup-overlay, #journal-popup-overlay {
       display: none;
       position: fixed;
       top: 0;
@@ -187,13 +152,20 @@
     <button id="positive">Positive</button>
     <button id="triggered">Triggered</button>
     <button id="relapsed">Relapsed</button>
-    <button id="remove-note" style="display: none;">Remove Note</button>
+    <button id="add-note">Add a Note</button>
     <button id="view-day">View Day</button>
+    <button id="remove-note" style="display: none;">Remove Note</button>
   </div>
-
+  
+  <div id="note-input-popup">
+    <textarea id="custom-note" rows="4" cols="50" placeholder="Type your note here..."></textarea>
+    <button id="save-note">Save Note</button>
+    <button id="cancel-note">Cancel</button>
+  </div>
+  
   <div id="journal-popup-overlay"></div>
   <div id="journal-popup">
-    <p id="day-journal">Journal for the day</p>
+    <p id="day-journal"></p>
     <button>Close</button>
   </div>
 
