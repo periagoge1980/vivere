@@ -3,7 +3,7 @@ $(document).ready(function() {
     e.preventDefault();
     var selectedDate = $('#startDate').val();
     if (selectedDate) {
-      const commitTime = new Date();
+      const commitTime = new Date(); // Capture the exact time of commit
       const selectedDateArray = selectedDate.split('-');
       commitTime.setFullYear(
         selectedDateArray[0],
@@ -22,24 +22,24 @@ $(document).ready(function() {
       defaultDate: date,
       editable: true,
       eventLimit: true, // allow "more" link when too many events
-      dayClick: function(date, jsEvent, view) {
-        const formattedDate = date.format('YYYY-MM-DD');
-        const existingNote = localStorage.getItem(formattedDate);
-        $('#note-popup').show();
+      dayClick: function(date) {
+        const selectedDate = date.format('YYYY-MM-DD');
+        const existingNote = localStorage.getItem(selectedDate);
         $('#note-popup-overlay').show();
-        $('#positive-note').off('click').on('click', function() {
-          saveNoteAndStyleDay(formattedDate, 'positive', 'green');
+        $('#note-popup').show();
+        $('#positive').off().on('click', function() {
+          saveNoteAndStyleDay(selectedDate, 'positive', 'green');
         });
-        $('#triggered-note').off('click').on('click', function() {
-          saveNoteAndStyleDay(formattedDate, 'triggered', 'red');
+        $('#triggered').off().on('click', function() {
+          saveNoteAndStyleDay(selectedDate, 'triggered', 'red');
         });
-        $('#relapsed-note').off('click').on('click', function() {
-          saveNoteAndStyleDay(formattedDate, 'relapsed', 'orange');
+        $('#relapsed').off().on('click', function() {
           resetTimer();
+          saveNoteAndStyleDay(selectedDate, 'relapsed', 'orange');
         });
         if (existingNote) {
-          $('#remove-note').show().off('click').on('click', function() {
-            removeNoteAndStyleDay(formattedDate);
+          $('#remove-note').show().off().on('click', function() {
+            removeNoteAndStyleDay(selectedDate);
           });
         } else {
           $('#remove-note').hide();
@@ -142,3 +142,4 @@ $(document).ready(function() {
     displayCalendar(new Date());
   }
 });
+
