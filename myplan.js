@@ -2,79 +2,6 @@ $(document).ready(function() {
   const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
   const storedCommitTime = localStorage.getItem('commitTime');
 
-  const translations = {
-    en: {
-      headerTitle: 'My Plan',
-      commitButton: 'Commit!',
-      homeLink: 'Home',
-      resourcesLink: 'Resources',
-      popupTitle: 'How was that day?',
-      positiveButton: 'Positive',
-      triggeredButton: 'Triggered',
-      relapsedButton: 'Relapsed',
-      addNoteButton: 'Add a Note',
-      viewDayButton: 'View Day',
-      removeNoteButton: 'Remove Note',
-      noteInputTitle: 'Add your custom note:',
-      saveNoteButton: 'Save Note',
-      cancelNoteButton: 'Cancel',
-      journalTitle: 'Journal Entries',
-      closeJournalButton: 'Close',
-    },
-    fr: {
-      headerTitle: 'Mon Plan',
-      commitButton: 'Valider!',
-      homeLink: 'Accueil',
-      resourcesLink: 'Ressources',
-      popupTitle: 'Comment était cette journée?',
-      positiveButton: 'Positive',
-      triggeredButton: 'Déclenché',
-      relapsedButton: 'Rechuté',
-      addNoteButton: 'Ajouter une note',
-      viewDayButton: 'Voir la journée',
-      removeNoteButton: 'Supprimer la note',
-      noteInputTitle: 'Ajoutez votre note personnalisée:',
-      saveNoteButton: 'Enregistrer la note',
-      cancelNoteButton: 'Annuler',
-      journalTitle: 'Entrées du journal',
-      closeJournalButton: 'Fermer',
-    }
-  };
-
-  const setLanguage = (lang) => {
-    const elements = {
-      headerTitle: $('#header-title'),
-      commitButton: $('#commit-button'),
-      homeLink: $('#home-link'),
-      resourcesLink: $('#resources-link'),
-      popupTitle: $('#popup-title'),
-      positiveButton: $('#positive'),
-      triggeredButton: $('#triggered'),
-      relapsedButton: $('#relapsed'),
-      addNoteButton: $('#add-note'),
-      viewDayButton: $('#view-day'),
-      removeNoteButton: $('#remove-note'),
-      noteInputTitle: $('#note-input-title'),
-      saveNoteButton: $('#save-note'),
-      cancelNoteButton: $('#cancel-note'),
-      journalTitle: $('#journal-title'),
-      closeJournalButton: $('#close-journal'),
-    };
-
-    const textContent = translations[lang];
-    for (const [key, element] of Object.entries(elements)) {
-      element.text(textContent[key]);
-    }
-
-    localStorage.setItem('language', lang); // Store the selected language
-  };
-
-  const storedLanguage = localStorage.getItem('language') || 'fr'; // Default to French if no language is stored
-  setLanguage(storedLanguage);
-
-  $('#lang-en').click(() => setLanguage('en'));
-  $('#lang-fr').click(() => setLanguage('fr'));
-
   $('#dateForm').on('submit', function(e) {
     e.preventDefault();
     var selectedDate = $('#startDate').val();
@@ -110,90 +37,44 @@ $(document).ready(function() {
       dayClick: function(date) {
         const selectedDate = date.format('YYYY-MM-DD');
         $('#note-popup').data('date', selectedDate).show();
-        displayNotes(selectedDate);
+        if (storedNotes[selectedDate]) {
+          $('#remove-note').show();
+        } else {
+          $('#remove-note').hide();
+        }
       },
-      events: getStoredEvents()
+      events: Object.keys(storedNotes).map(date => ({
+        title: storedNotes[date].type,
+        start: date,
+        color: storedNotes[date].type === 'Positive' ? 'green' : (storedNotes[date].type === 'Triggered' ? 'red' : 'orange')
+      }))
     });
   }
 
-  function getStoredEvents() {
-    let events = [];
-    for (let date in storedNotes) {
-      storedNotes[date].forEach(note => {
-        events.push({
-          title: note.title,
-          start: date,
-          color: note.color
-        });
-      });
-    }
-    return events;
-  }
-
-  function displayNotes(date) {
-    const notesContainer = $('#notes-container');
-    notesContainer.empty(); // Clear any previous notes
-    if (storedNotes[date]) {
-      storedNotes[date].forEach(note => {
-        const noteBlock = `<div class="note-block" style="background-color: ${note.color};">${note.note}</div>`;
-        notesContainer.append(noteBlock);
-      });
-      $('#remove-note').show();
-    } else {
-      notesContainer.append('<div class="note-block">No notes for this day.</div>');
-      $('#remove-note').hide();
-    }
-  }
-
-  $('#positive').click(() => saveNoteToCalendar('Positive', 'green'));
-  $('#triggered').click(() => saveNoteToCalendar('Triggered', 'red'));
+  $('#positive').click(() => saveNoteToCalendar('Positive'));
+  $('#triggered').click(() => saveNoteToCalendar('Triggered'));
   $('#relapsed').click(() => {
-    saveNoteToCalendar('Relapsed', 'orange');
+    saveNoteToCalendar('Relapsed');
     resetTimer();
   });
-  $('#add-note').click(() => {
-    $('#note-popup').hide();
-    $('#note-input-popup').show();
-  });
+  $('#add-note').click(() => addCustomNoteToCalendar());
   $('#remove-note').click(() => removeNoteFromCalendar());
-  $('#view-day').click(() => viewDayJournal());
 
-  $('#save-note').click(() => {
+  function saveNoteToCalendar(type) {
     const selectedDate = $('#note-popup').data('date');
-    const customNote = $('#custom-note').val();
-    if (customNote) {
-      addNoteToDate(selectedDate, {
-        title: customNote,
-        color: 'blue',
-        note: customNote
-      });
-      $('#custom-note').val(''); // Clear the input
-      $('#note-input-popup').hide();
-      displayCalendar($('#startDate').val());
-    }
-  });
-
-  $('#cancel-note').click(() => {
-    $('#note-input-popup').hide();
-  });
-
-  function saveNoteToCalendar(note, color) {
-    const selectedDate = $('#note-popup').data('date');
-    addNoteToDate(selectedDate, {
-      title: note,
-      color: color,
-      note: note
-    });
+    storedNotes[selectedDate] = { type };
+    localStorage.setItem('notes', JSON.stringify(storedNotes));
     $('#note-popup').hide();
     displayCalendar($('#startDate').val());
   }
 
-  function addNoteToDate(date, note) {
-    if (!storedNotes[date]) {
-      storedNotes[date] = [];
-    }
-    storedNotes[date].push(note);
+  function addCustomNoteToCalendar() {
+    const selectedDate = $('#note-popup').data('date');
+    const noteText = prompt('Enter your note:');
+    storedNotes[selectedDate] = { type: storedNotes[selectedDate]?.type || 'Note', note: noteText };
     localStorage.setItem('notes', JSON.stringify(storedNotes));
+    $('#note-popup').hide();
+    displayCalendar($('#startDate').val());
   }
 
   function removeNoteFromCalendar() {
@@ -204,24 +85,8 @@ $(document).ready(function() {
     displayCalendar($('#startDate').val());
   }
 
-  function viewDayJournal() {
-    const selectedDate = $('#note-popup').data('date');
-    const journalEntries = storedNotes[selectedDate]
-      ? storedNotes[selectedDate].map(note => `<div class="note-block">${note.note}</div>`).join('')
-      : '<div class="note-block">No notes for this day.</div>';
-    $('#day-journal').html(journalEntries);
+  $('#note-popup button').click(() => {
     $('#note-popup').hide();
-    $('#journal-popup').show();
-  }
-
-  $('#journal-popup button').click(() => {
-    $('#journal-popup').hide();
-  });
-
-  $('#popup-overlay, #note-popup-overlay').on('click', () => {
-    $('#note-popup').hide();
-    $('#journal-popup').hide();
-    $('#note-input-popup').hide();
   });
 
   let timerInterval;
@@ -266,13 +131,45 @@ $(document).ready(function() {
     window.location.href = 'index.html';
   });
 
-  // Initialize the calendar with stored events
-  const commitTime = localStorage.getItem('commitTime');
-  if (commitTime) {
-    displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
-    startTimer(new Date(commitTime));
-  } else {
-    displayCalendar(new Date());
-  }
-});
+  // Language support
+  const translations = {
+    en: {
+      headerTitle: 'My Plan - The Vivere Project',
+      timeCounter: 'Time since commit: 00:00:00',
+      positive: 'Positive',
+      triggered: 'Triggered',
+      relapsed: 'Relapsed',
+      addNote: 'Add a Note',
+      removeNote: 'Remove Note',
+      dayStatusPrompt: 'How was that day?'
+    },
+    fr: {
+      headerTitle: 'Mon Plan - Le Projet Vivere',
+      timeCounter: 'Temps depuis l\'engagement : 00:00:00',
+      positive: 'Positif',
+      triggered: 'Déclenché',
+      relapsed: 'Rechute',
+      addNote: 'Ajouter une Note',
+      removeNote: 'Supprimer la Note',
+      dayStatusPrompt: 'Comment était cette journée ?'
+    }
+  };
 
+  const setLanguage = (lang) => {
+    const translation = translations[lang];
+    document.getElementById('header-title').textContent = translation.headerTitle;
+    document.getElementById('timeCounter').textContent = translation.timeCounter;
+    document.getElementById('positive').textContent = translation.positive;
+    document.getElementById('triggered').textContent = translation.triggered;
+    document.getElementById('relapsed').textContent = translation.relapsed;
+    document.getElementById('add-note').textContent = translation.addNote;
+    document.getElementById('remove-note').textContent = translation.removeNote;
+    document.querySelector('#note-popup p').textContent = translation.dayStatusPrompt;
+  };
+
+  document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+  document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
+
+  // Set default language to French
+  setLanguage('fr');
+});
