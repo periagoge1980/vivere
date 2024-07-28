@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Plan</title>
+  <title>My Plan - Le Projet Vivere</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
   <style>
     body {
@@ -90,6 +90,41 @@
       text-decoration: none;
       font-weight: bold;
     }
+    #note-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      border: 1px solid #ccc;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+    #note-popup button {
+      margin: 5px;
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+    #note-popup button:hover {
+      background-color: #0056b3;
+    }
+    #note-popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
     .lang-switch {
       display: flex;
       align-items: center;
@@ -107,51 +142,11 @@
     .lang-switch button:hover {
       background-color: #0056b3;
     }
-    #note-popup, #note-input-popup, #journal-popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      border: 1px solid #ccc;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
-    #note-popup button, #note-input-popup button, #journal-popup button {
-      margin: 5px;
-      padding: 10px 20px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 5px;
-    }
-    #note-popup button:hover, #note-input-popup button:hover, #journal-popup button:hover {
-      background-color: #0056b3;
-    }
-    #note-popup-overlay, #note-input-popup-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
-    .note-block {
-      margin: 5px 0;
-      padding: 10px;
-      border-radius: 5px;
-    }
   </style>
 </head>
 <body>
   <header>
-    <h1 id="header-title">My Plan</h1>
+    <h1 id="header-title">My Plan - Le Projet Vivere</h1>
     <div class="login">
       <a id="login" class="login-link">Login/Signup</a>
       <div class="lang-switch">
@@ -163,40 +158,25 @@
   <div class="container">
     <form id="dateForm">
       <input type="date" id="startDate" value="">
-      <button type="submit" id="commit-button">Commit!</button>
+      <button type="submit">Commit!</button>
     </form>
     <div id="timeCounter">Time since commit: 00:00:00</div>
     <div id="calendar"></div>
-    <a href="index.html" id="home-link">Home</a>
-    <a href="resources.html" id="resources-link">Resources</a>
+    <a href="index.html">Home</a>
+    <a href="resources.html">Resources</a>
   </div>
   <footer>
-    &copy; 2024 The Vivere Project. All rights reserved.
+    &copy; 2024 The Vivere Project. Tous droits réservés.
   </footer>
 
   <div id="note-popup-overlay"></div>
   <div id="note-popup">
-    <p id="popup-title">How was that day?</p>
+    <p>How was that day?</p>
     <button id="positive">Positive</button>
     <button id="triggered">Triggered</button>
     <button id="relapsed">Relapsed</button>
     <button id="add-note">Add a Note</button>
-    <button id="view-day">View Day</button>
     <button id="remove-note" style="display: none;">Remove Note</button>
-    <div id="notes-container"></div>
-  </div>
-
-  <div id="note-input-popup">
-    <p id="note-input-title">Add your custom note:</p>
-    <textarea id="custom-note" rows="4" cols="50"></textarea>
-    <button id="save-note">Save Note</button>
-    <button id="cancel-note">Cancel</button>
-  </div>
-
-  <div id="journal-popup">
-    <p id="journal-title">Journal Entries</p>
-    <div id="day-journal"></div>
-    <button id="close-journal">Close</button>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
