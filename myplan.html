@@ -99,8 +99,8 @@
       width: 100%;
       height: 100%;
       overflow: auto;
-      background-color: rgb(0,0,0);
-      background-color: rgba(0,0,0,0.4);
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.4);
       padding-top: 60px;
     }
     .modal-content {
@@ -113,23 +113,9 @@
       text-align: center;
     }
     .modal-content button {
-      margin: 10px;
       padding: 10px 20px;
-      border: none;
+      margin: 10px;
       cursor: pointer;
-      font-size: 16px;
-    }
-    .positive {
-      background-color: #28a745;
-      color: white;
-    }
-    .triggered {
-      background-color: #dc3545;
-      color: white;
-    }
-    .relapsed {
-      background-color: #ffc107;
-      color: black;
     }
   </style>
 </head>
@@ -152,13 +138,14 @@
     &copy; 2024 The Vivere Project. All rights reserved.
   </footer>
 
-  <!-- Modal for event tagging -->
-  <div id="tagModal" class="modal">
+  <!-- Modal for day tagging -->
+  <div id="dayTagModal" class="modal">
     <div class="modal-content">
-      <p>How was that day?</p>
-      <button id="positiveBtn" class="positive">Positive</button>
-      <button id="triggeredBtn" class="triggered">Triggered</button>
-      <button id="relapsedBtn" class="relapsed">Relapsed</button>
+      <h2>How was that day?</h2>
+      <button id="positiveDay">Positive</button>
+      <button id="triggeredDay">Triggered</button>
+      <button id="relapsedDay">Relapsed</button>
+      <button id="removeNote" style="display: none;">Remove Note</button>
     </div>
   </div>
 
@@ -166,6 +153,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="myplan.js"></script> <!-- Link to external JS file -->
+  <script src="myplan.js"></script>
 </body>
 </html>
