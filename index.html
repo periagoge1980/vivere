@@ -1,4 +1,4 @@
-      <!DOCTYPE html>
+co      <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -204,14 +204,15 @@
       }
     };
 
-    const setLanguage = (lang) => {
-      if (translations[lang]) {
-        blurbElement.innerHTML = translations[lang].blurb;
-      }
-    };
+const setLanguage = (lang) => {
+  if (translations[lang]) {
+    blurbElement.innerHTML = translations[lang].blurb;
+    localStorage.setItem('language', lang); // Store the selected language
+  }
+};
 
-    document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
-    document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
+document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
 
     netlifyIdentity.on('init', user => {
       if (!user) {
@@ -249,7 +250,8 @@
     });
 
 // Set default language
-setLanguage('fr');      
+const storedLanguage = localStorage.getItem('language') || 'fr'; // Default to French if no language is stored
+setLanguage(storedLanguage);
   </script>
 </body>
 </html>
