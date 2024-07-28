@@ -126,10 +126,14 @@
       const dependency = document.getElementById('dependency').value;
       const postalCode = document.getElementById('postalCode').value;
 
+      console.log("Form submitted with dependency:", dependency, "and postal code:", postalCode);
+
       const filteredResources = resources.filter(resource => 
         resource.dependency_category.includes(dependency) &&
         resource.postal_code.startsWith(postalCode)
       );
+
+      console.log("Filtered resources:", filteredResources);
 
       renderResourceList(filteredResources);
       loadMap(filteredResources);
