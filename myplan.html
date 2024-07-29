@@ -160,23 +160,24 @@
       <input type="date" id="startDate" value="">
       <button type="submit">Commit!</button>
     </form>
-    <div id="timeCounter">Time since commit: 00:00:00</div>
+    <div id="timeCounter">Temps depuis l'engagement : 00:00:00</div>
     <div id="calendar"></div>
-    <a href="index.html">Home</a>
-    <a href="resources.html">Resources</a>
+    <a href="index.html">Accueil</a>
+    <a href="resources.html">Ressources</a>
   </div>
   <footer>
-    &copy; 2024 The Vivere Project. Tous droits réservés.
+    &copy; 2024 Le Projet Vivere. Tous droits réservés.
   </footer>
 
   <div id="note-popup-overlay"></div>
   <div id="note-popup">
-    <p>How was that day?</p>
-    <button id="positive">Positive</button>
-    <button id="triggered">Triggered</button>
-    <button id="relapsed">Relapsed</button>
-    <button id="add-note">Add a Note</button>
-    <button id="remove-note" style="display: none;">Remove Note</button>
+    <p id="day-status-prompt">Comment était cette journée ?</p>
+    <button id="positive">Positif</button>
+    <button id="triggered">Déclenché</button>
+    <button id="relapsed">Rechute</button>
+    <button id="add-note">Ajouter une Note</button>
+    <button id="remove-note" style="display: none;">Supprimer la Note</button>
+    <div id="note-popup-content"></div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
