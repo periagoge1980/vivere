@@ -2,7 +2,8 @@ $(document).ready(function() {
   const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
   const storedCommitTime = localStorage.getItem('commitTime');
 
-  $('#dateForm').on('submit', function(e) {
+  // Event delegation for form submit
+  $(document).on('submit', '#dateForm', function(e) {
     e.preventDefault();
     var selectedDate = $('#startDate').val();
     if (selectedDate) {
@@ -72,18 +73,19 @@ $(document).ready(function() {
     }
   }
 
-  $('#positive').click(() => saveNoteToCalendar('Positive', 'green'));
-  $('#triggered').click(() => saveNoteToCalendar('Triggered', 'red'));
-  $('#relapsed').click(() => {
+  // Event delegation for button clicks
+  $(document).on('click', '#positive', () => saveNoteToCalendar('Positive', 'green'));
+  $(document).on('click', '#triggered', () => saveNoteToCalendar('Triggered', 'red'));
+  $(document).on('click', '#relapsed', () => {
     saveNoteToCalendar('Relapsed', 'orange');
     resetTimer();
   });
-  $('#add-note').click(() => {
+  $(document).on('click', '#add-note', () => {
     $('#note-popup').hide();
     $('#note-input-popup').show();
   });
-  $('#remove-note').click(() => removeNoteFromCalendar());
-  $('#view-day').click(() => viewDayJournal());
+  $(document).on('click', '#remove-note', () => removeNoteFromCalendar());
+  $(document).on('click', '#view-day', () => viewDayJournal());
 
   $('#save-note').click(() => {
     const selectedDate = $('#note-popup').data('date');
