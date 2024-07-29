@@ -158,11 +158,11 @@ $(document).ready(function() {
 function startTimer(commitTime) {
   clearInterval(timerInterval); // Clear any existing timer
 
-  const elapsed = Date.now() - new Date(commitTime).getTime();
-  const elapsedDays = Math.floor(elapsed / (1000 * 60 * 60 * 24));
-  const elapsedHours = Math.floor((elapsed % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const elapsedMinutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
-  const elapsedSeconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+  let elapsed = Date.now() - new Date(commitTime).getTime();
+  let elapsedDays = Math.floor(elapsed / (1000 * 60 * 60 * 24));
+  let elapsedHours = Math.floor((elapsed % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  let elapsedMinutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+  let elapsedSeconds = Math.floor((elapsed % (1000 * 60)) / 1000);
 
   timerInterval = setInterval(function() {
     elapsedSeconds++;
@@ -181,6 +181,7 @@ function startTimer(commitTime) {
     $('#timeCounter').text(`Time since commit: ${elapsedDays}d ${formatTime(elapsedHours)}:${formatTime(elapsedMinutes)}:${formatTime(elapsedSeconds)}`);
   }, 1000);
 }
+
 
 
   function resetTimer() {
