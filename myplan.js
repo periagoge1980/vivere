@@ -155,19 +155,33 @@ $(document).ready(function() {
 
   let timerInterval;
 
-  function startTimer(commitTime) {
-    clearInterval(timerInterval); // Clear any existing timer
+function startTimer(commitTime) {
+  clearInterval(timerInterval); // Clear any existing timer
 
-    timerInterval = setInterval(function() {
-      const currentTime = new Date();
-      const timeDiff = currentTime - new Date(commitTime);
-      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-      $('#timeCounter').text(`Time since commit: ${days}d ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
-    }, 1000);
-  }
+  const elapsed = Date.now() - new Date(commitTime).getTime();
+  const elapsedDays = Math.floor(elapsed / (1000 * 60 * 60 * 24));
+  const elapsedHours = Math.floor((elapsed % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const elapsedMinutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+  const elapsedSeconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+
+  timerInterval = setInterval(function() {
+    elapsedSeconds++;
+    if (elapsedSeconds >= 60) {
+      elapsedMinutes++;
+      elapsedSeconds = 0;
+    }
+    if (elapsedMinutes >= 60) {
+      elapsedHours++;
+      elapsedMinutes = 0;
+    }
+    if (elapsedHours >= 24) {
+      elapsedDays++;
+      elapsedHours = 0;
+    }
+    $('#timeCounter').text(`Time since commit: ${elapsedDays}d ${formatTime(elapsedHours)}:${formatTime(elapsedMinutes)}:${formatTime(elapsedSeconds)}`);
+  }, 1000);
+}
+
 
   function resetTimer() {
     clearInterval(timerInterval);
