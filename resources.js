@@ -205,14 +205,3 @@ function initializePage() {
 
 $(document).ready(initializePage);
 $(window).on('pageshow', initializePage);
-
-window.onunload = function() {
-  // When the user navigates away from the page, save the current state to localStorage
-  var state = getCurrentState();
-  localStorage.setItem('savedState', JSON.stringify(state));
-};
-
-function getCurrentState() {
-  // Get the current state of your application
-  // This will depend on your specific application
-}
