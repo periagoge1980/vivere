@@ -24,8 +24,6 @@ $(document).ready(function() {
     $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
     displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
     startTimer(commitTime);
-  } else {
-    displayCalendar(new Date());
   }
 
   function displayCalendar(date) {
@@ -37,39 +35,18 @@ $(document).ready(function() {
       dayClick: function(date) {
         const selectedDate = date.format('YYYY-MM-DD');
         $('#note-popup').data('date', selectedDate).show();
-        displayNotes(selectedDate);
+        if (storedNotes[selectedDate]) {
+          $('#remove-note').show();
+        } else {
+          $('#remove-note').hide();
+        }
       },
-      events: getStoredEvents()
+      events: Object.keys(storedNotes).map(date => ({
+        title: storedNotes[date].title,
+        start: date,
+        color: storedNotes[date].color
+      }))
     });
-  }
-
-  function getStoredEvents() {
-    let events = [];
-    for (let date in storedNotes) {
-      storedNotes[date].forEach(note => {
-        events.push({
-          title: note.title,
-          start: date,
-          color: note.color
-        });
-      });
-    }
-    return events;
-  }
-
-  function displayNotes(date) {
-    const notesContainer = $('#notes-container');
-    notesContainer.empty(); // Clear any previous notes
-    if (storedNotes[date]) {
-      storedNotes[date].forEach(note => {
-        const noteBlock = `<div class="note-block" style="background-color: ${note.color};">${note.note}</div>`;
-        notesContainer.append(noteBlock);
-      });
-      $('#remove-note').show();
-    } else {
-      notesContainer.append('<div class="note-block">No notes for this day.</div>');
-      $('#remove-note').hide();
-    }
   }
 
   $('#positive').click(() => saveNoteToCalendar('Positive', 'green'));
@@ -88,16 +65,14 @@ $(document).ready(function() {
   $('#save-note').click(() => {
     const selectedDate = $('#note-popup').data('date');
     const customNote = $('#custom-note').val();
-    if (customNote) {
-      addNoteToDate(selectedDate, {
-        title: customNote,
-        color: 'blue',
-        note: customNote
-      });
-      $('#custom-note').val(''); // Clear the input
-      $('#note-input-popup').hide();
-      displayCalendar($('#startDate').val());
-    }
+    storedNotes[selectedDate] = {
+      title: customNote,
+      color: 'blue',
+      note: customNote
+    };
+    localStorage.setItem('notes', JSON.stringify(storedNotes));
+    $('#note-input-popup').hide();
+    displayCalendar($('#startDate').val());
   });
 
   $('#cancel-note').click(() => {
@@ -106,21 +81,14 @@ $(document).ready(function() {
 
   function saveNoteToCalendar(note, color) {
     const selectedDate = $('#note-popup').data('date');
-    addNoteToDate(selectedDate, {
+    storedNotes[selectedDate] = {
       title: note,
       color: color,
       note: note
-    });
+    };
+    localStorage.setItem('notes', JSON.stringify(storedNotes));
     $('#note-popup').hide();
     displayCalendar($('#startDate').val());
-  }
-
-  function addNoteToDate(date, note) {
-    if (!storedNotes[date]) {
-      storedNotes[date] = [];
-    }
-    storedNotes[date].push(note);
-    localStorage.setItem('notes', JSON.stringify(storedNotes));
   }
 
   function removeNoteFromCalendar() {
@@ -133,10 +101,8 @@ $(document).ready(function() {
 
   function viewDayJournal() {
     const selectedDate = $('#note-popup').data('date');
-    const journalEntries = storedNotes[selectedDate]
-      ? storedNotes[selectedDate].map(note => `<div class="note-block">${note.note}</div>`).join('')
-      : '<div class="note-block">No notes for this day.</div>';
-    $('#day-journal').html(journalEntries);
+    const journalEntry = storedNotes[selectedDate] ? storedNotes[selectedDate].note : 'No notes for this day.';
+    $('#day-journal').text(journalEntry);
     $('#note-popup').hide();
     $('#journal-popup').show();
   }
