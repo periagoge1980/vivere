@@ -1,5 +1,5 @@
 // resources.js
-
+function initializePage() {
 const resources = 
 [
   {
@@ -198,7 +198,9 @@ document.getElementById('resourceForm').addEventListener('submit', function (eve
 
   renderResourceList(filteredResources);
 });
-
+}
+$(document).ready(initializePage);
+$(window).on('pageshow', initializePage);
 document.addEventListener('DOMContentLoaded', () => {
   renderResourceList(resources);
 });
