@@ -4,7 +4,7 @@ $(document).ready(function() {
 
   $('#dateForm').on('submit', function(e) {
     e.preventDefault();
-    var selectedDate = $('#startDate').val();
+    const selectedDate = $('#startDate').val();
     if (selectedDate) {
       const commitTime = new Date(); // Capture the exact time of commit
       const selectedDateArray = selectedDate.split('-');
@@ -52,8 +52,8 @@ $(document).ready(function() {
     if (notes) {
       $('#remove-note').show();
       $('#note-popup-content').html(
-        notes.type ? `<p>${notes.type}</p>` : '' +
-        notes.note ? `<p>${notes.note}</p>` : ''
+        (notes.type ? `<p>${notes.type}</p>` : '') +
+        (notes.note ? `<p>${notes.note}</p>` : '')
       );
     } else {
       $('#remove-note').hide();
@@ -72,7 +72,8 @@ $(document).ready(function() {
 
   function saveNoteToCalendar(type) {
     const selectedDate = $('#note-popup').data('date');
-    storedNotes[selectedDate] = { type };
+    storedNotes[selectedDate] = storedNotes[selectedDate] || {};
+    storedNotes[selectedDate].type = type;
     localStorage.setItem('notes', JSON.stringify(storedNotes));
     $('#note-popup').hide();
     displayCalendar($('#startDate').val());
@@ -81,11 +82,9 @@ $(document).ready(function() {
   function addCustomNoteToCalendar() {
     const selectedDate = $('#note-popup').data('date');
     const noteText = prompt('Enter your note:');
-    if (storedNotes[selectedDate]) {
-      storedNotes[selectedDate].note = noteText;
-    } else {
-      storedNotes[selectedDate] = { note: noteText };
-    }
+    if (!noteText) return;
+    storedNotes[selectedDate] = storedNotes[selectedDate] || {};
+    storedNotes[selectedDate].note = noteText;
     localStorage.setItem('notes', JSON.stringify(storedNotes));
     $('#note-popup').hide();
     displayCalendar($('#startDate').val());
@@ -99,8 +98,9 @@ $(document).ready(function() {
     displayCalendar($('#startDate').val());
   }
 
-  $('#note-popup button').click(() => {
+  $('#note-popup-overlay').on('click', function() {
     $('#note-popup').hide();
+    $(this).hide();
   });
 
   let timerInterval;
