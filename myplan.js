@@ -37,11 +37,7 @@ $(document).ready(function() {
       dayClick: function(date) {
         const selectedDate = date.format('YYYY-MM-DD');
         $('#note-popup').data('date', selectedDate).show();
-        if (storedNotes[selectedDate]) {
-          $('#remove-note').show();
-        } else {
-          $('#remove-note').hide();
-        }
+        displayNotes(selectedDate);
       },
       events: Object.keys(storedNotes).map(date => ({
         title: storedNotes[date].type,
@@ -49,6 +45,20 @@ $(document).ready(function() {
         color: storedNotes[date].type === 'Positive' ? 'green' : (storedNotes[date].type === 'Triggered' ? 'red' : 'orange')
       }))
     });
+  }
+
+  function displayNotes(date) {
+    const notes = storedNotes[date];
+    if (notes) {
+      $('#remove-note').show();
+      $('#note-popup-content').html(
+        notes.type ? `<p>${notes.type}</p>` : '' +
+        notes.note ? `<p>${notes.note}</p>` : ''
+      );
+    } else {
+      $('#remove-note').hide();
+      $('#note-popup-content').empty();
+    }
   }
 
   $('#positive').click(() => saveNoteToCalendar('Positive'));
@@ -71,7 +81,11 @@ $(document).ready(function() {
   function addCustomNoteToCalendar() {
     const selectedDate = $('#note-popup').data('date');
     const noteText = prompt('Enter your note:');
-    storedNotes[selectedDate] = { type: storedNotes[selectedDate]?.type || 'Note', note: noteText };
+    if (storedNotes[selectedDate]) {
+      storedNotes[selectedDate].note = noteText;
+    } else {
+      storedNotes[selectedDate] = { note: noteText };
+    }
     localStorage.setItem('notes', JSON.stringify(storedNotes));
     $('#note-popup').hide();
     displayCalendar($('#startDate').val());
