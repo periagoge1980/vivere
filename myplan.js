@@ -1,185 +1,204 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Plan</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      background-color: #007BFF;
-      color: white;
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header h1 {
-      margin: 0;
-    }
-    .container {
-      flex: 1;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      text-align: center;
-    }
-    form {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    input[type="date"] {
-      padding: 10px;
-      margin-right: 10px;
-      font-size: 16px;
-    }
-    button {
-      padding: 10px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #timeCounter {
-      text-align: center;
-      margin: 20px 0;
-      font-size: 20px;
-      color: #333;
-    }
-    #calendar {
-      max-width: 900px;
-      margin: 0 auto;
-      margin-top: 20px;
-    }
-    a {
-      text-decoration: none;
-      color: #007BFF;
-      border: 1px solid #007BFF;
-      padding: 10px 20px;
-      margin: 5px;
-      display: inline-block;
-    }
-    a:hover {
-      background-color: #007BFF;
-      color: white;
-    }
-    footer {
-      background-color: #f1f1f1;
-      padding: 10px;
-      text-align: center;
-      margin-top: auto;
-    }
-    .login-link {
-      color: white;
-      cursor: pointer;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    #note-popup, #note-input-popup, #journal-popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      border: 1px solid #ccc;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
-    #note-popup button, #note-input-popup button, #journal-popup button {
-      margin: 5px;
-      padding: 10px 20px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 5px;
-    }
-    #note-popup button:hover, #note-input-popup button:hover, #journal-popup button:hover {
-      background-color: #0056b3;
-    }
-    #note-popup-overlay, #note-input-popup-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
-    .note-block {
-      margin: 5px 0;
-      padding: 10px;
-      border-radius: 5px;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>My Plan</h1>
-    <a id="login" class="login-link">Login/Signup</a>
-  </header>
-  <div class="container">
-    <form id="dateForm">
-      <input type="date" id="startDate" value="">
-      <button type="submit">Commit!</button>
-    </form>
-    <div id="timeCounter">Time since commit: 00:00:00</div>
-    <div id="calendar"></div>
-    <a href="index.html">Home</a>
-    <a href="resources.html">Resources</a>
-  </div>
-  <footer>
-    &copy; 2024 The Vivere Project. All rights reserved.
-  </footer>
+$(document).ready(function() {
+  const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
+  const storedCommitTime = localStorage.getItem('commitTime');
 
-  <div id="note-popup-overlay"></div>
-  <div id="note-popup">
-    <p>How was that day?</p>
-    <button id="positive">Positive</button>
-    <button id="triggered">Triggered</button>
-    <button id="relapsed">Relapsed</button>
-    <button id="add-note">Add a Note</button>
-    <button id="view-day">View Day</button>
-    <button id="remove-note" style="display: none;">Remove Note</button>
-    <div id="notes-container"></div>
-  </div>
+  $('#dateForm').on('submit', function(e) {
+    e.preventDefault();
+    var selectedDate = $('#startDate').val();
+    if (selectedDate) {
+      const commitTime = new Date(); // Capture the exact time of commit
+      const selectedDateArray = selectedDate.split('-');
+      commitTime.setFullYear(
+        selectedDateArray[0],
+        selectedDateArray[1] - 1,
+        selectedDateArray[2]
+      );
+      localStorage.setItem('commitTime', commitTime.toISOString());
+      displayCalendar(selectedDate);
+      startTimer(commitTime);
+    }
+  });
 
-  <div id="note-input-popup">
-    <p>Add your custom note:</p>
-    <textarea id="custom-note" rows="4" cols="50"></textarea>
-    <button id="save-note">Save Note</button>
-    <button id="cancel-note">Cancel</button>
-  </div>
+  if (storedCommitTime) {
+    const commitTime = new Date(storedCommitTime);
+    $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
+    displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
+    startTimer(commitTime);
+  } else {
+    displayCalendar(new Date());
+  }
 
-  <div id="journal-popup">
-    <p>Journal Entries</p>
-    <div id="day-journal"></div>
-    <button>Close</button>
-  </div>
+  function displayCalendar(date) {
+    $('#calendar').fullCalendar('destroy'); // Destroy any existing calendar
+    $('#calendar').fullCalendar({
+      defaultDate: date,
+      editable: true,
+      eventLimit: true, // allow "more" link when too many events
+      dayClick: function(date) {
+        const selectedDate = date.format('YYYY-MM-DD');
+        $('#note-popup').data('date', selectedDate).show();
+        displayNotes(selectedDate);
+      },
+      events: getStoredEvents()
+    });
+  }
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="myplan.js"></script>
-</body>
-</html>
+  function getStoredEvents() {
+    let events = [];
+    for (let date in storedNotes) {
+      storedNotes[date].forEach(note => {
+        events.push({
+          title: note.title,
+          start: date,
+          color: note.color
+        });
+      });
+    }
+    return events;
+  }
+
+  function displayNotes(date) {
+    const notesContainer = $('#notes-container');
+    notesContainer.empty(); // Clear any previous notes
+    if (storedNotes[date]) {
+      storedNotes[date].forEach(note => {
+        const noteBlock = `<div class="note-block" style="background-color: ${note.color};">${note.note}</div>`;
+        notesContainer.append(noteBlock);
+      });
+      $('#remove-note').show();
+    } else {
+      notesContainer.append('<div class="note-block">No notes for this day.</div>');
+      $('#remove-note').hide();
+    }
+  }
+
+  $('#positive').click(() => saveNoteToCalendar('Positive', 'green'));
+  $('#triggered').click(() => saveNoteToCalendar('Triggered', 'red'));
+  $('#relapsed').click(() => {
+    saveNoteToCalendar('Relapsed', 'orange');
+    resetTimer();
+  });
+  $('#add-note').click(() => {
+    $('#note-popup').hide();
+    $('#note-input-popup').show();
+  });
+  $('#remove-note').click(() => removeNoteFromCalendar());
+  $('#view-day').click(() => viewDayJournal());
+
+  $('#save-note').click(() => {
+    const selectedDate = $('#note-popup').data('date');
+    const customNote = $('#custom-note').val();
+    if (customNote) {
+      addNoteToDate(selectedDate, {
+        title: customNote,
+        color: 'blue',
+        note: customNote
+      });
+      $('#custom-note').val(''); // Clear the input
+      $('#note-input-popup').hide();
+      displayCalendar($('#startDate').val());
+    }
+  });
+
+  $('#cancel-note').click(() => {
+    $('#note-input-popup').hide();
+  });
+
+  function saveNoteToCalendar(note, color) {
+    const selectedDate = $('#note-popup').data('date');
+    addNoteToDate(selectedDate, {
+      title: note,
+      color: color,
+      note: note
+    });
+    $('#note-popup').hide();
+    displayCalendar($('#startDate').val());
+  }
+
+  function addNoteToDate(date, note) {
+    if (!storedNotes[date]) {
+      storedNotes[date] = [];
+    }
+    storedNotes[date].push(note);
+    localStorage.setItem('notes', JSON.stringify(storedNotes));
+  }
+
+  function removeNoteFromCalendar() {
+    const selectedDate = $('#note-popup').data('date');
+    delete storedNotes[selectedDate];
+    localStorage.setItem('notes', JSON.stringify(storedNotes));
+    $('#note-popup').hide();
+    displayCalendar($('#startDate').val());
+  }
+
+  function viewDayJournal() {
+    const selectedDate = $('#note-popup').data('date');
+    const journalEntries = storedNotes[selectedDate]
+      ? storedNotes[selectedDate].map(note => `<div class="note-block">${note.note}</div>`).join('')
+      : '<div class="note-block">No notes for this day.</div>';
+    $('#day-journal').html(journalEntries);
+    $('#note-popup').hide();
+    $('#journal-popup').show();
+  }
+
+  $('#journal-popup button').click(() => {
+    $('#journal-popup').hide();
+  });
+
+  $('#popup-overlay, #note-popup-overlay').on('click', () => {
+    $('#note-popup').hide();
+    $('#journal-popup').hide();
+    $('#note-input-popup').hide();
+  });
+
+  let timerInterval;
+
+  function startTimer(commitTime) {
+    clearInterval(timerInterval); // Clear any existing timer
+
+    timerInterval = setInterval(function() {
+      const currentTime = new Date();
+      const timeDiff = currentTime - new Date(commitTime);
+      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+      $('#timeCounter').text(`Time since commit: ${days}d ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
+    }, 1000);
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval);
+    const newCommitTime = new Date();
+    localStorage.setItem('commitTime', newCommitTime.toISOString());
+    startTimer(newCommitTime);
+  }
+
+  function formatTime(unit) {
+    return unit < 10 ? '0' + unit : unit;
+  }
+
+  const loginButton = document.getElementById('login');
+  loginButton.addEventListener('click', () => {
+    netlifyIdentity.open();
+  });
+
+  netlifyIdentity.on('login', user => {
+    console.log('User logged in:', user);
+    netlifyIdentity.close();
+  });
+
+  netlifyIdentity.on('logout', () => {
+    console.log('User logged out');
+    window.location.href = 'index.html';
+  });
+
+  // Initialize the calendar with stored events
+  const commitTime = localStorage.getItem('commitTime');
+  if (commitTime) {
+    displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
+    startTimer(new Date(commitTime));
+  } else {
+    displayCalendar(new Date());
+  }
+});
