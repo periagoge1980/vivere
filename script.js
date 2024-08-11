@@ -2,6 +2,75 @@ let map;
 let geocoder;
 let allResources = []; // To store all resources
 
+const translations = {
+  en: {
+    pageTitle: "Addiction Resource Finder",
+    headerTitle: "Find Addiction Resources",
+    selectDependency: "Select Dependency",
+    alcohol: "Alcohol",
+    drugs: "Drugs",
+    gambling: "Gambling",
+    sex: "Sex",
+    enterPostalCode: "Enter Postal Code",
+    search: "Search",
+    websiteLabel: "Website",
+    resourcesFetched: (count) => `Resources fetched: ${count} items`,
+  },
+  fr: {
+    pageTitle: "Trouver des ressources d'addiction",
+    headerTitle: "Trouver des ressources d'addiction",
+    selectDependency: "Sélectionner une dépendance",
+    alcohol: "Alcool",
+    drugs: "Drogues",
+    gambling: "Jeu",
+    sex: "Sexe",
+    enterPostalCode: "Entrer le code postal",
+    search: "Chercher",
+    websiteLabel: "Site Web",
+    resourcesFetched: (count) => `Ressources récupérées: ${count} éléments`,
+  }
+};
+
+// Function to set the language based on user selection or stored preference
+const setLanguage = (lang) => {
+  const translation = translations[lang];
+  document.getElementById('page-title').textContent = translation.pageTitle;
+  document.getElementById('header-title').textContent = translation.headerTitle;
+  document.querySelector('#resourceForm select option').textContent = translation.selectDependency;
+  document.querySelector('#resourceForm select option[value="Alcohol"]').textContent = translation.alcohol;
+  document.querySelector('#resourceForm select option[value="Drugs"]').textContent = translation.drugs;
+  document.querySelector('#resourceForm select option[value="Gambling"]').textContent = translation.gambling;
+  document.querySelector('#resourceForm select option[value="Sex"]').textContent = translation.sex;
+  document.getElementById('postalCode').setAttribute('placeholder', translation.enterPostalCode);
+  document.querySelector('#resourceForm button').textContent = translation.search;
+};
+
+// Save the language preference to local storage
+const saveLanguagePreference = (lang) => {
+  localStorage.setItem('preferredLanguage', lang);
+};
+
+// Load the language preference from local storage
+const loadLanguagePreference = () => {
+  return localStorage.getItem('preferredLanguage') || 'fr'; // Default to French
+};
+
+// Event listeners for language buttons
+document.getElementById('lang-en').addEventListener('click', () => {
+  setLanguage('en');
+  saveLanguagePreference('en');
+});
+document.getElementById('lang-fr').addEventListener('click', () => {
+  setLanguage('fr');
+  saveLanguagePreference('fr');
+});
+
+// Apply the language on page load based on the saved preference
+document.addEventListener('DOMContentLoaded', () => {
+  const preferredLanguage = loadLanguagePreference();
+  setLanguage(preferredLanguage);
+});
+
 function initMap() {
   console.log("Initializing map...");
   geocoder = new google.maps.Geocoder();
@@ -30,7 +99,7 @@ document.getElementById('resourceForm').addEventListener('submit', function (e) 
       resource.dependency_category.includes(dependency)
     );
     displayResourcesWithinBounds();
-    console.log(`Resources fetched: ${allResources.length} items`);
+    console.log(translations[loadLanguagePreference()].resourcesFetched(allResources.length));
   });
 });
 
@@ -53,11 +122,14 @@ function displayResourcesWithinBounds() {
   const resourceList = document.getElementById('resourceList');
   resourceList.innerHTML = '';
 
+  const language = loadLanguagePreference();
+  const translation = translations[language];
+
   allResources.forEach(resource => {
     const resourceLocation = new google.maps.LatLng(resource.latitude, resource.longitude);
     if (bounds.contains(resourceLocation)) {
       const li = document.createElement('li');
-      li.innerHTML = `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.website}">Website</a>`;
+      li.innerHTML = `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.website}">${translation.websiteLabel}</a>`;
       resourceList.appendChild(li);
 
       const marker = new google.maps.Marker({
@@ -67,7 +139,7 @@ function displayResourcesWithinBounds() {
       });
 
       const infoWindow = new google.maps.InfoWindow({
-        content: `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.website}">Website</a>`
+        content: `<h2>${resource.name}</h2><p>${resource.address}</p><a href="${resource.website}">${translation.websiteLabel}</a>`
       });
 
       marker.addListener('mouseover', function() {
