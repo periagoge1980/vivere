@@ -116,7 +116,6 @@ function initializePage() {
   });
 
   // Placeholder for additional functionality (Calendar, Note Management, etc.)
-
 }
 
 $(document).ready(initializePage);
