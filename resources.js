@@ -2,11 +2,11 @@ function initializePage() {
   const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
   const storedCommitTime = localStorage.getItem('commitTime');
 
-  $('#dateForm').on('submit', function(e) {
+  $('#dateForm').off('submit').on('submit', function(e) {
     e.preventDefault();
-    var selectedDate = $('#startDate').val();
+    const selectedDate = $('#startDate').val();
     if (selectedDate) {
-      const commitTime = new Date(); // Capture the exact time of commit
+      const commitTime = new Date();
       const selectedDateArray = selectedDate.split('-');
       commitTime.setFullYear(
         selectedDateArray[0],
@@ -29,11 +29,11 @@ function initializePage() {
   }
 
   function displayCalendar(date) {
-    $('#calendar').fullCalendar('destroy'); // Destroy any existing calendar
+    $('#calendar').fullCalendar('destroy');
     $('#calendar').fullCalendar({
       defaultDate: date,
       editable: true,
-      eventLimit: true, // allow "more" link when too many events
+      eventLimit: true,
       dayClick: function(date) {
         const selectedDate = date.format('YYYY-MM-DD');
         $('#note-popup').data('date', selectedDate).show();
@@ -44,13 +44,13 @@ function initializePage() {
   }
 
   function getStoredEvents() {
-    let events = [];
-    for (let date in storedNotes) {
+    const events = [];
+    for (const date in storedNotes) {
       storedNotes[date].forEach(note => {
         events.push({
           title: note.title,
           start: date,
-          color: note.color
+          color: note.color || 'blue'  // Default color if none provided
         });
       });
     }
@@ -59,7 +59,7 @@ function initializePage() {
 
   function displayNotes(date) {
     const notesContainer = $('#notes-container');
-    notesContainer.empty(); // Clear any previous notes
+    notesContainer.empty();
     if (storedNotes[date]) {
       storedNotes[date].forEach(note => {
         const noteBlock = `<div class="note-block" style="background-color: ${note.color};">${note.note}</div>`;
@@ -72,20 +72,20 @@ function initializePage() {
     }
   }
 
-  $('#positive').click(() => saveNoteToCalendar('Positive', 'green'));
-  $('#triggered').click(() => saveNoteToCalendar('Triggered', 'red'));
-  $('#relapsed').click(() => {
+  $('#positive').off('click').on('click', () => saveNoteToCalendar('Positive', 'green'));
+  $('#triggered').off('click').on('click', () => saveNoteToCalendar('Triggered', 'red'));
+  $('#relapsed').off('click').on('click', () => {
     saveNoteToCalendar('Relapsed', 'orange');
     resetTimer();
   });
-  $('#add-note').click(() => {
+  $('#add-note').off('click').on('click', () => {
     $('#note-popup').hide();
     $('#note-input-popup').show();
   });
-  $('#remove-note').click(() => removeNoteFromCalendar());
-  $('#view-day').click(() => viewDayJournal());
+  $('#remove-note').off('click').on('click', () => removeNoteFromCalendar());
+  $('#view-day').off('click').on('click', () => viewDayJournal());
 
-  $('#save-note').click(() => {
+  $('#save-note').off('click').on('click', () => {
     const selectedDate = $('#note-popup').data('date');
     const customNote = $('#custom-note').val();
     if (customNote) {
@@ -94,13 +94,13 @@ function initializePage() {
         color: 'blue',
         note: customNote
       });
-      $('#custom-note').val(''); // Clear the input
+      $('#custom-note').val('');
       $('#note-input-popup').hide();
       displayCalendar($('#startDate').val());
     }
   });
 
-  $('#cancel-note').click(() => {
+  $('#cancel-note').off('click').on('click', () => {
     $('#note-input-popup').hide();
   });
 
@@ -141,11 +141,11 @@ function initializePage() {
     $('#journal-popup').show();
   }
 
-  $('#journal-popup button').click(() => {
+  $('#journal-popup button').off('click').on('click', () => {
     $('#journal-popup').hide();
   });
 
-  $('#popup-overlay, #note-popup-overlay').on('click', () => {
+  $('#popup-overlay, #note-popup-overlay').off('click').on('click', () => {
     $('#note-popup').hide();
     $('#journal-popup').hide();
     $('#note-input-popup').hide();
@@ -154,7 +154,7 @@ function initializePage() {
   let timerInterval;
 
   function startTimer(commitTime) {
-    clearInterval(timerInterval); // Clear any existing timer
+    clearInterval(timerInterval);
 
     timerInterval = setInterval(function() {
       const currentTime = new Date();
@@ -179,29 +179,22 @@ function initializePage() {
   }
 
   const loginButton = document.getElementById('login');
-  loginButton.addEventListener('click', () => {
-    netlifyIdentity.open();
-  });
+  loginButton.removeEventListener('click', openLogin);
+  loginButton.addEventListener('click', openLogin);
 
-  netlifyIdentity.on('login', user => {
+  function openLogin() {
+    netlifyIdentity.open();
+  }
+
+  netlifyIdentity.off('login').on('login', user => {
     console.log('User logged in:', user);
     netlifyIdentity.close();
   });
 
-  netlifyIdentity.on('logout', () => {
+  netlifyIdentity.off('logout').on('logout', () => {
     console.log('User logged out');
     window.location.href = 'index.html';
   });
-
-  // Initialize the calendar with stored events
-  const commitTime = localStorage.getItem('commitTime');
-  if (commitTime) {
-    displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
-    startTimer(new Date(commitTime));
-  } else {
-    displayCalendar(new Date());
-  }
 }
 
 $(document).ready(initializePage);
-$(window).on('pageshow', initializePage);
