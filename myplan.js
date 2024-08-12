@@ -4,7 +4,7 @@ $(document).ready(function() {
 
   $('#dateForm').on('submit', function(e) {
     e.preventDefault();
-    var selectedDate = $('#startDate').val();
+    const selectedDate = $('#startDate').val();
     if (selectedDate) {
       const commitTime = new Date(); // Capture the exact time of commit
       const selectedDateArray = selectedDate.split('-');
@@ -163,7 +163,7 @@ $(document).ready(function() {
       const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-      $('#timeCounter').text(`Time since commit: ${days}d ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
+      $('#timeCounter').text(`Temps écoulé depuis l'engagement: ${days}j ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
     }, 1000);
   }
 
