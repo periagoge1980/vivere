@@ -202,9 +202,9 @@
     <h1 id="page-title">Mon Plan</h1>
 
     <form id="dateForm">
-      <h3>Sélectionnez une date d'arrêt</h3>
+      <h3 id="select-date-title">Sélectionnez une date d'arrêt</h3>
       <input type="date" id="startDate" value="">
-      <button type="submit">C'est Fini!</button>
+      <button type="submit" id="commit-button">C'est Fini!</button>
     </form>
     <div id="timeCounter">Temps écoulé depuis l'engagement: 00:00:00</div>
     <div id="calendar"></div>
@@ -246,6 +246,39 @@
     $(document).ready(function() {
       const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
       const storedCommitTime = localStorage.getItem('commitTime');
+
+      const translations = {
+        en: {
+          title: 'My Plan',
+          header: 'Welcome to the Vivere Project',
+          commitButton: 'Commit!',
+          timeSinceCommit: 'Time since commit:',
+          planTitle: 'My Plan',
+          selectDate: 'Select a quit date',
+        },
+        fr: {
+          title: 'Mon Plan',
+          header: 'Bienvenue sur Le Projet Vivere',
+          commitButton: "C'est Fini!",
+          timeSinceCommit: "Temps écoulé depuis l'engagement:",
+          planTitle: 'Mon Plan',
+          selectDate: "Sélectionnez une date d'arrêt",
+        }
+      };
+
+      function setLanguage(lang) {
+        if (translations[lang]) {
+          document.title = translations[lang].title;
+          document.getElementById('header-title').textContent = translations[lang].header;
+          document.getElementById('commit-button').textContent = translations[lang].commitButton;
+          document.getElementById('timeCounter').textContent = translations[lang].timeSinceCommit + ' 00:00:00';
+          document.getElementById('page-title').textContent = translations[lang].planTitle;
+          document.getElementById('select-date-title').textContent = translations[lang].selectDate;
+        }
+      }
+
+      document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+      document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
 
       $('#dateForm').on('submit', function(e) {
         e.preventDefault();
@@ -408,7 +441,7 @@
           const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
           const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-          $('#timeCounter').text(`Temps écoulé depuis l'engagement: ${days}j ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
+          $('#timeCounter').text(`${translations[document.documentElement.lang].timeSinceCommit} ${days}j ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
         }, 1000);
       }
 
@@ -446,6 +479,9 @@
       } else {
         displayCalendar(new Date());
       }
+
+      // Set default language
+      setLanguage('fr');
     });
   </script>
 </body>
