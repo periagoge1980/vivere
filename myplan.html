@@ -96,8 +96,13 @@
     }
     input[type="date"] {
       padding: 10px;
-      margin-right: 10px;
+      margin-left: 10px;
       font-size: 16px;
+    }
+    h3 {
+      margin: 0 10px 0 0;
+      font-size: 1rem;
+      color: #333;
     }
     button {
       padding: 10px;
@@ -194,11 +199,12 @@
       <a href="myplan.html">Mon Plan</a>
     </div>
 
-    <h1>Planifiez votre évasion de la dépendance</h1>
+    <h1 id="page-title">Mon Plan</h1>
 
     <form id="dateForm">
+      <h3>Sélectionnez une date d'arrêt</h3>
       <input type="date" id="startDate" value="">
-      <button type="submit">Engager!</button>
+      <button type="submit">C'est Fini!</button>
     </form>
     <div id="timeCounter">Temps écoulé depuis l'engagement: 00:00:00</div>
     <div id="calendar"></div>
@@ -244,14 +250,16 @@
         header: 'Welcome to the Vivere Project',
         commitButton: 'Commit!',
         timeSinceCommit: 'Time since commit:',
-        planTitle: 'Plan your escape from addiction',
+        planTitle: 'My Plan',
+        selectDate: 'Select a quit date',
       },
       fr: {
         title: 'Mon Plan',
         header: 'Bienvenue sur Le Projet Vivere',
-        commitButton: 'Engager!',
-        timeSinceCommit: 'Temps écoulé depuis l\'engagement:',
-        planTitle: 'Planifiez votre évasion de la dépendance',
+        commitButton: "C'est Fini!",
+        timeSinceCommit: "Temps écoulé depuis l'engagement:",
+        planTitle: 'Mon Plan',
+        selectDate: "Sélectionnez une date d'arrêt",
       }
     };
 
@@ -261,7 +269,8 @@
         document.getElementById('header-title').textContent = translations[lang].header;
         document.querySelector('button[type="submit"]').textContent = translations[lang].commitButton;
         document.getElementById('timeCounter').textContent = translations[lang].timeSinceCommit + ' 00:00:00';
-        document.querySelector('h1').textContent = translations[lang].planTitle;
+        document.getElementById('page-title').textContent = translations[lang].planTitle;
+        document.querySelector('h3').textContent = translations[lang].selectDate;
       }
     };
 
