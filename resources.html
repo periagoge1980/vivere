@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Addiction Resource Finder</title>
+  <title id="page-title">Recherche de ressources en matière de dépendance</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -28,6 +28,25 @@
       margin: 0 15px;
       text-decoration: none;
       color: #007BFF;
+    }
+    .lang-switch {
+      display: flex;
+      align-items: center;
+      margin-left: 15px;
+      justify-content: center;
+    }
+    .lang-switch button {
+      margin: 0 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .lang-switch button:hover {
+      background-color: #0056b3;
     }
     form {
       display: flex;
@@ -75,22 +94,26 @@
 <body>
   <div class="container">
     <nav>
-      <a href="index.html">Home</a>
-      <a href="resources.html">Resources</a>
-      <a href="myplan.html">My Plan</a>
-      <button id="login" style="float: right;">Login/Signup</button>
+      <a href="index.html">Accueil</a>
+      <a href="resources.html">Ressources</a>
+      <a href="myplan.html">Mon Plan</a>
+      <button id="login" style="float: right;">Connexion/Inscription</button>
+      <div class="lang-switch">
+        <button id="lang-en">EN</button>
+        <button id="lang-fr">FR</button>
+      </div>
     </nav>
-    <h1>Find Addiction Resources</h1>
+    <h1 id="header-title">Trouvez des ressources en matière de dépendance</h1>
     <form id="resourceForm">
       <select id="dependency" required>
-        <option value="">Select Dependency</option>
-        <option value="Alcohol">Alcohol</option>
-        <option value="Drugs">Drugs</option>
-        <option value="Gambling">Gambling</option>
-        <option value="Sex">Sex</option>
+        <option value="">Sélectionner la dépendance</option>
+        <option value="Alcohol">Alcool</option>
+        <option value="Drugs">Drogues</option>
+        <option value="Gambling">Jeux</option>
+        <option value="Sex">Sexe</option>
       </select>
-      <input type="text" id="postalCode" placeholder="Enter Postal Code" required>
-      <button type="submit">Search</button>
+      <input type="text" id="postalCode" placeholder="Entrez le code postal" required>
+      <button type="submit">Rechercher</button>
     </form>
     <div id="map"></div>
     <ul id="resourceList"></ul>
@@ -103,6 +126,36 @@
     let map;
     let markers = [];
 
+    const translations = {
+      en: {
+        title: 'Addiction Resource Finder',
+        header: 'Find Addiction Resources',
+        selectDependency: 'Select Dependency',
+        placeholder: 'Enter Postal Code',
+        searchButton: 'Search',
+      },
+      fr: {
+        title: 'Recherche de ressources en matière de dépendance',
+        header: 'Trouvez des ressources en matière de dépendance',
+        selectDependency: 'Sélectionner la dépendance',
+        placeholder: 'Entrez le code postal',
+        searchButton: 'Rechercher',
+      }
+    };
+
+    const setLanguage = (lang) => {
+      if (translations[lang]) {
+        document.getElementById('page-title').textContent = translations[lang].title;
+        document.getElementById('header-title').textContent = translations[lang].header;
+        document.getElementById('dependency').firstElementChild.textContent = translations[lang].selectDependency;
+        document.getElementById('postalCode').placeholder = translations[lang].placeholder;
+        document.querySelector('button[type="submit"]').textContent = translations[lang].searchButton;
+      }
+    };
+
+    document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+    document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
+
     function renderResourceList(resources) {
       const resourceList = document.getElementById('resourceList');
       resourceList.innerHTML = '';
@@ -112,12 +165,12 @@
         listItem.innerHTML = `
           <h2>${resource.name}</h2>
           <p>${resource.address}</p>
-          <button onclick="viewResourceDetail(${index})">View Details</button>
+          <button onclick="viewResourceDetail(${index})">Voir les détails</button>
         `;
         resourceList.appendChild(listItem);
       });
 
-      console.log("Resource list rendered with", resources.length, "items.");
+      console.log("La liste des ressources a été rendue avec", resources.length, "éléments.");
     }
 
     function viewResourceDetail(index) {
@@ -178,8 +231,8 @@
       const dependency = document.getElementById('dependency').value;
       const postalCode = document.getElementById('postalCode').value;
 
-      console.log("Selected Dependency:", dependency);
-      console.log("Entered Postal Code:", postalCode);
+      console.log("Dépendance sélectionnée:", dependency);
+      console.log("Code postal entré:", postalCode);
 
       const geocoder = new google.maps.Geocoder();
       geocoder.geocode({ address: postalCode }, function(results, status) {
@@ -193,12 +246,12 @@
 
           const resourcesInBounds = filterResourcesByMapBounds(filteredResources);
 
-          console.log("Filtered Resources:", resourcesInBounds);
+          console.log("Ressources filtrées:", resourcesInBounds);
 
           renderResourceList(resourcesInBounds);
           loadMarkers(resourcesInBounds);
         } else {
-          console.error('Geocode was not successful for the following reason:', status);
+          console.error('La géolocalisation n\'a pas réussi pour la raison suivante :', status);
         }
       });
     });
@@ -209,8 +262,11 @@
         .then(data => {
           initMap(data.key);
         })
-        .catch(error => console.error('Error fetching Google Maps API key:', error));
+        .catch(error => console.error('Erreur lors de la récupération de la clé API Google Maps :', error));
     });
+
+    // Set default language
+    setLanguage('fr');  
   </script>
   <!-- Include Netlify Identity script -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
@@ -231,12 +287,12 @@
     });
 
     netlifyIdentity.on('login', user => {
-      console.log('User logged in:', user);
+      console.log('Utilisateur connecté:', user);
       netlifyIdentity.close();
     });
 
     netlifyIdentity.on('logout', () => {
-      console.log('User logged out');
+      console.log('Utilisateur déconnecté');
     });
   </script>
 </body>
