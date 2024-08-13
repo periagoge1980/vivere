@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">Bienvenue sur Le Projet Vivere</title>
+  <title id="page-title">Welcome to the Vivere Project</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -148,9 +148,9 @@
 </head>
 <body>
   <header>
-    <h1 id="header-title">Bienvenue sur Le Projet Vivere</h1>
+    <h1 id="header-title">Welcome to the Vivere Project</h1>
     <div class="login">
-      <button id="login">Connexion/Inscription</button>
+      <button id="login">Login/Signup</button>
       <div class="lang-switch">
         <button id="lang-en">EN</button>
         <button id="lang-fr">FR</button>
@@ -163,21 +163,21 @@
     </div>
     <div class="blurb-box">
       <div class="blurb" id="blurb">
-        <p>Bienvenue sur Le Projet Vivere. Notre mission est de fournir des ressources en ligne complètes pour les personnes confrontées à divers types de dépendances. Nous comprenons les défis et le courage qu'il faut pour demander de l'aide et changer.</p>
-        <p>Le Projet Vivere est entièrement gratuit à utiliser. Nous croyons que le soutien doit être accessible à tous sans barrières financières.</p>       
+        <p>Welcome to The Vivere Project. Our mission is to provide comprehensive online resources for individuals struggling with various forms of addiction. We understand the challenges and the courage it takes to seek help and make a change.</p>
+        <p>The Vivere Project is entirely free to use. We believe that support should be accessible to everyone without financial barriers.</p>
       </div>
     </div>
     <nav>
       <div class="links">
-        <a href="index.html">Accueil</a>
-        <a href="resources.html">Ressources</a>
-        <a href="#" id="myPlanLink">Mon Plan</a>
+        <a href="index.html">Home</a>
+        <a href="resources.html">Resources</a>
+        <a href="myplan.html">My Plan</a>
         <a href="blog.html">Blog</a>
       </div>
     </nav>
-    <div id="message" class="message" style="display: none;">Veuillez vous connecter pour accéder à cette fonctionnalité réservée aux membres.</div>
+    <div id="message" class="message" style="display: none;">Please log in to access this member-only feature.</div>
     <div class="patreon">
-      <a href="https://www.patreon.com/thevivereproject" target="_blank">Soutenez-nous sur Patreon</a>
+      <a href="https://www.patreon.com/thevivereproject" target="_blank">Support Us on Patreon</a>
     </div>
   </div>
   <footer>
@@ -185,7 +185,21 @@
   </footer>
 
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
+    async function getSupabaseKey() {
+      const response = await fetch('/.netlify/functions/getSupabaseKey');
+      const data = await response.json();
+      return data.key;
+    }
+
+    async function initSupabase() {
+      const supabaseKey = await getSupabaseKey();
+      const supabaseUrl = 'https://your-supabase-url.supabase.co';
+      const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+      return supabase;
+    }
+
     const loginButton = document.getElementById('login');
     const myPlanLink = document.getElementById('myPlanLink');
     const message = document.getElementById('message');
@@ -223,26 +237,69 @@
     document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
     document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
 
-    netlifyIdentity.on('init', user => {
-      if (!user) {
-        // Uncomment the line below if you want to open the login modal automatically when there's no user
-        // netlifyIdentity.open();
+    netlifyIdentity.on('init', async (user) => {
+      if (user) {
+        // Initialize Supabase
+        const supabase = await initSupabase();
+        
+        // Check if the user exists in the Supabase user table
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('user_id', user.id);
+        
+        if (error) {
+          console.error('Error fetching user data:', error);
+        } else if (data.length === 0) {
+          // If the user doesn't exist, create a new record
+          const { error: insertError } = await supabase
+            .from('users')
+            .insert([{ user_id: user.id }]);
+          
+          if (insertError) {
+            console.error('Error inserting new user:', insertError);
+          } else {
+            console.log('New user created in Supabase');
+          }
+        } else {
+          console.log('User already exists in Supabase');
+        }
       }
     });
 
-    netlifyIdentity.init();
-
-    loginButton.addEventListener('click', () => {
-      netlifyIdentity.open();
-    });
-
-    netlifyIdentity.on('login', user => {
-      console.log('Utilisateur connecté:', user);
+    netlifyIdentity.on('login', async (user) => {
+      console.log('User logged in:', user);
       netlifyIdentity.close();
+      
+      // Initialize Supabase
+      const supabase = await initSupabase();
+      
+      // Check if the user exists in the Supabase user table
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('user_id', user.id);
+      
+      if (error) {
+        console.error('Error fetching user data:', error);
+      } else if (data.length === 0) {
+        // If the user doesn't exist, create a new record
+        const { error: insertError } = await supabase
+          .from('users')
+          .insert([{ user_id: user.id }]);
+        
+        if (insertError) {
+          console.error('Error inserting new user:', insertError);
+        } else {
+          console.log('New user created in Supabase');
+        }
+      } else {
+        console.log('User already exists in Supabase');
+      }
     });
 
     netlifyIdentity.on('logout', () => {
-      console.log('Utilisateur déconnecté');
+      console.log('User logged out');
     });
 
     myPlanLink.addEventListener('click', (e) => {
@@ -261,7 +318,5 @@
     // Set default language
     setLanguage('fr');      
   </script>
-    <!-- Supabase Initialization Script -->
-  <script src="/path/to/supabase-init.js"></script>
 </body>
 </html>
