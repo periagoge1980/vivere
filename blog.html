@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog - Projet Vivere</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      text-align: left;
+      font-weight: bold;
+      color: white;
+    }
+    .login {
+      display: flex;
+      align-items: center;
+    }
+    .login button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-right: 10px;
+    }
+    .login button:hover {
+      background-color: #0056b3;
+    }
+    .lang-switch {
+      display: flex;
+      align-items: center;
+    }
+    .lang-switch button {
+      margin: 0 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .lang-switch button:hover {
+      background-color: #0056b3;
+    }
+    .container {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+    .links {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .links a {
+      margin: 5px 10px;
+      text-decoration: none;
+      color: white;
+      background-color: #007BFF;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .links a:hover {
+      background-color: #0056b3;
+    }
+    .blog-header {
+      margin-bottom: 30px;
+    }
+    .blog-header h1 {
+      font-size: 2.5rem;
+      color: #333;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .blog-post {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .blog-post h2 {
+      font-size: 1.75rem;
+      color: #007BFF;
+      margin-bottom: 10px;
+    }
+    .blog-post p {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #555;
+      text-align: left;
+    }
+    .blog-post a {
+      color: #007BFF;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .blog-post a:hover {
+      text-decoration: underline;
+    }
+    .blog-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #999;
+    }
+    footer {
+      background-color: #f1f1f1;
+      padding: 10px;
+      text-align: center;
+      margin-top: auto;
+    }
+    .patreon {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .patreon a {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #f96854;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    .patreon a:hover {
+      background-color: #c65042;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="header-title">Bienvenue sur Le Projet Vivere</h1>
+    <div class="login">
+      <button id="login">Connexion/Inscription</button>
+      <div class="lang-switch">
+        <button id="lang-en">EN</button>
+        <button id="lang-fr">FR</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="links">
+      <a href="index.html">Accueil</a>
+      <a href="resources.html">Ressources</a>
+      <a href="myplan.html">Mon Plan</a>
+      <a href="blog.html">Blog</a>
+    </div>
+
+    <div class="blog-header">
+      <h1>Blog</h1>
+    </div>
+
+    <div class="blog-post">
+      <h2>Titre du premier article de blog</h2>
+      <p>
+        Voici un exemple de contenu pour le premier article de blog. Il pourrait
+        s'agir d'un aperçu de l'article avec un lien pour lire la suite. Cet
+        espace est destiné à offrir un aperçu captivant qui encourage les
+        visiteurs à cliquer pour en savoir plus. <a href="#">Lire la suite</a>
+      </p>
+    </div>
+
+    <div class="blog-post">
+      <h2>Titre du deuxième article de blog</h2>
+      <p>
+        Voici un exemple de contenu pour le deuxième article de blog. Vous
+        pouvez personnaliser cette section avec des extraits ou des introductions
+        pour chaque article. Cela permet de présenter plusieurs articles sur une
+        même page tout en gardant un aspect soigné. <a href="#">Lire la suite</a>
+      </p>
+    </div>
+
+    <!-- Patreon Button -->
+    <div class="patreon">
+      <a href="https://www.patreon.com/thevivereproject" target="_blank">Soutenez-nous sur Patreon</a>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2024 Projet Vivere. Tous droits réservés.
+  </footer>
+
+  <script>
+    const translations = {
+      en: {
+        header: 'Welcome to the Vivere Project',
+      },
+      fr: {
+        header: 'Bienvenue sur Le Projet Vivere',
+      }
+    };
+
+    function setLanguage(lang) {
+      if (translations[lang]) {
+        document.getElementById('header-title').textContent = translations[lang].header;
+      }
+    }
+
+    document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+    document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setLanguage('fr');
+    });
+  </script>
+</body>
+</html>
