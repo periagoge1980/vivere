@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Plan</title>
+  <title>Mon Plan</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
   <style>
     body {
@@ -25,6 +25,44 @@
     }
     header h1 {
       margin: 0;
+      font-size: 1.5rem;
+      text-align: left;
+      font-weight: bold;
+      color: white;
+    }
+    .login {
+      display: flex;
+      align-items: center;
+    }
+    .login button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-right: 10px;
+    }
+    .login button:hover {
+      background-color: #0056b3;
+    }
+    .lang-switch {
+      display: flex;
+      align-items: center;
+    }
+    .lang-switch button {
+      margin: 0 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .lang-switch button:hover {
+      background-color: #0056b3;
     }
     .container {
       flex: 1;
@@ -32,6 +70,23 @@
       margin: 0 auto;
       padding: 20px;
       text-align: center;
+    }
+    .links {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .links a {
+      margin: 5px 10px;
+      text-decoration: none;
+      color: white;
+      background-color: #007BFF;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .links a:hover {
+      background-color: #0056b3;
     }
     form {
       display: flex;
@@ -41,8 +96,13 @@
     }
     input[type="date"] {
       padding: 10px;
-      margin-right: 10px;
+      margin-left: 10px;
       font-size: 16px;
+    }
+    h3 {
+      margin: 0 10px 0 0;
+      font-size: 1rem;
+      color: #333;
     }
     button {
       padding: 10px;
@@ -65,18 +125,6 @@
       max-width: 900px;
       margin: 0 auto;
       margin-top: 20px;
-    }
-    a {
-      text-decoration: none;
-      color: #007BFF;
-      border: 1px solid #007BFF;
-      padding: 10px 20px;
-      margin: 5px;
-      display: inline-block;
-    }
-    a:hover {
-      background-color: #007BFF;
-      color: white;
     }
     footer {
       background-color: #f1f1f1;
@@ -151,27 +199,40 @@
 </head>
 <body>
   <header>
-    <h1>My Plan</h1>
-    <a id="login" class="login-link">Login/Signup</a>
+    <h1 id="header-title">Bienvenue sur Le Projet Vivere</h1>
+    <div class="login">
+      <button id="login">Connexion/Inscription</button>
+      <div class="lang-switch">
+        <button id="lang-en">EN</button>
+        <button id="lang-fr">FR</button>
+      </div>
+    </div>
   </header>
+
   <div class="container">
+    <div class="links">
+      <a href="index.html">Accueil</a>
+      <a href="resources.html">Ressources</a>
+      <a href="myplan.html">Mon Plan</a>
+    </div>
+
+    <h1 id="page-title">Mon Plan</h1>
+
     <form id="dateForm">
-      <h3>Select a quit date</h3>
+      <h3 id="select-date-title">Sélectionnez une date d'arrêt</h3>
       <input type="date" id="startDate" value="">
-      <button type="submit">Commit!</button>
+      <button type="submit" id="commit-button">C'est Fini!</button>
     </form>
-    <div id="timeCounter">Time since commit: 00:00:00</div>
+    <div id="timeCounter">Temps écoulé depuis l'engagement: 00:00:00</div>
     <div id="calendar"></div>
-    <a href="index.html">Home</a>
-    <a href="resources.html">Resources</a>
 
     <!-- Patreon Button -->
     <div class="patreon">
-      <a href="https://www.patreon.com/thevivereproject" target="_blank">Support Us on Patreon</a>
+      <a href="https://www.patreon.com/thevivereproject" target="_blank">Soutenez-nous sur Patreon</a>
     </div>
   </div>
   <footer>
-    &copy; 2024 The Vivere Project. All rights reserved.
+    &copy; 2024 Projet Vivere. Tous droits réservés.
   </footer>
 
   <div id="note-popup-overlay"></div>
@@ -203,6 +264,247 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="myplan.js"></script>
+  <script>
+    $(document).ready(function() {
+      const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
+      const storedCommitTime = localStorage.getItem('commitTime');
+
+      const translations = {
+        en: {
+          title: 'My Plan',
+          header: 'Welcome to the Vivere Project',
+          commitButton: 'Commit!',
+          timeSinceCommit: 'Time since commit:',
+          planTitle: 'My Plan',
+          selectDate: 'Select a quit date',
+        },
+        fr: {
+          title: 'Mon Plan',
+          header: 'Bienvenue sur Le Projet Vivere',
+          commitButton: "C'est Fini!",
+          timeSinceCommit: "Temps écoulé depuis l'engagement:",
+          planTitle: 'Mon Plan',
+          selectDate: "Sélectionnez une date d'arrêt",
+        }
+      };
+
+      function setLanguage(lang) {
+        if (translations[lang]) {
+          document.title = translations[lang].title;
+          document.getElementById('header-title').textContent = translations[lang].header;
+          document.getElementById('commit-button').textContent = translations[lang].commitButton;
+          document.getElementById('timeCounter').textContent = translations[lang].timeSinceCommit + ' 00:00:00';
+          document.getElementById('page-title').textContent = translations[lang].planTitle;
+          document.getElementById('select-date-title').textContent = translations[lang].selectDate;
+        }
+      }
+
+      document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+      document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
+
+      $('#dateForm').on('submit', function(e) {
+        e.preventDefault();
+        const selectedDate = $('#startDate').val();
+        if (selectedDate) {
+          const commitTime = new Date(); // Capture the exact time of commit
+          const selectedDateArray = selectedDate.split('-');
+          commitTime.setFullYear(
+            selectedDateArray[0],
+            selectedDateArray[1] - 1,
+            selectedDateArray[2]
+          );
+          localStorage.setItem('commitTime', commitTime.toISOString());
+          displayCalendar(selectedDate);
+          startTimer(commitTime);
+        }
+      });
+
+      if (storedCommitTime) {
+        const commitTime = new Date(storedCommitTime);
+        $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
+        displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
+        startTimer(commitTime);
+      } else {
+        displayCalendar(new Date());
+      }
+
+      function displayCalendar(date) {
+        $('#calendar').fullCalendar('destroy'); // Destroy any existing calendar
+        $('#calendar').fullCalendar({
+          defaultDate: date,
+          editable: true,
+          eventLimit: true, // allow "more" link when too many events
+          dayClick: function(date) {
+            const selectedDate = date.format('YYYY-MM-DD');
+            $('#note-popup').data('date', selectedDate).show();
+            displayNotes(selectedDate);
+          },
+          events: getStoredEvents()
+        });
+      }
+
+      function getStoredEvents() {
+        let events = [];
+        for (let date in storedNotes) {
+          storedNotes[date].forEach(note => {
+            events.push({
+              title: note.title,
+              start: date,
+              color: note.color
+            });
+          });
+        }
+        return events;
+      }
+
+      function displayNotes(date) {
+        const notesContainer = $('#notes-container');
+        notesContainer.empty(); // Clear any previous notes
+        if (storedNotes[date]) {
+          storedNotes[date].forEach(note => {
+            const noteBlock = `<div class="note-block" style="background-color: ${note.color};">${note.note}</div>`;
+            notesContainer.append(noteBlock);
+          });
+          $('#remove-note').show();
+        } else {
+          notesContainer.append('<div class="note-block">No notes for this day.</div>');
+          $('#remove-note').hide();
+        }
+      }
+
+      $('#positive').click(() => saveNoteToCalendar('Positive', 'green'));
+      $('#triggered').click(() => saveNoteToCalendar('Triggered', 'red'));
+      $('#relapsed').click(() => {
+        saveNoteToCalendar('Relapsed', 'orange');
+        resetTimer();
+      });
+      $('#add-note').click(() => {
+        $('#note-popup').hide();
+        $('#note-input-popup').show();
+      });
+      $('#remove-note').click(() => removeNoteFromCalendar());
+      $('#view-day').click(() => viewDayJournal());
+
+      $('#save-note').click(() => {
+        const selectedDate = $('#note-popup').data('date');
+        const customNote = $('#custom-note').val();
+        if (customNote) {
+          addNoteToDate(selectedDate, {
+            title: customNote,
+            color: 'blue',
+            note: customNote
+          });
+          $('#custom-note').val(''); // Clear the input
+          $('#note-input-popup').hide();
+          displayCalendar($('#startDate').val());
+        }
+      });
+
+      $('#cancel-note').click(() => {
+        $('#note-input-popup').hide();
+      });
+
+      function saveNoteToCalendar(note, color) {
+        const selectedDate = $('#note-popup').data('date');
+        addNoteToDate(selectedDate, {
+          title: note,
+          color: color,
+          note: note
+        });
+        $('#note-popup').hide();
+        displayCalendar($('#startDate').val());
+      }
+
+      function addNoteToDate(date, note) {
+        if (!storedNotes[date]) {
+          storedNotes[date] = [];
+        }
+        storedNotes[date].push(note);
+        localStorage.setItem('notes', JSON.stringify(storedNotes));
+      }
+
+      function removeNoteFromCalendar() {
+        const selectedDate = $('#note-popup').data('date');
+        delete storedNotes[selectedDate];
+        localStorage.setItem('notes', JSON.stringify(storedNotes));
+        $('#note-popup').hide();
+        displayCalendar($('#startDate').val());
+      }
+
+      function viewDayJournal() {
+        const selectedDate = $('#note-popup').data('date');
+        const journalEntries = storedNotes[selectedDate]
+          ? storedNotes[selectedDate].map(note => `<div class="note-block">${note.note}</div>`).join('')
+          : '<div class="note-block">No notes for this day.</div>';
+        $('#day-journal').html(journalEntries);
+        $('#note-popup').hide();
+        $('#journal-popup').show();
+      }
+
+      $('#journal-popup button').click(() => {
+        $('#journal-popup').hide();
+      });
+
+      $('#popup-overlay, #note-popup-overlay').on('click', () => {
+        $('#note-popup').hide();
+        $('#journal-popup').hide();
+        $('#note-input-popup').hide();
+      });
+
+      let timerInterval;
+
+      function startTimer(commitTime) {
+        clearInterval(timerInterval); // Clear any existing timer
+
+        timerInterval = setInterval(function() {
+          const currentTime = new Date();
+          const timeDiff = currentTime - new Date(commitTime);
+          const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+          $('#timeCounter').text(`${translations[document.documentElement.lang].timeSinceCommit} ${days}j ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
+        }, 1000);
+      }
+
+      function resetTimer() {
+        clearInterval(timerInterval);
+        const newCommitTime = new Date();
+        localStorage.setItem('commitTime', newCommitTime.toISOString());
+        startTimer(newCommitTime);
+      }
+
+      function formatTime(unit) {
+        return unit < 10 ? '0' + unit : unit;
+      }
+
+      const loginButton = document.getElementById('login');
+      loginButton.addEventListener('click', () => {
+        netlifyIdentity.open();
+      });
+
+      netlifyIdentity.on('login', user => {
+        console.log('User logged in:', user);
+        netlifyIdentity.close();
+      });
+
+      netlifyIdentity.on('logout', () => {
+        console.log('User logged out');
+        window.location.href = 'index.html';
+      });
+
+      // Initialize the calendar with stored events
+      const commitTime = localStorage.getItem('commitTime');
+      if (commitTime) {
+        displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
+        startTimer(new Date(commitTime));
+      } else {
+        displayCalendar(new Date());
+      }
+
+      // Set default language
+      setLanguage('fr');
+    });
+  </script>
 </body>
 </html>
