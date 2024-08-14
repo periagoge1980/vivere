@@ -26,8 +26,8 @@
       margin: 0;
       font-size: 1.5rem;
       text-align: left;
-      font-weight: bold; /* Pour correspondre au style gras */
-      color: white; /* Couleur blanche comme dans index.html */
+      font-weight: bold;
+      color: white;
     }
     .login {
       display: flex;
@@ -384,6 +384,37 @@
       console.log('Utilisateur déconnecté');
     });
   </script>
-  <script src="/path/to/supabase-init.js"></script>
-  </body>
+  <!-- Supabase Integration -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    async function getSupabaseKey() {
+      const response = await fetch('/.netlify/functions/getSupabaseKey');
+      const data = await response.json();
+      return data.key;
+    }
+
+    async function initSupabase() {
+      const supabaseKey = await getSupabaseKey();
+      const supabaseUrl = 'https://ssdnvbiiznvjuobrrhpt.supabase.co';
+      return supabase.createClient(supabaseUrl, supabaseKey);
+    }
+
+    // Example function to fetch resources using Supabase
+    async function fetchResources() {
+      const supabase = await initSupabase();
+      const { data, error } = await supabase
+        .from('resources')
+        .select('*');
+
+      if (error) {
+        console.error('Erreur lors de la récupération des ressources:', error);
+      } else {
+        renderResourceList(data);
+      }
+    }
+
+    // Fetch resources on page load
+    document.addEventListener('DOMContentLoaded', fetchResources);
+  </script>
+</body>
 </html>
