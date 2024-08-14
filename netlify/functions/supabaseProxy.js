@@ -13,12 +13,20 @@ exports.handler = async function(event, context) {
   if (error) {
     return {
       statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*', // Allow any origin
+        'Access-Control-Allow-Headers': 'Content-Type', // Allow specific headers
+      },
       body: JSON.stringify({ error: error.message })
     };
   }
 
   return {
     statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*', // Allow any origin
+      'Access-Control-Allow-Headers': 'Content-Type', // Allow specific headers
+    },
     body: JSON.stringify(data)
   };
 };
