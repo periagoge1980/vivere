@@ -171,7 +171,7 @@
       <div class="links">
         <a href="index.html">Home</a>
         <a href="resources.html">Resources</a>
-        <a href="myplan.html">My Plan</a>
+        <a href="myplan.html" id="myPlanLink">My Plan</a>
         <a href="blog.html">Blog</a>
       </div>
     </nav>
@@ -191,23 +191,15 @@
 
   <script>
     async function getSupabaseKey() {
-      try {
-        const response = await fetch('/.netlify/functions/getSupabaseKey');
-        const data = await response.json();
-        return data.key;
-      } catch (error) {
-        console.error('Error fetching Supabase key:', error);
-      }
+      const response = await fetch('/.netlify/functions/getSupabaseKey');
+      const data = await response.json();
+      return data.key;
     }
 
     async function initSupabase() {
-      try {
-        const supabaseKey = await getSupabaseKey();
-        const supabaseUrl = 'https://your-supabase-url.supabase.co';
-        return supabase.createClient(supabaseUrl, supabaseKey);
-      } catch (error) {
-        console.error('Error initializing Supabase:', error);
-      }
+      const supabaseKey = await getSupabaseKey();
+      const supabaseUrl = 'https://your-supabase-url.supabase.co';
+      return supabase.createClient(supabaseUrl, supabaseKey);
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -314,18 +306,21 @@
         console.log('User logged out');
       });
 
-      myPlanLink.addEventListener('click', (e) => {
-        const user = netlifyIdentity.currentUser();
-        if (!user) {
-          e.preventDefault();
-          message.style.display = 'block';
-          setTimeout(() => {
-            message.style.display = 'none';
-          }, 3000);
-        } else {
-          window.location.href = 'myplan.html';
-        }
-      });
+      // Check if the myPlanLink exists before adding an event listener
+      if (myPlanLink) {
+        myPlanLink.addEventListener('click', (e) => {
+          const user = netlifyIdentity.currentUser();
+          if (!user) {
+            e.preventDefault();
+            message.style.display = 'block';
+            setTimeout(() => {
+              message.style.display = 'none';
+            }, 3000);
+          } else {
+            window.location.href = 'myplan.html';
+          }
+        });
+      }
 
       // Make sure the login button works properly
       loginButton.addEventListener('click', () => {
