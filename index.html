@@ -93,25 +93,32 @@
         if (user) {
           const supabase = await initSupabase();
 
-          const { data, error } = await supabase
-            .from('users')
-            .select('*')
-            .eq('user_id', user.id);
-
-          if (error) {
-            console.error('Error fetching user data:', error);
-          } else if (data.length === 0) {
-            const { error: insertError } = await supabase
+          try {
+            const { data, error } = await supabase
               .from('users')
-              .insert([{ user_id: user.id }]);
+              .select('*')
+              .eq('user_id', user.id);
 
-            if (insertError) {
-              console.error('Error inserting new user:', insertError);
+            if (error) {
+              console.error('Error fetching user data:', error);
+              alert('There was an error fetching user data. Check the console for details.');
+            } else if (data.length === 0) {
+              const { error: insertError } = await supabase
+                .from('users')
+                .insert([{ user_id: user.id }]);
+
+              if (insertError) {
+                console.error('Error inserting new user:', insertError);
+                alert('There was an error inserting new user. Check the console for details.');
+              } else {
+                console.log('New user created in Supabase');
+              }
             } else {
-              console.log('New user created in Supabase');
+              console.log('User already exists in Supabase');
             }
-          } else {
-            console.log('User already exists in Supabase');
+          } catch (e) {
+            console.error('Unexpected error:', e);
+            alert('An unexpected error occurred. Check the console for details.');
           }
         }
       });
@@ -122,25 +129,32 @@
 
         const supabase = await initSupabase();
 
-        const { data, error } = await supabase
-          .from('users')
-          .select('*')
-          .eq('user_id', user.id);
-
-        if (error) {
-          console.error('Error fetching user data:', error);
-        } else if (data.length === 0) {
-          const { error: insertError } = await supabase
+        try {
+          const { data, error } = await supabase
             .from('users')
-            .insert([{ user_id: user.id }]);
+            .select('*')
+            .eq('user_id', user.id);
 
-          if (insertError) {
-            console.error('Error inserting new user:', insertError);
+          if (error) {
+            console.error('Error fetching user data:', error);
+            alert('There was an error fetching user data. Check the console for details.');
+          } else if (data.length === 0) {
+            const { error: insertError } = await supabase
+              .from('users')
+              .insert([{ user_id: user.id }]);
+
+            if (insertError) {
+              console.error('Error inserting new user:', insertError);
+              alert('There was an error inserting new user. Check the console for details.');
+            } else {
+              console.log('New user created in Supabase');
+            }
           } else {
-            console.log('New user created in Supabase');
+            console.log('User already exists in Supabase');
           }
-        } else {
-          console.log('User already exists in Supabase');
+        } catch (e) {
+          console.error('Unexpected error:', e);
+          alert('An unexpected error occurred. Check the console for details.');
         }
       });
 
