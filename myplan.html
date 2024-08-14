@@ -264,7 +264,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  
   <script>
+    const supabaseUrl = 'https://ssdnvbiiznvjuobrrhpt.supabase.co'; // Your Supabase URL
+    const supabaseKey = 'your-supabase-anon-key'; // Replace this with your actual Supabase anon key
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
     $(document).ready(function() {
       const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
       const storedCommitTime = localStorage.getItem('commitTime');
@@ -483,9 +489,37 @@
         netlifyIdentity.open();
       });
 
-      netlifyIdentity.on('login', user => {
+      netlifyIdentity.on('login', async (user) => {
         console.log('User logged in:', user);
         netlifyIdentity.close();
+
+        try {
+          const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('user_id', user.id);
+
+          if (error) {
+            console.error('Error fetching user data:', error);
+            alert('There was an error fetching user data. Check the console for details.');
+          } else if (data.length === 0) {
+            const { error: insertError } = await supabase
+              .from('users')
+              .insert([{ user_id: user.id }]);
+
+            if (insertError) {
+              console.error('Error inserting new user:', insertError);
+              alert('There was an error inserting new user. Check the console for details.');
+            } else {
+              console.log('New user created in Supabase');
+            }
+          } else {
+            console.log('User already exists in Supabase');
+          }
+        } catch (e) {
+          console.error('Unexpected error:', e);
+          alert('An unexpected error occurred. Check the console for details.');
+        }
       });
 
       netlifyIdentity.on('logout', () => {
@@ -506,6 +540,5 @@
       setLanguage('fr');
     });
   </script>
-  <script src="/path/to/supabase-init.js"></script>
 </body>
 </html>
