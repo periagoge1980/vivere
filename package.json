@@ -1,0 +1,23 @@
+{
+  "name": "vivere",
+  "version": "1.0.0",
+  "description": "",
+  "main": "myplan.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/periagoge1980/vivere.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/periagoge1980/vivere/issues"
+  },
+  "homepage": "https://github.com/periagoge1980/vivere#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.1"
+  }
+}
