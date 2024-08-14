@@ -338,6 +338,24 @@
       loginButton.addEventListener('click', () => {
         netlifyIdentity.open();
       });
+
+      // Example: Call to fetch users using the Netlify Function proxy
+      async function fetchUsers() {
+        try {
+          const response = await fetch('/.netlify/functions/supabaseProxy');
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          console.log(data);
+        } catch (error) {
+          console.error('Error fetching users:', error);
+          alert('There was an error fetching users. Check the console for details.');
+        }
+      }
+
+      // Fetch users when the page loads
+      fetchUsers();
     });
   </script>
 </body>
