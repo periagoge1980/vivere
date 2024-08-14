@@ -191,15 +191,23 @@
 
   <script>
     async function getSupabaseKey() {
-      const response = await fetch('/.netlify/functions/getSupabaseKey');
-      const data = await response.json();
-      return data.key;
+      try {
+        const response = await fetch('/.netlify/functions/getSupabaseKey');
+        const data = await response.json();
+        return data.key;
+      } catch (error) {
+        console.error('Error fetching Supabase key:', error);
+      }
     }
 
     async function initSupabase() {
-      const supabaseKey = await getSupabaseKey();
-      const supabaseUrl = 'https://your-supabase-url.supabase.co';
-      return supabase.createClient(supabaseUrl, supabaseKey);
+      try {
+        const supabaseKey = await getSupabaseKey();
+        const supabaseUrl = 'https://your-supabase-url.supabase.co';
+        return supabase.createClient(supabaseUrl, supabaseKey);
+      } catch (error) {
+        console.error('Error initializing Supabase:', error);
+      }
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
