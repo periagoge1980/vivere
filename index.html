@@ -184,8 +184,11 @@
     &copy; 2024 Projet Vivere. Tous droits réservés.
   </footer>
 
+  <!-- Load the Netlify Identity widget -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- Load Supabase JS library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
   <script>
     async function getSupabaseKey() {
       const response = await fetch('/.netlify/functions/getSupabaseKey');
@@ -196,66 +199,99 @@
     async function initSupabase() {
       const supabaseKey = await getSupabaseKey();
       const supabaseUrl = 'https://your-supabase-url.supabase.co';
-      const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-      return supabase;
+      return supabase.createClient(supabaseUrl, supabaseKey);
     }
 
-    const loginButton = document.getElementById('login');
-    const myPlanLink = document.getElementById('myPlanLink');
-    const message = document.getElementById('message');
-    const blurbElement = document.getElementById('blurb');
-    const pageTitle = document.getElementById('page-title');
-    const headerTitle = document.getElementById('header-title');
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Initialize Netlify Identity
+      netlifyIdentity.init();
 
-    const translations = {
-      en: {
-        title: 'Welcome to the Vivere Project',
-        header: 'Welcome to the Vivere Project',
-        blurb: `
-          <p>Welcome to The Vivere Project. Our mission is to provide comprehensive online resources for individuals struggling with various forms of addiction. We understand the challenges and the courage it takes to seek help and make a change.</p>
-          <p>The Vivere Project is entirely free to use. We believe that support should be accessible to everyone without financial barriers.</p>
-        `
-      },
-      fr: {
-        title: 'Bienvenue sur Le Projet Vivere',
-        header: 'Bienvenue sur Le Projet Vivere',
-        blurb: `
-          <p>Bienvenue sur Le Projet Vivere. Notre mission est de fournir des ressources en ligne complètes pour les personnes confrontées à divers types de dépendances. Nous comprenons les défis et le courage qu'il faut pour demander de l'aide et changer.</p>
-          <p>Le Projet Vivere est entièrement gratuit à utiliser. Nous croyons que le soutien doit être accessible à tous sans barrières financières.</p>       
-        `
-      }
-    };
+      const loginButton = document.getElementById('login');
+      const myPlanLink = document.getElementById('myPlanLink');
+      const message = document.getElementById('message');
+      const blurbElement = document.getElementById('blurb');
+      const pageTitle = document.getElementById('page-title');
+      const headerTitle = document.getElementById('header-title');
 
-    const setLanguage = (lang) => {
-      if (translations[lang]) {
-        blurbElement.innerHTML = translations[lang].blurb;
-        pageTitle.textContent = translations[lang].title;
-        headerTitle.textContent = translations[lang].header;
-      }
-    };
+      const translations = {
+        en: {
+          title: 'Welcome to the Vivere Project',
+          header: 'Welcome to the Vivere Project',
+          blurb: `
+            <p>Welcome to The Vivere Project. Our mission is to provide comprehensive online resources for individuals struggling with various forms of addiction. We understand the challenges and the courage it takes to seek help and make a change.</p>
+            <p>The Vivere Project is entirely free to use. We believe that support should be accessible to everyone without financial barriers.</p>
+          `
+        },
+        fr: {
+          title: 'Bienvenue sur Le Projet Vivere',
+          header: 'Bienvenue sur Le Projet Vivere',
+          blurb: `
+            <p>Bienvenue sur Le Projet Vivere. Notre mission est de fournir des ressources en ligne complètes pour les personnes confrontées à divers types de dépendances. Nous comprenons les défis et le courage qu'il faut pour demander de l'aide et changer.</p>
+            <p>Le Projet Vivere est entièrement gratuit à utiliser. Nous croyons que le soutien doit être accessible à tous sans barrières financières.</p>       
+          `
+        }
+      };
 
-    document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
-    document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
+      const setLanguage = (lang) => {
+        if (translations[lang]) {
+          blurbElement.innerHTML = translations[lang].blurb;
+          pageTitle.textContent = translations[lang].title;
+          headerTitle.textContent = translations[lang].header;
+        }
+      };
 
-    netlifyIdentity.on('init', async (user) => {
-      if (user) {
-        // Initialize Supabase
+      document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+      document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
+
+      // Set default language
+      setLanguage('fr');
+
+      // Handle Netlify Identity events
+      netlifyIdentity.on('init', async (user) => {
+        if (user) {
+          const supabase = await initSupabase();
+
+          const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('user_id', user.id);
+
+          if (error) {
+            console.error('Error fetching user data:', error);
+          } else if (data.length === 0) {
+            const { error: insertError } = await supabase
+              .from('users')
+              .insert([{ user_id: user.id }]);
+
+            if (insertError) {
+              console.error('Error inserting new user:', insertError);
+            } else {
+              console.log('New user created in Supabase');
+            }
+          } else {
+            console.log('User already exists in Supabase');
+          }
+        }
+      });
+
+      netlifyIdentity.on('login', async (user) => {
+        console.log('User logged in:', user);
+        netlifyIdentity.close();
+
         const supabase = await initSupabase();
-        
-        // Check if the user exists in the Supabase user table
+
         const { data, error } = await supabase
           .from('users')
           .select('*')
           .eq('user_id', user.id);
-        
+
         if (error) {
           console.error('Error fetching user data:', error);
         } else if (data.length === 0) {
-          // If the user doesn't exist, create a new record
           const { error: insertError } = await supabase
             .from('users')
             .insert([{ user_id: user.id }]);
-          
+
           if (insertError) {
             console.error('Error inserting new user:', insertError);
           } else {
@@ -264,59 +300,30 @@
         } else {
           console.log('User already exists in Supabase');
         }
-      }
-    });
+      });
 
-    netlifyIdentity.on('login', async (user) => {
-      console.log('User logged in:', user);
-      netlifyIdentity.close();
-      
-      // Initialize Supabase
-      const supabase = await initSupabase();
-      
-      // Check if the user exists in the Supabase user table
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('user_id', user.id);
-      
-      if (error) {
-        console.error('Error fetching user data:', error);
-      } else if (data.length === 0) {
-        // If the user doesn't exist, create a new record
-        const { error: insertError } = await supabase
-          .from('users')
-          .insert([{ user_id: user.id }]);
-        
-        if (insertError) {
-          console.error('Error inserting new user:', insertError);
+      netlifyIdentity.on('logout', () => {
+        console.log('User logged out');
+      });
+
+      myPlanLink.addEventListener('click', (e) => {
+        const user = netlifyIdentity.currentUser();
+        if (!user) {
+          e.preventDefault();
+          message.style.display = 'block';
+          setTimeout(() => {
+            message.style.display = 'none';
+          }, 3000);
         } else {
-          console.log('New user created in Supabase');
+          window.location.href = 'myplan.html';
         }
-      } else {
-        console.log('User already exists in Supabase');
-      }
-    });
+      });
 
-    netlifyIdentity.on('logout', () => {
-      console.log('User logged out');
+      // Make sure the login button works properly
+      loginButton.addEventListener('click', () => {
+        netlifyIdentity.open();
+      });
     });
-
-    myPlanLink.addEventListener('click', (e) => {
-      const user = netlifyIdentity.currentUser();
-      if (!user) {
-        e.preventDefault();
-        message.style.display = 'block';
-        setTimeout(() => {
-          message.style.display = 'none';
-        }, 3000);
-      } else {
-        window.location.href = 'myplan.html';
-      }
-    });
-
-    // Set default language
-    setLanguage('fr');      
   </script>
 </body>
 </html>
