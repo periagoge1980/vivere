@@ -6,7 +6,195 @@
   <title>Mon Plan</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
   <style>
-    /* Your existing CSS styles here */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      text-align: left;
+      font-weight: bold;
+      color: white;
+    }
+    .login {
+      display: flex;
+      align-items: center;
+    }
+    .login button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-right: 10px;
+    }
+    .login button:hover {
+      background-color: #0056b3;
+    }
+    .lang-switch {
+      display: flex;
+      align-items: center;
+    }
+    .lang-switch button {
+      margin: 0 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .lang-switch button:hover {
+      background-color: #0056b3;
+    }
+    .container {
+      flex: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+    .links {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .links a {
+      margin: 5px 10px;
+      text-decoration: none;
+      color: white;
+      background-color: #007BFF;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .links a:hover {
+      background-color: #0056b3;
+    }
+    form {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    input[type="date"] {
+      padding: 10px;
+      margin-left: 10px;
+      font-size: 16px;
+    }
+    h3 {
+      margin: 0 10px 0 0;
+      font-size: 1rem;
+      color: #333;
+    }
+    button {
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #timeCounter {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 20px;
+      color: #333;
+    }
+    #calendar {
+      max-width: 900px;
+      margin: 0 auto;
+      margin-top: 20px;
+    }
+    footer {
+      background-color: #f1f1f1;
+      padding: 10px;
+      text-align: center;
+      margin-top: auto;
+    }
+    .login-link {
+      color: white;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    #note-popup, #note-input-popup, #journal-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      border: 1px solid #ccc;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+    #note-popup button, #note-input-popup button, #journal-popup button {
+      margin: 5px;
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+    #note-popup button:hover, #note-input-popup button:hover, #journal-popup button:hover {
+      background-color: #0056b3;
+    }
+    #note-popup-overlay, #note-input-popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+    .note-block {
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .patreon {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .patreon a {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #f96854;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    .patreon a:hover {
+      background-color: #c65042;
+    }
   </style>
 </head>
 <body>
@@ -132,7 +320,7 @@
         e.preventDefault();
         const selectedDate = $('#startDate').val();
         if (selectedDate) {
-          const commitTime = new Date();
+          const commitTime = new Date(); // Capture the exact time of commit
           const selectedDateArray = selectedDate.split('-');
           commitTime.setFullYear(
             selectedDateArray[0],
@@ -176,11 +364,11 @@
       }
 
       function displayCalendar(date) {
-        $('#calendar').fullCalendar('destroy');
+        $('#calendar').fullCalendar('destroy'); // Destroy any existing calendar
         $('#calendar').fullCalendar({
           defaultDate: date,
           editable: true,
-          eventLimit: true,
+          eventLimit: true, // allow "more" link when too many events
           dayClick: function(date) {
             const selectedDate = date.format('YYYY-MM-DD');
             $('#note-popup').data('date', selectedDate).show();
@@ -206,7 +394,7 @@
 
       function displayNotes(date) {
         const notesContainer = $('#notes-container');
-        notesContainer.empty();
+        notesContainer.empty(); // Clear any previous notes
         if (storedNotes[date]) {
           storedNotes[date].forEach(note => {
             const noteBlock = `<div class="note-block" style="background-color: ${note.color};">${note.note}</div>`;
@@ -241,7 +429,7 @@
             color: 'blue',
             note: customNote
           });
-          $('#custom-note').val('');
+          $('#custom-note').val(''); // Clear the input
           $('#note-input-popup').hide();
           displayCalendar($('#startDate').val());
         }
@@ -322,7 +510,7 @@
       let timerInterval;
 
       function startTimer(commitTime) {
-        clearInterval(timerInterval);
+        clearInterval(timerInterval); // Clear any existing timer
 
         timerInterval = setInterval(function() {
           const currentTime = new Date();
@@ -443,6 +631,7 @@
         window.location.href = 'index.html';
       });
 
+      // Initialize the calendar with stored events
       const commitTime = localStorage.getItem('commitTime');
       if (commitTime) {
         displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
@@ -451,6 +640,7 @@
         displayCalendar(new Date());
       }
 
+      // Set default language
       setLanguage('fr');
     });
   </script>
