@@ -385,7 +385,6 @@
             events.push({
               title: note.title,
               start: date,
-              color: note.color
             });
           });
         }
@@ -397,7 +396,7 @@
         notesContainer.empty(); // Clear any previous notes
         if (storedNotes[date]) {
           storedNotes[date].forEach(note => {
-            const noteBlock = `<div class="note-block" style="background-color: ${note.color};">${note.note}</div>`;
+            const noteBlock = `<div class="note-block">${note.note}</div>`;
             notesContainer.append(noteBlock);
           });
           $('#remove-note').show();
@@ -407,10 +406,10 @@
         }
       }
 
-      $('#positive').click(() => saveNoteToCalendar('Positive', 'green'));
-      $('#triggered').click(() => saveNoteToCalendar('Triggered', 'red'));
+      $('#positive').click(() => saveNoteToCalendar('Positive'));
+      $('#triggered').click(() => saveNoteToCalendar('Triggered'));
       $('#relapsed').click(() => {
-        saveNoteToCalendar('Relapsed', 'orange');
+        saveNoteToCalendar('Relapsed');
         resetTimer();
       });
       $('#add-note').click(() => {
@@ -426,7 +425,6 @@
         if (customNote) {
           addNoteToDate(selectedDate, {
             title: customNote,
-            color: 'blue',
             note: customNote
           });
           $('#custom-note').val(''); // Clear the input
@@ -439,11 +437,10 @@
         $('#note-input-popup').hide();
       });
 
-      async function saveNoteToCalendar(note, color) {
+      async function saveNoteToCalendar(note) {
         const selectedDate = $('#note-popup').data('date');
         addNoteToDate(selectedDate, {
           title: note,
-          color: color,
           note: note
         });
         $('#note-popup').hide();
