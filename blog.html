@@ -230,6 +230,7 @@
       setLanguage('fr');
     });
   </script>
+  
   <!-- Supabase Initialization Script -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
@@ -245,7 +246,7 @@
       return supabase.createClient(supabaseUrl, supabaseKey);
     }
 
-    // Example: Fetch blog posts from Supabase
+    // Fetch and display blog posts
     async function fetchBlogPosts() {
       const supabase = await initSupabase();
       const { data, error } = await supabase
@@ -255,8 +256,17 @@
       if (error) {
         console.error('Erreur lors de la récupération des articles de blog:', error);
       } else {
-        console.log('Articles de blog:', data);
-        // You can now dynamically insert the blog posts into the DOM
+        // Process and display the blog posts
+        const blogContainer = document.querySelector('.container');
+        data.forEach(post => {
+          const postElement = document.createElement('div');
+          postElement.className = 'blog-post';
+          postElement.innerHTML = `
+            <h2>${post.title}</h2>
+            <p>${post.excerpt} <a href="#">Lire la suite</a></p>
+          `;
+          blogContainer.appendChild(postElement);
+        });
       }
     }
 
