@@ -261,9 +261,13 @@
               console.error('Error fetching user data:', error);
               alert('There was an error fetching user data. Check the console for details.');
             } else if (data.length === 0) {
+              // Get the username and email from the Netlify Identity user object
+              const username = user.user_metadata.full_name || user.email; // Default to email if full_name is not available
+              const email = user.email;
+
               const { error: insertError } = await supabase
                 .from('users')
-                .insert([{ user_id: user.id }]);
+                .insert([{ user_id: user.id, username: username, email: email }]);
 
               if (insertError) {
                 console.error('Error inserting new user:', insertError);
@@ -297,9 +301,12 @@
             console.error('Error fetching user data:', error);
             alert('There was an error fetching user data. Check the console for details.');
           } else if (data.length === 0) {
+            const username = user.user_metadata.full_name || user.email; // Default to email if full_name is not available
+            const email = user.email;
+
             const { error: insertError } = await supabase
               .from('users')
-              .insert([{ user_id: user.id }]);
+              .insert([{ user_id: user.id, username: username, email: email }]);
 
             if (insertError) {
               console.error('Error inserting new user:', insertError);
