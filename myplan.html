@@ -456,7 +456,7 @@
             const supabase = await initSupabase();
             const { data, error } = await supabase
               .from('notes')
-              .insert([{ user_id: user.id, note_date: selectedDate, note_title: note, note_color: color }]);
+              .insert([{ user_id: user.id, note_date: selectedDate, note_title: note }]);
 
             if (error) {
               console.error('Error saving note:', error);
@@ -609,7 +609,7 @@
               } else if (noteData.length === 0) {
                 const { error: insertNoteError } = await supabase
                   .from('notes')
-                  .insert([{ user_id: user.id, note_date: date, note_title: note.title, note_color: note.color }]);
+                  .insert([{ user_id: user.id, note_date: date, note_title: note.title }]);
 
                 if (insertNoteError) {
                   console.error('Error inserting note:', insertNoteError);
