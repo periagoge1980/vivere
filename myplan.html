@@ -265,11 +265,19 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  
+
   <script>
-    const supabaseUrl = 'https://ssdnvbiiznvjuobrrhpt.supabase.co'; // Your Supabase URL
-    const supabaseKey = 'your-supabase-anon-key'; // Replace this with your actual Supabase anon key
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    async function getSupabaseKey() {
+      const response = await fetch('/.netlify/functions/getSupabaseKey');
+      const data = await response.json();
+      return data.key;
+    }
+
+    async function initSupabase() {
+      const supabaseKey = await getSupabaseKey();
+      const supabaseUrl = 'https://ssdnvbiiznvjuobrrhpt.supabase.co';
+      return supabase.createClient(supabaseUrl, supabaseKey);
+    }
 
     $(document).ready(function() {
       const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
@@ -308,7 +316,7 @@
       document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
       document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
 
-      $('#dateForm').on('submit', function(e) {
+      $('#dateForm').on('submit', async function(e) {
         e.preventDefault();
         const selectedDate = $('#startDate').val();
         if (selectedDate) {
@@ -322,6 +330,27 @@
           localStorage.setItem('commitTime', commitTime.toISOString());
           displayCalendar(selectedDate);
           startTimer(commitTime);
+
+          // Save commit time to Supabase
+          const user = netlifyIdentity.currentUser();
+          if (user) {
+            try {
+              const supabase = await initSupabase();
+              const { data, error } = await supabase
+                .from('commit_time')
+                .insert([{ user_id: user.id, commit_time: commitTime.toISOString() }]);
+
+              if (error) {
+                console.error('Error inserting commit time:', error);
+                alert('There was an error saving your commitment time. Check the console for details.');
+              } else {
+                console.log('Commit time saved in Supabase');
+              }
+            } catch (e) {
+              console.error('Unexpected error:', e);
+              alert('An unexpected error occurred while saving your commit time. Check the console for details.');
+            }
+          }
         }
       });
 
@@ -410,7 +439,7 @@
         $('#note-input-popup').hide();
       });
 
-      function saveNoteToCalendar(note, color) {
+      async function saveNoteToCalendar(note, color) {
         const selectedDate = $('#note-popup').data('date');
         addNoteToDate(selectedDate, {
           title: note,
@@ -419,6 +448,27 @@
         });
         $('#note-popup').hide();
         displayCalendar($('#startDate').val());
+
+        // Save note to Supabase
+        const user = netlifyIdentity.currentUser();
+        if (user) {
+          try {
+            const supabase = await initSupabase();
+            const { data, error } = await supabase
+              .from('notes')
+              .insert([{ user_id: user.id, note_date: selectedDate, note_title: note, note_color: color }]);
+
+            if (error) {
+              console.error('Error saving note:', error);
+              alert('There was an error saving your note. Check the console for details.');
+            } else {
+              console.log('Note saved in Supabase');
+            }
+          } catch (e) {
+            console.error('Unexpected error:', e);
+            alert('An unexpected error occurred while saving your note. Check the console for details.');
+          }
+        }
       }
 
       function addNoteToDate(date, note) {
@@ -494,18 +544,21 @@
         netlifyIdentity.close();
 
         try {
-          const { data, error } = await supabase
+          const supabase = await initSupabase();
+
+          // Check if user exists in Supabase
+          const { data: userData, error: userError } = await supabase
             .from('users')
             .select('*')
             .eq('user_id', user.id);
 
-          if (error) {
-            console.error('Error fetching user data:', error);
+          if (userError) {
+            console.error('Error fetching user data:', userError);
             alert('There was an error fetching user data. Check the console for details.');
-          } else if (data.length === 0) {
+          } else if (userData.length === 0) {
             const { error: insertError } = await supabase
               .from('users')
-              .insert([{ user_id: user.id }]);
+              .insert([{ user_id: user.id, email: user.email }]);
 
             if (insertError) {
               console.error('Error inserting new user:', insertError);
@@ -516,6 +569,57 @@
           } else {
             console.log('User already exists in Supabase');
           }
+
+          // Sync commit time if it exists
+          const storedCommitTime = localStorage.getItem('commitTime');
+          if (storedCommitTime) {
+            const { data: commitData, error: commitError } = await supabase
+              .from('commit_time')
+              .select('*')
+              .eq('user_id', user.id);
+
+            if (commitError) {
+              console.error('Error fetching commit time data:', commitError);
+            } else if (commitData.length === 0) {
+              const { error: insertCommitError } = await supabase
+                .from('commit_time')
+                .insert([{ user_id: user.id, commit_time: storedCommitTime }]);
+
+              if (insertCommitError) {
+                console.error('Error inserting commit time:', insertCommitError);
+              } else {
+                console.log('Commit time synced to Supabase');
+              }
+            }
+          }
+
+          // Sync notes if they exist
+          const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
+          for (let date in storedNotes) {
+            for (let note of storedNotes[date]) {
+              const { data: noteData, error: noteError } = await supabase
+                .from('notes')
+                .select('*')
+                .eq('user_id', user.id)
+                .eq('note_date', date)
+                .eq('note_title', note.title);
+
+              if (noteError) {
+                console.error('Error fetching note data:', noteError);
+              } else if (noteData.length === 0) {
+                const { error: insertNoteError } = await supabase
+                  .from('notes')
+                  .insert([{ user_id: user.id, note_date: date, note_title: note.title, note_color: note.color }]);
+
+                if (insertNoteError) {
+                  console.error('Error inserting note:', insertNoteError);
+                } else {
+                  console.log('Note synced to Supabase');
+                }
+              }
+            }
+          }
+
         } catch (e) {
           console.error('Unexpected error:', e);
           alert('An unexpected error occurred. Check the console for details.');
