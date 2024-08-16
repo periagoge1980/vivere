@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mon Plan</title>
+  <title id="page-title">Mon Plan</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
   <style>
     body {
@@ -237,7 +237,7 @@
 
   <div id="note-popup-overlay"></div>
   <div id="note-popup">
-    <p>How was that day?</p>
+    <p id="note-popup-title">How was that day?</p>
     <button id="positive">Positive</button>
     <button id="triggered">Triggered</button>
     <button id="relapsed">Relapsed</button>
@@ -248,14 +248,14 @@
   </div>
 
   <div id="note-input-popup">
-    <p>Add your custom note:</p>
+    <p id="note-input-popup-title">Add your custom note:</p>
     <textarea id="custom-note" rows="4" cols="50"></textarea>
     <button id="save-note">Save Note</button>
     <button id="cancel-note">Cancel</button>
   </div>
 
   <div id="journal-popup">
-    <p>Journal Entries</p>
+    <p id="journal-popup-title">Journal Entries</p>
     <div id="day-journal"></div>
     <button id="close-journal">Close</button>
   </div>
@@ -293,6 +293,16 @@
           timeSinceCommit: 'Time since commit:',
           planTitle: 'My Plan',
           selectDate: 'Select a quit date',
+          notePopupTitle: 'How was that day?',
+          noteInputPopupTitle: 'Add your custom note:',
+          journalPopupTitle: 'Journal Entries',
+          positive: 'Positive',
+          triggered: 'Triggered',
+          relapsed: 'Relapsed',
+          addNote: 'Add a Note',
+          viewDay: 'View Day',
+          removeNote: 'Remove Note',
+          closeJournal: 'Close'
         },
         fr: {
           title: 'Mon Plan',
@@ -301,6 +311,16 @@
           timeSinceCommit: "Temps écoulé depuis l'engagement:",
           planTitle: 'Mon Plan',
           selectDate: "Sélectionnez une date d'arrêt",
+          notePopupTitle: 'Comment s\'est passée cette journée?',
+          noteInputPopupTitle: 'Ajoutez votre note personnalisée :',
+          journalPopupTitle: 'Entrées du journal',
+          positive: 'Positive',
+          triggered: 'Déclenché',
+          relapsed: 'Rechuté',
+          addNote: 'Ajouter une note',
+          viewDay: 'Voir le jour',
+          removeNote: 'Supprimer la note',
+          closeJournal: 'Fermer'
         }
       };
 
@@ -312,6 +332,16 @@
           document.getElementById('timeCounter').textContent = translations[lang].timeSinceCommit + ' 00:00:00';
           document.getElementById('page-title').textContent = translations[lang].planTitle;
           document.getElementById('select-date-title').textContent = translations[lang].selectDate;
+          document.getElementById('note-popup-title').textContent = translations[lang].notePopupTitle;
+          document.getElementById('note-input-popup-title').textContent = translations[lang].noteInputPopupTitle;
+          document.getElementById('journal-popup-title').textContent = translations[lang].journalPopupTitle;
+          document.getElementById('positive').textContent = translations[lang].positive;
+          document.getElementById('triggered').textContent = translations[lang].triggered;
+          document.getElementById('relapsed').textContent = translations[lang].relapsed;
+          document.getElementById('add-note').textContent = translations[lang].addNote;
+          document.getElementById('view-day').textContent = translations[lang].viewDay;
+          document.getElementById('remove-note').textContent = translations[lang].removeNote;
+          document.getElementById('close-journal').textContent = translations[lang].closeJournal;
         }
       }
 
