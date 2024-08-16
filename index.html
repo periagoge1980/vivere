@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mon Plan</title>
+  <title id="page-title">Mon Plan</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
   <style>
     body {
@@ -211,9 +211,9 @@
 
   <div class="container">
     <div class="links">
-      <a href="index.html">Accueil</a>
-      <a href="resources.html">Ressources</a>
-      <a href="myplan.html">Mon Plan</a>
+      <a href="index.html" id="homeLink">Accueil</a>
+      <a href="resources.html" id="resourcesLink">Ressources</a>
+      <a href="myplan.html" id="myPlanLink">Mon Plan</a>
     </div>
 
     <h1 id="page-title">Mon Plan</h1>
@@ -281,16 +281,15 @@
       return supabase.createClient(supabaseUrl, supabaseKey);
     }
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      const supabase = await initSupabase();
-
-      // Check if user is logged in
+    $(document).ready(async function() {
+      // Check if the user is logged in
       const user = netlifyIdentity.currentUser();
       if (!user) {
-        // User is not logged in, reset notes and clock
+        // If not logged in, reset notes and clock
         localStorage.removeItem('notes');
         localStorage.removeItem('commitTime');
-        document.getElementById('timeCounter').textContent = "Temps écoulé depuis l'engagement: 00:00:00";
+        $('#timeCounter').text('Temps écoulé depuis l\'engagement: 00:00:00');
+        $('#calendar').empty();
       }
 
       const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
@@ -304,6 +303,9 @@
           timeSinceCommit: 'Time since commit:',
           planTitle: 'My Plan',
           selectDate: 'Select a quit date',
+          home: 'Home',
+          resources: 'Resources',
+          myPlan: 'My Plan',
         },
         fr: {
           title: 'Mon Plan',
@@ -312,6 +314,9 @@
           timeSinceCommit: "Temps écoulé depuis l'engagement:",
           planTitle: 'Mon Plan',
           selectDate: "Sélectionnez une date d'arrêt",
+          home: 'Accueil',
+          resources: 'Ressources',
+          myPlan: 'Mon Plan',
         }
       };
 
@@ -323,8 +328,20 @@
           document.getElementById('timeCounter').textContent = translations[lang].timeSinceCommit + ' 00:00:00';
           document.getElementById('page-title').textContent = translations[lang].planTitle;
           document.getElementById('select-date-title').textContent = translations[lang].selectDate;
+
+          // Update navigation links
+          document.getElementById('homeLink').textContent = translations[lang].home;
+          document.getElementById('resourcesLink').textContent = translations[lang].resources;
+          document.getElementById('myPlanLink').textContent = translations[lang].myPlan;
+
+          // Store the selected language in localStorage
+          localStorage.setItem('selectedLanguage', lang);
         }
       }
+
+      // Get the selected language from localStorage or default to French
+      const selectedLanguage = localStorage.getItem('selectedLanguage') || 'fr';
+      setLanguage(selectedLanguage);
 
       document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
       document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
@@ -345,8 +362,10 @@
           startTimer(commitTime);
 
           // Save commit time to Supabase
+          const user = netlifyIdentity.currentUser();
           if (user) {
             try {
+              const supabase = await initSupabase();
               const { data, error } = await supabase
                 .from('commit_times')
                 .insert([{ user_id: user.id, commit_time: commitTime.toISOString() }]);
@@ -365,7 +384,7 @@
         }
       });
 
-      if (storedCommitTime && user) {
+      if (storedCommitTime) {
         const commitTime = new Date(storedCommitTime);
         $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
         displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
@@ -458,8 +477,10 @@
         displayCalendar($('#startDate').val());
 
         // Save note to Supabase
+        const user = netlifyIdentity.currentUser();
         if (user) {
           try {
+            const supabase = await initSupabase();
             const { data, error } = await supabase
               .from('notes')
               .insert([{ user_id: user.id, note_date: selectedDate, note_title: note }]);
@@ -645,7 +666,7 @@
       }
 
       // Set default language
-      setLanguage('fr');
+      setLanguage(selectedLanguage);
     });
   </script>
 </body>
