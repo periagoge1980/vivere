@@ -260,10 +260,12 @@
     <button id="close-journal">Close</button>
   </div>
 
-  <script```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+  <script src="https://identityHere's the continuation and final part of the script that was cut off earlier:
+
+```html
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
@@ -377,7 +379,6 @@
             startTimer(commitTime);
 
             // Save commit time to Supabase
-            const user = netlifyIdentity.currentUser();
             if (user) {
               try {
                 const supabase = await initSupabase();
@@ -492,13 +493,11 @@
           displayCalendar($('#startDate').val());
 
           // Save note to Supabase
-          const user = netlifyIdentity.currentUser();
           if (user) {
             try {
               const supabase = await initSupabase();
               const { data, error } = await supabase
                 .from('notes')
-                .insert([{ user_id: user```html
                 .insert([{ user_id: user.id, note_date: selectedDate, note_title: note }]);
 
               if (error) {
@@ -509,7 +508,7 @@
               }
             } catch (e) {
               console.error('Unexpected error:', e);
-              alert('An unexpected error occurred while saving your note. Check the console for details.');
+              alert('Anunexpected error occurred while saving your note. Check the console for details.');
             }
           }
         }
@@ -635,7 +634,6 @@
             }
 
             // Sync notes if they exist
-            const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
             for (let date in storedNotes) {
               for (let note of storedNotes[date]) {
                 const { data: noteData, error: noteError } = await supabase
