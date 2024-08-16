@@ -195,6 +195,13 @@
     .patreon a:hover {
       background-color: #c65042;
     }
+    #restricted-message {
+      display: none;
+      text-align: center;
+      color: red;
+      font-size: 1.2rem;
+      margin-top: 50px;
+    }
   </style>
 </head>
 <body>
@@ -208,6 +215,8 @@
       </div>
     </div>
   </header>
+
+  <div id="restricted-message">Access to this page is restricted to members. Please log in to continue.</div>
 
   <div class="container" id="main-content" style="display: none;">
     <div class="links">
@@ -286,6 +295,13 @@
           $('#main-content').show();
         } else {
           netlifyIdentity.open();
+
+          // Fallback to showing a message if the login pop-up does not appear
+          setTimeout(() => {
+            if (!netlifyIdentity.currentUser()) {
+              $('#restricted-message').show();
+            }
+          }, 3000); // Adjust the timeout as needed
         }
       });
 
@@ -544,6 +560,7 @@
       netlifyIdentity.on('login', async (user) => {
         console.log('User logged in:', user);
         $('#main-content').show();
+        $('#restricted-message').hide();
         netlifyIdentity.close();
 
         try {
