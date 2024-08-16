@@ -196,10 +196,10 @@
       background-color: #c65042;
     }
     #restricted-message {
-      display: none;
       text-align: center;
       color: red;
-      font-size: 1.2rem;
+      font-size: 1.5rem;
+      font-weight: bold;
       margin-top: 50px;
     }
   </style>
@@ -216,7 +216,7 @@
     </div>
   </header>
 
-  <div id="restricted-message">Access to this page is restricted to members. Please log in to continue.</div>
+  <div id="restricted-message"></div>
 
   <div class="container" id="main-content" style="display: none;">
     <div class="links">
@@ -290,56 +290,38 @@
     }
 
     $(document).ready(function() {
-      netlifyIdentity.on('init', async (user) => {
-        if (user) {
-          $('#main-content').show();
-        } else {
-          netlifyIdentity.open();
-
-          // Fallback to showing a message if the login pop-up does not appear
-          setTimeout(() => {
-            if (!netlifyIdentity.currentUser()) {
-              $('#restricted-message').show();
-            }
-          }, 3000); // Adjust the timeout as needed
-        }
-      });
-
-      const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
-      const storedCommitTime = localStorage.getItem('commitTime');
-
       const translations = {
         en: {
-          title: 'My Plan',
-          header: 'Welcome to the Vivere Project',
-          commitButton: 'Commit!',
-          timeSinceCommit: 'Time since commit:',
-          planTitle: 'My Plan',
-          selectDate: 'Select a quit date',
+          restrictedMessage: 'This section is only available to members. Please log in.',
         },
         fr: {
-          title: 'Mon Plan',
-          header: 'Bienvenue sur Le Projet Vivere',
-          commitButton: "C'est Fini!",
-          timeSinceCommit: "Temps écoulé depuis l'engagement:",
-          planTitle: 'Mon Plan',
-          selectDate: "Sélectionnez une date d'arrêt",
+          restrictedMessage: 'Cette section est uniquement disponible pour les membres. Veuillez vous connecter.',
         }
       };
 
       function setLanguage(lang) {
         if (translations[lang]) {
-          document.title = translations[lang].title;
-          document.getElementById('header-title').textContent = translations[lang].header;
-          document.getElementById('commit-button').textContent = translations[lang].commitButton;
-          document.getElementById('timeCounter').textContent = translations[lang].timeSinceCommit + ' 00:00:00';
-          document.getElementById('page-title').textContent = translations[lang].planTitle;
-          document.getElementById('select-date-title').textContent = translations[lang].selectDate;
+          if (!netlifyIdentity.currentUser()) {
+            $('#restricted-message').text(translations[lang].restrictedMessage);
+          }
         }
       }
 
-      document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
-      document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
+      netlifyIdentity.on('init', async (user) => {
+        if (user) {
+          $('#main-content').show();
+        } else {
+          setLanguage(document.documentElement.lang);
+          $('#restricted-message').show();
+        }
+      });
+
+      document.getElementById('lang-en').addEventListener('click', () => {
+        setLanguage('en');
+      });
+      document.getElementById('lang-fr').addEventListener('click', () => {
+        setLanguage('fr');
+      });
 
       $('#dateForm').on('submit', async function(e) {
         e.preventDefault();
@@ -378,8 +360,8 @@
         }
       });
 
-      if (storedCommitTime) {
-        const commitTime = new Date(storedCommitTime);
+      if (localStorage.getItem('commitTime')) {
+        const commitTime = new Date(localStorage.getItem('commitTime'));
         $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
         displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
         startTimer(commitTime);
@@ -404,8 +386,8 @@
 
       function getStoredEvents() {
         let events = [];
-        for (let date in storedNotes) {
-          storedNotes[date].forEach(note => {
+        for (let date in JSON.parse(localStorage.getItem('notes')) || {}) {
+          JSON.parse(localStorage.getItem('notes'))[date].forEach(note => {
             events.push({
               title: note.title,
               start: date
@@ -418,6 +400,7 @@
       function displayNotes(date) {
         const notesContainer = $('#notes-container');
         notesContainer.empty();
+        const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
         if (storedNotes[date]) {
           storedNotes[date].forEach(note => {
             const noteBlock = `<div class="note-block">${note.note}</div>`;
@@ -492,6 +475,7 @@
       }
 
       function addNoteToDate(date, note) {
+        const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
         if (!storedNotes[date]) {
           storedNotes[date] = [];
         }
@@ -501,6 +485,7 @@
 
       function removeNoteFromCalendar() {
         const selectedDate = $('#note-popup').data('date');
+        const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
         delete storedNotes[selectedDate];
         localStorage.setItem('notes', JSON.stringify(storedNotes));
         $('#note-popup').hide();
@@ -509,8 +494,8 @@
 
       function viewDayJournal() {
         const selectedDate = $('#note-popup').data('date');
-        const journalEntries = storedNotes[selectedDate]
-          ? storedNotes[selectedDate].map(note => `<div class="note-block">${note.note}</div>`).join('')
+        const journalEntries = JSON.parse(localStorage.getItem('notes'))[selectedDate]
+          ? JSON.parse(localStorage.getItem('notes'))[selectedDate].map(note => `<div class="note-block">${note.note}</div>`).join('')
           : '<div class="note-block">No notes for this day.</div>';
         $('#day-journal').html(journalEntries);
         $('#note-popup').hide();
@@ -656,7 +641,7 @@
         displayCalendar(new Date());
       }
 
-      setLanguage('fr');
+      setLanguage(document.documentElement.lang);
     });
   </script>
 </body>
