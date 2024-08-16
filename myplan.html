@@ -209,7 +209,7 @@
     </div>
   </header>
 
-  <div class="container">
+  <div class="container" id="main-content" style="display: none;">
     <div class="links">
       <a href="index.html">Accueil</a>
       <a href="resources.html">Ressources</a>
@@ -226,7 +226,6 @@
     <div id="timeCounter">Temps écoulé depuis l'engagement: 00:00:00</div>
     <div id="calendar"></div>
 
-    <!-- Patreon Button -->
     <div class="patreon">
       <a href="https://www.patreon.com/thevivereproject" target="_blank">Soutenez-nous sur Patreon</a>
     </div>
@@ -282,6 +281,14 @@
     }
 
     $(document).ready(function() {
+      netlifyIdentity.on('init', async (user) => {
+        if (user) {
+          $('#main-content').show();
+        } else {
+          netlifyIdentity.open();
+        }
+      });
+
       const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
       const storedCommitTime = localStorage.getItem('commitTime');
 
@@ -322,7 +329,7 @@
         e.preventDefault();
         const selectedDate = $('#startDate').val();
         if (selectedDate) {
-          const commitTime = new Date(); // Capture the exact time of commit
+          const commitTime = new Date();
           const selectedDateArray = selectedDate.split('-');
           commitTime.setFullYear(
             selectedDateArray[0],
@@ -333,7 +340,6 @@
           displayCalendar(selectedDate);
           startTimer(commitTime);
 
-          // Save commit time to Supabase
           const user = netlifyIdentity.currentUser();
           if (user) {
             try {
@@ -366,11 +372,11 @@
       }
 
       function displayCalendar(date) {
-        $('#calendar').fullCalendar('destroy'); // Destroy any existing calendar
+        $('#calendar').fullCalendar('destroy');
         $('#calendar').fullCalendar({
           defaultDate: date,
           editable: true,
-          eventLimit: true, // allow "more" link when too many events
+          eventLimit: true,
           dayClick: function(date) {
             const selectedDate = date.format('YYYY-MM-DD');
             $('#note-popup').data('date', selectedDate).show();
@@ -395,7 +401,7 @@
 
       function displayNotes(date) {
         const notesContainer = $('#notes-container');
-        notesContainer.empty(); // Clear any previous notes
+        notesContainer.empty();
         if (storedNotes[date]) {
           storedNotes[date].forEach(note => {
             const noteBlock = `<div class="note-block">${note.note}</div>`;
@@ -429,7 +435,7 @@
             title: customNote,
             note: customNote
           });
-          $('#custom-note').val(''); // Clear the input
+          $('#custom-note').val('');
           $('#note-input-popup').hide();
           displayCalendar($('#startDate').val());
         }
@@ -448,7 +454,6 @@
         $('#note-popup').hide();
         displayCalendar($('#startDate').val());
 
-        // Save note to Supabase
         const user = netlifyIdentity.currentUser();
         if (user) {
           try {
@@ -507,7 +512,7 @@
       });
 
       function startTimer(commitTime) {
-        clearInterval(timerInterval); // Clear any existing timer
+        clearInterval(timerInterval);
 
         timerInterval = setInterval(function() {
           const currentTime = new Date();
@@ -538,12 +543,12 @@
 
       netlifyIdentity.on('login', async (user) => {
         console.log('User logged in:', user);
+        $('#main-content').show();
         netlifyIdentity.close();
 
         try {
           const supabase = await initSupabase();
 
-          // Check if user exists in Supabase
           const { data: userData, error: userError } = await supabase
             .from('users')
             .select('*')
@@ -567,7 +572,6 @@
             console.log('User already exists in Supabase');
           }
 
-          // Sync commit time if it exists
           const storedCommitTime = localStorage.getItem('commitTime');
           if (storedCommitTime) {
             const { data: commitData, error: commitError } = await supabase
@@ -590,7 +594,6 @@
             }
           }
 
-          // Sync notes if they exist
           const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
           for (let date in storedNotes) {
             for (let note of storedNotes[date]) {
@@ -628,7 +631,6 @@
         window.location.href = 'index.html';
       });
 
-      // Initialize the calendar with stored events
       const commitTime = localStorage.getItem('commitTime');
       if (commitTime) {
         displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
@@ -637,7 +639,6 @@
         displayCalendar(new Date());
       }
 
-      // Set default language
       setLanguage('fr');
     });
   </script>
