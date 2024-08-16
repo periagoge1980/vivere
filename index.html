@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mon Plan</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
+  <title id="page-title">Welcome to the Vivere Project</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -27,8 +26,44 @@
       margin: 0;
       font-size: 1.5rem;
       text-align: left;
-      font-weight: bold;
+    }
+    .container {
+      flex: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+      width: 100%;
+    }
+    .blurb-box {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 20px 0;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .links a {
+      margin: 5px 10px;
+      text-decoration: none;
       color: white;
+      background-color: #007BFF;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .links a:hover {
+      background-color: #0056b3;
     }
     .login {
       display: flex;
@@ -42,6 +77,8 @@
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      width: 100%;
+      max-width: 200px;
       margin-right: 10px;
     }
     .login button:hover {
@@ -64,119 +101,24 @@
     .lang-switch button:hover {
       background-color: #0056b3;
     }
-    .container {
-      flex: 1;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      text-align: center;
-    }
-    .links {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-    }
-    .links a {
-      margin: 5px 10px;
-      text-decoration: none;
-      color: white;
-      background-color: #007BFF;
-      padding: 10px 20px;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .links a:hover {
-      background-color: #0056b3;
-    }
-    form {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    input[type="date"] {
-      padding: 10px;
-      margin-left: 10px;
-      font-size: 16px;
-    }
-    h3 {
-      margin: 0 10px 0 0;
-      font-size: 1rem;
-      color: #333;
-    }
-    button {
-      padding: 10px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #timeCounter {
-      text-align: center;
-      margin: 20px 0;
-      font-size: 20px;
-      color: #333;
-    }
-    #calendar {
-      max-width: 900px;
-      margin: 0 auto;
-      margin-top: 20px;
-    }
     footer {
       background-color: #f1f1f1;
       padding: 10px;
       text-align: center;
-      margin-top: auto;
     }
-    .login-link {
-      color: white;
-      cursor: pointer;
-      text-decoration: none;
-      font-weight: bold;
+    .message {
+      color: red;
+      margin-top: 10px;
     }
-    #note-popup, #note-input-popup, #journal-popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      border: 1px solid #ccc;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
+    .blurb {
+      text-align: left;
+      font-size: 1rem;
     }
-    #note-popup button, #note-input-popup button, #journal-popup button {
-      margin: 5px;
-      padding: 10px 20px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 5px;
+    .blurb p {
+      margin-bottom: 10px;
     }
-    #note-popup button:hover, #note-input-popup button:hover, #journal-popup button:hover {
-      background-color: #0056b3;
-    }
-    #note-popup-overlay, #note-input-popup-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
-    .note-block {
-      margin: 5px 0;
-      padding: 10px;
-      border-radius: 5px;
+    .note {
+      font-size: 0.8rem;
     }
     .patreon {
       text-align: center;
@@ -195,80 +137,59 @@
     .patreon a:hover {
       background-color: #c65042;
     }
+    .logo {
+      margin: 20px auto;
+      text-align: center;
+    }
+    .logo img {
+      max-width: 200px;
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1 id="header-title">Bienvenue sur Le Projet Vivere</h1>
+    <h1 id="header-title">Welcome to the Vivere Project</h1>
     <div class="login">
-      <button id="login">Connexion/Inscription</button>
+      <button id="login">Login/Signup</button>
       <div class="lang-switch">
         <button id="lang-en">EN</button>
         <button id="lang-fr">FR</button>
       </div>
     </div>
   </header>
-
   <div class="container">
-    <div class="links">
-      <a href="index.html">Accueil</a>
-      <a href="resources.html">Ressources</a>
-      <a href="myplan.html">Mon Plan</a>
+    <div class="logo">
+      <img src="logo.webp" alt="Vivere Project Logo">
     </div>
-
-    <h1 id="page-title">Mon Plan</h1>
-
-    <form id="dateForm">
-      <h3 id="select-date-title">Sélectionnez une date d'arrêt</h3>
-      <input type="date" id="startDate" value="">
-      <button type="submit" id="commit-button">C'est Fini!</button>
-    </form>
-    <div id="timeCounter">Temps écoulé depuis l'engagement: 00:00:00</div>
-    <div id="calendar"></div>
-
-    <!-- Patreon Button -->
+    <div class="blurb-box">
+      <div class="blurb" id="blurb">
+        <p>Welcome to The Vivere Project. Our mission is to provide comprehensive online resources for individuals struggling with various forms of addiction. We understand the challenges and the courage it takes to seek help and make a change.</p>
+        <p>The Vivere Project is entirely free to use. We believe that support should be accessible to everyone without financial barriers.</p>
+      </div>
+    </div>
+    <nav>
+      <div class="links">
+        <a href="index.html">Home</a>
+        <a href="resources.html">Resources</a>
+        <a href="myplan.html" id="myPlanLink">My Plan</a>
+        <a href="blog.html">Blog</a>
+      </div>
+    </nav>
+    <div id="message" class="message" style="display: none;">Please log in to access this member-only feature.</div>
     <div class="patreon">
-      <a href="https://www.patreon.com/thevivereproject" target="_blank">Soutenez-nous sur Patreon</a>
+      <a href="https://www.patreon.com/thevivereproject" target="_blank">Support Us on Patreon</a>
     </div>
   </div>
   <footer>
     &copy; 2024 Projet Vivere. Tous droits réservés.
   </footer>
 
-  <div id="note-popup-overlay"></div>
-  <div id="note-popup">
-    <p>How was that day?</p>
-    <button id="positive">Positive</button>
-    <button id="triggered">Triggered</button>
-    <button id="relapsed">Relapsed</button>
-    <button id="add-note">Add a Note</button>
-    <button id="view-day">View Day</button>
-    <button id="remove-note" style="display: none;">Remove Note</button>
-    <div id="notes-container"></div>
-  </div>
-
-  <div id="note-input-popup">
-    <p>Add your custom note:</p>
-    <textarea id="custom-note" rows="4" cols="50"></textarea>
-    <button id="save-note">Save Note</button>
-    <button id="cancel-note">Cancel</button>
-  </div>
-
-  <div id="journal-popup">
-    <p>Journal Entries</p>
-    <div id="day-journal"></div>
-    <button id="close-journal">Close</button>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+  <!-- Load the Netlify Identity widget -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- Load Supabase JS library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <script>
-    let timerInterval;
-
     async function getSupabaseKey() {
       const response = await fetch('/.netlify/functions/getSupabaseKey');
       const data = await response.json();
@@ -282,287 +203,110 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-      const supabase = await initSupabase();
+      // Initialize Netlify Identity
+      netlifyIdentity.init();
 
-      // Check if user is logged in
-      const user = netlifyIdentity.currentUser();
-      if (!user) {
-        // User is not logged in, reset notes and clock
-        localStorage.removeItem('notes');
-        localStorage.removeItem('commitTime');
-        document.getElementById('timeCounter').textContent = "Temps écoulé depuis l'engagement: 00:00:00";
-      }
-
-      const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
-      const storedCommitTime = localStorage.getItem('commitTime');
+      const loginButton = document.getElementById('login');
+      const myPlanLink = document.getElementById('myPlanLink');
+      const message = document.getElementById('message');
+      const blurbElement = document.getElementById('blurb');
+      const pageTitle = document.getElementById('page-title');
+      const headerTitle = document.getElementById('header-title');
 
       const translations = {
         en: {
-          title: 'My Plan',
+          title: 'Welcome to the Vivere Project',
           header: 'Welcome to the Vivere Project',
-          commitButton: 'Commit!',
-          timeSinceCommit: 'Time since commit:',
-          planTitle: 'My Plan',
-          selectDate: 'Select a quit date',
+          blurb: `
+            <p>Welcome to The Vivere Project. Our mission is to provide comprehensive online resources for individuals struggling with various forms of addiction. We understand the challenges and the courage it takes to seek help and make a change.</p>
+            <p>The Vivere Project is entirely free to use. We believe that support should be accessible to everyone without financial barriers.</p>
+          `
         },
         fr: {
-          title: 'Mon Plan',
+          title: 'Bienvenue sur Le Projet Vivere',
           header: 'Bienvenue sur Le Projet Vivere',
-          commitButton: "C'est Fini!",
-          timeSinceCommit: "Temps écoulé depuis l'engagement:",
-          planTitle: 'Mon Plan',
-          selectDate: "Sélectionnez une date d'arrêt",
+          blurb: `
+            <p>Bienvenue sur Le Projet Vivere. Notre mission est de fournir des ressources en ligne complètes pour les personnes confrontées à divers types de dépendances. Nous comprenons les défis et le courage qu'il faut pour demander de l'aide et changer.</p>
+            <p>Le Projet Vivere est entièrement gratuit à utiliser. Nous croyons que le soutien doit être accessible à tous sans barrières financières.</p>       
+          `
         }
       };
 
-      function setLanguage(lang) {
+      const setLanguage = (lang) => {
         if (translations[lang]) {
-          document.title = translations[lang].title;
-          document.getElementById('header-title').textContent = translations[lang].header;
-          document.getElementById('commit-button').textContent = translations[lang].commitButton;
-          document.getElementById('timeCounter').textContent = translations[lang].timeSinceCommit + ' 00:00:00';
-          document.getElementById('page-title').textContent = translations[lang].planTitle;
-          document.getElementById('select-date-title').textContent = translations[lang].selectDate;
+          blurbElement.innerHTML = translations[lang].blurb;
+          pageTitle.textContent = translations[lang].title;
+          headerTitle.textContent = translations[lang].header;
         }
-      }
+      };
 
       document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
       document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
 
-      $('#dateForm').on('submit', async function(e) {
-        e.preventDefault();
-        const selectedDate = $('#startDate').val();
-        if (selectedDate) {
-          const commitTime = new Date(); // Capture the exact time of commit
-          const selectedDateArray = selectedDate.split('-');
-          commitTime.setFullYear(
-            selectedDateArray[0],
-            selectedDateArray[1] - 1,
-            selectedDateArray[2]
-          );
-          localStorage.setItem('commitTime', commitTime.toISOString());
-          displayCalendar(selectedDate);
-          startTimer(commitTime);
+      // Set default language
+      setLanguage('fr');
 
-          // Save commit time to Supabase
-          if (user) {
-            try {
-              const { data, error } = await supabase
-                .from('commit_times')
-                .insert([{ user_id: user.id, commit_time: commitTime.toISOString() }]);
-
-              if (error) {
-                console.error('Error inserting commit time:', error);
-                alert('There was an error saving your commitment time. Check the console for details.');
-              } else {
-                console.log('Commit time saved in Supabase');
-              }
-            } catch (e) {
-              console.error('Unexpected error:', e);
-              alert('An unexpected error occurred while saving your commit time. Check the console for details.');
-            }
-          }
-        }
-      });
-
-      if (storedCommitTime && user) {
-        const commitTime = new Date(storedCommitTime);
-        $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
-        displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
-        startTimer(commitTime);
-      } else {
-        displayCalendar(new Date());
-      }
-
-      function displayCalendar(date) {
-        $('#calendar').fullCalendar('destroy'); // Destroy any existing calendar
-        $('#calendar').fullCalendar({
-          defaultDate: date,
-          editable: true,
-          eventLimit: true, // allow "more" link when too many events
-          dayClick: function(date) {
-            const selectedDate = date.format('YYYY-MM-DD');
-            $('#note-popup').data('date', selectedDate).show();
-            displayNotes(selectedDate);
-          },
-          events: getStoredEvents()
-        });
-      }
-
-      function getStoredEvents() {
-        let events = [];
-        for (let date in storedNotes) {
-          storedNotes[date].forEach(note => {
-            events.push({
-              title: note.title,
-              start: date
-            });
-          });
-        }
-        return events;
-      }
-
-      function displayNotes(date) {
-        const notesContainer = $('#notes-container');
-        notesContainer.empty(); // Clear any previous notes
-        if (storedNotes[date]) {
-          storedNotes[date].forEach(note => {
-            const noteBlock = `<div class="note-block">${note.note}</div>`;
-            notesContainer.append(noteBlock);
-          });
-          $('#remove-note').show();
-        } else {
-          notesContainer.append('<div class="note-block">No notes for this day.</div>');
-          $('#remove-note').hide();
-        }
-      }
-
-      $('#positive').click(() => saveNoteToCalendar('Positive'));
-      $('#triggered').click(() => saveNoteToCalendar('Triggered'));
-      $('#relapsed').click(() => {
-        saveNoteToCalendar('Relapsed');
-        resetTimer();
-      });
-      $('#add-note').click(() => {
-        $('#note-popup').hide();
-        $('#note-input-popup').show();
-      });
-      $('#remove-note').click(() => removeNoteFromCalendar());
-      $('#view-day').click(() => viewDayJournal());
-
-      $('#save-note').click(() => {
-        const selectedDate = $('#note-popup').data('date');
-        const customNote = $('#custom-note').val();
-        if (customNote) {
-          addNoteToDate(selectedDate, {
-            title: customNote,
-            note: customNote
-          });
-          $('#custom-note').val(''); // Clear the input
-          $('#note-input-popup').hide();
-          displayCalendar($('#startDate').val());
-        }
-      });
-
-      $('#cancel-note').click(() => {
-        $('#note-input-popup').hide();
-      });
-
-      async function saveNoteToCalendar(note) {
-        const selectedDate = $('#note-popup').data('date');
-        addNoteToDate(selectedDate, {
-          title: note,
-          note: note
-        });
-        $('#note-popup').hide();
-        displayCalendar($('#startDate').val());
-
-        // Save note to Supabase
+      // Handle Netlify Identity events
+      netlifyIdentity.on('init', async (user) => {
         if (user) {
+          const supabase = await initSupabase();
+
           try {
             const { data, error } = await supabase
-              .from('notes')
-              .insert([{ user_id: user.id, note_date: selectedDate, note_title: note }]);
+              .from('users')
+              .select('*')
+              .eq('user_id', user.id);
 
             if (error) {
-              console.error('Error saving note:', error);
-              alert('There was an error saving your note. Check the console for details.');
+              console.error('Error fetching user data:', error);
+              alert('There was an error fetching user data. Check the console for details.');
+            } else if (data.length === 0) {
+              // Get the username and email from the Netlify Identity user object
+              const username = user.user_metadata.full_name || user.email; // Default to email if full_name is not available
+              const email = user.email;
+
+              const { error: insertError } = await supabase
+                .from('users')
+                .insert([{ user_id: user.id, username: username, email: email }]);
+
+              if (insertError) {
+                console.error('Error inserting new user:', insertError);
+                alert('There was an error inserting new user. Check the console for details.');
+              } else {
+                console.log('New user created in Supabase');
+              }
             } else {
-              console.log('Note saved in Supabase');
+              console.log('User already exists in Supabase');
             }
           } catch (e) {
             console.error('Unexpected error:', e);
-            alert('An unexpected error occurred while saving your note. Check the console for details.');
+            alert('An unexpected error occurred. Check the console for details.');
           }
         }
-      }
-
-      function addNoteToDate(date, note) {
-        if (!storedNotes[date]) {
-          storedNotes[date] = [];
-        }
-        storedNotes[date].push(note);
-        localStorage.setItem('notes', JSON.stringify(storedNotes));
-      }
-
-      function removeNoteFromCalendar() {
-        const selectedDate = $('#note-popup').data('date');
-        delete storedNotes[selectedDate];
-        localStorage.setItem('notes', JSON.stringify(storedNotes));
-        $('#note-popup').hide();
-        displayCalendar($('#startDate').val());
-      }
-
-      function viewDayJournal() {
-        const selectedDate = $('#note-popup').data('date');
-        const journalEntries = storedNotes[selectedDate]
-          ? storedNotes[selectedDate].map(note => `<div class="note-block">${note.note}</div>`).join('')
-          : '<div class="note-block">No notes for this day.</div>';
-        $('#day-journal').html(journalEntries);
-        $('#note-popup').hide();
-        $('#journal-popup').show();
-      }
-
-      $('#close-journal').click(() => {
-        $('#journal-popup').hide();
-      });
-
-      $('#popup-overlay, #note-popup-overlay').on('click', () => {
-        $('#note-popup').hide();
-        $('#journal-popup').hide();
-        $('#note-input-popup').hide();
-      });
-
-      function startTimer(commitTime) {
-        clearInterval(timerInterval); // Clear any existing timer
-
-        timerInterval = setInterval(function() {
-          const currentTime = new Date();
-          const timeDiff = currentTime - new Date(commitTime);
-          const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-          $('#timeCounter').text(`${translations[document.documentElement.lang].timeSinceCommit} ${days}j ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
-        }, 1000);
-      }
-
-      function resetTimer() {
-        clearInterval(timerInterval);
-        const newCommitTime = new Date();
-        localStorage.setItem('commitTime', newCommitTime.toISOString());
-        startTimer(newCommitTime);
-      }
-
-      function formatTime(unit) {
-        return unit < 10 ? '0' + unit : unit;
-      }
-
-      const loginButton = document.getElementById('login');
-      loginButton.addEventListener('click', () => {
-        netlifyIdentity.open();
       });
 
       netlifyIdentity.on('login', async (user) => {
         console.log('User logged in:', user);
         netlifyIdentity.close();
 
-        try {
-          const supabase = await initSupabase();
+        const supabase = await initSupabase();
 
-          // Check if user exists in Supabase
-          const { data: userData, error: userError } = await supabase
+        try {
+          const { data, error } = await supabase
             .from('users')
             .select('*')
             .eq('user_id', user.id);
 
-          if (userError) {
-            console.error('Error fetching user data:', userError);
+          if (error) {
+            console.error('Error fetching user data:', error);
             alert('There was an error fetching user data. Check the console for details.');
-          } else if (userData.length === 0) {
+          } else if (data.length === 0) {
+            const username = user.user_metadata.full_name || user.email; // Default to email if full_name is not available
+            const email = user.email;
+
             const { error: insertError } = await supabase
               .from('users')
-              .insert([{ user_id: user.id, email: user.email }]);
+              .insert([{ user_id: user.id, username: username, email: email }]);
 
             if (insertError) {
               console.error('Error inserting new user:', insertError);
@@ -573,57 +317,6 @@
           } else {
             console.log('User already exists in Supabase');
           }
-
-          // Sync commit time if it exists
-          const storedCommitTime = localStorage.getItem('commitTime');
-          if (storedCommitTime) {
-            const { data: commitData, error: commitError } = await supabase
-              .from('commit_times')
-              .select('*')
-              .eq('user_id', user.id);
-
-            if (commitError) {
-              console.error('Error fetching commit time data:', commitError);
-            } else if (commitData.length === 0) {
-              const { error: insertCommitError } = await supabase
-                .from('commit_times')
-                .insert([{ user_id: user.id, commit_time: storedCommitTime }]);
-
-              if (insertCommitError) {
-                console.error('Error inserting commit time:', insertCommitError);
-              } else {
-                console.log('Commit time synced to Supabase');
-              }
-            }
-          }
-
-          // Sync notes if they exist
-          const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
-          for (let date in storedNotes) {
-            for (let note of storedNotes[date]) {
-              const { data: noteData, error: noteError } = await supabase
-                .from('notes')
-                .select('*')
-                .eq('user_id', user.id)
-                .eq('note_date', date)
-                .eq('note_title', note.title);
-
-              if (noteError) {
-                console.error('Error fetching note data:', noteError);
-              } else if (noteData.length === 0) {
-                const { error: insertNoteError } = await supabase
-                  .from('notes')
-                  .insert([{ user_id: user.id, note_date: date, note_title: note.title }]);
-
-                if (insertNoteError) {
-                  console.error('Error inserting note:', insertNoteError);
-                } else {
-                  console.log('Note synced to Supabase');
-                }
-              }
-            }
-          }
-
         } catch (e) {
           console.error('Unexpected error:', e);
           alert('An unexpected error occurred. Check the console for details.');
@@ -632,20 +325,44 @@
 
       netlifyIdentity.on('logout', () => {
         console.log('User logged out');
-        window.location.href = 'index.html';
       });
 
-      // Initialize the calendar with stored events
-      const commitTime = localStorage.getItem('commitTime');
-      if (commitTime) {
-        displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
-        startTimer(new Date(commitTime));
-      } else {
-        displayCalendar(new Date());
+      if (myPlanLink) {
+        myPlanLink.addEventListener('click', (e) => {
+          const user = netlifyIdentity.currentUser();
+          if (!user) {
+            e.preventDefault();
+            message.style.display = 'block';
+            setTimeout(() => {
+              message.style.display = 'none';
+            }, 3000);
+          } else {
+            window.location.href = 'myplan.html';
+          }
+        });
       }
 
-      // Set default language
-      setLanguage('fr');
+      loginButton.addEventListener('click', () => {
+        netlifyIdentity.open();
+      });
+
+      // Example: Call to fetch users using the Netlify Function proxy
+      async function fetchUsers() {
+        try {
+          const response = await fetch('/.netlify/functions/supabaseProxy');
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          console.log(data);
+        } catch (error) {
+          console.error('Error fetching users:', error);
+          alert('There was an error fetching users. Check the console for details.');
+        }
+      }
+
+      // Fetch users when the page loads
+      fetchUsers();
     });
   </script>
 </body>
