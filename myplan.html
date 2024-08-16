@@ -257,7 +257,7 @@
   <div id="journal-popup">
     <p>Journal Entries</p>
     <div id="day-journal"></div>
-    <button>Close</button>
+    <button id="close-journal">Close</button>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -267,6 +267,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <script>
+    let timerInterval;
+
     async function getSupabaseKey() {
       const response = await fetch('/.netlify/functions/getSupabaseKey');
       const data = await response.json();
@@ -384,7 +386,7 @@
           storedNotes[date].forEach(note => {
             events.push({
               title: note.title,
-              start: date,
+              start: date
             });
           });
         }
@@ -494,7 +496,7 @@
         $('#journal-popup').show();
       }
 
-      $('#journal-popup button').click(() => {
+      $('#close-journal').click(() => {
         $('#journal-popup').hide();
       });
 
@@ -503,8 +505,6 @@
         $('#journal-popup').hide();
         $('#note-input-popup').hide();
       });
-
-      let timerInterval;
 
       function startTimer(commitTime) {
         clearInterval(timerInterval); // Clear any existing timer
