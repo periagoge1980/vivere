@@ -281,7 +281,16 @@
       return supabase.createClient(supabaseUrl, supabaseKey);
     }
 
-    $(document).ready(function() {
+    $(document).ready(async function() {
+      // Check if user is logged in
+      netlifyIdentity.on('init', user => {
+        if (!user) {
+          alert('Please log in to access this member-only feature.');
+          netlifyIdentity.open();
+          return;
+        }
+      });
+
       const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
       const storedCommitTime = localStorage.getItem('commitTime');
 
