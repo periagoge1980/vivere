@@ -263,815 +263,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
-  <script src="https://identity.netHere's the full and complete version of the HTML code with all functionalities intact:
-
-```html
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mon Plan</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      background-color: #007BFF;
-      color: white;
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      text-align: left;
-      font-weight: bold;
-      color: white;
-    }
-    .login {
-      display: flex;
-      align-items: center;
-    }
-    .login button {
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-right: 10px;
-    }
-    .login button:hover {
-      background-color: #0056b3;
-    }
-    .lang-switch {
-      display: flex;
-      align-items: center;
-    }
-    .lang-switch button {
-      margin: 0 5px;
-      padding: 5px 10px;
-      cursor: pointer;
-      border: none;
-      background-color: #007BFF;
-      color: white;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .lang-switch button:hover {
-      background-color: #0056b3;
-    }
-    .container {
-      flex: 1;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      text-align: center;
-    }
-    .links {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-    }
-    .links a {
-      margin: 5px 10px;
-      text-decoration: none;
-      color: white;
-      background-color: #007BFF;
-      padding: 10px 20px;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .links a:hover {
-      background-color: #0056b3;
-    }
-    form {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    input[type="date"] {
-      padding: 10px;
-      margin-left: 10px;
-      font-size: 16px;
-    }
-    h3 {
-      margin: 0 10px 0 0;
-      font-size: 1rem;
-      color: #333;
-    }
-    button {
-      padding: 10px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #timeCounter {
-      text-align: center;
-      margin: 20px 0;
-      font-size: 20px;
-      color: #333;
-    }
-    #calendar {
-      max-width: 900px;
-      margin: 0 auto;
-      margin-top: 20px;
-    }
-    footer {
-      background-color: #f1f1f1;
-      padding: 10px;
-      text-align: center;
-      margin-top: auto;
-    }
-    .login-link {
-      color: white;
-      cursor: pointer;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    #note-popup, #note-input-popup, #journal-popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      border: 1px solid #ccc;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
-    #note-popup button, #note-input-popup button, #journal-popup button {
-      margin: 5px;
-      padding: 10px 20px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 5px;
-    }
-    #note-popup button:hover, #note-input-popup button:hover, #journal-popup button:hover {
-      background-color: #0056b3;
-    }
-    #note-popup-overlay, #note-input-popup-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
-    .note-block {
-      margin: 5px 0;
-      padding: 10px;
-      border-radius: 5px;
-    }
-    .patreon {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .patreon a {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #f96854;
-      color: white;
-      border-radius: 5px;
-      text-decoration: none;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-    }
-    .patreon a:hover {
-      background-color: #c65042;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1 id="header-title">Bienvenue sur Le Projet Vivere</h1>
-    <div class="login">
-      <button id="login">Connexion/Inscription</button>
-      <div class="lang-switch">
-        <button id="lang-en">EN</button>
-        <button id="lang-fr">FR</button>
-      </div>
-    </div>
-  </header>
-
-  <div class="container">
-    <div class="links">
-      <a id="home-link" href="index.html">Accueil</a>
-      <a id="resources-link" href="resources.html">Ressources</a>
-      <a id="plan-link" href="myplan.html">Mon Plan</a>
-    </div>
-
-    <h1 id="page-title">Mon Plan</h1>
-
-    <form id="dateForm">
-      <h3 id="select-date-title">Sélectionnez une date d'arrêt</h3>
-      <input type="date" id="startDate" value="">
-      <button type="submit" id="commit-button">C'est Fini!</button>
-    </form>
-    <div id="timeCounter">Temps écoulé depuis l'engagement: 00:00:00</div>
-    <div id="calendar"></div>
-
-    <!-- Patreon Button -->
-    <div class="patreon">
-      <a href="https://www.patreon.com/thevivereproject" target="_blank">Soutenez-nous sur Patreon</a>
-    </div>
-  </div>
-  <footer>
-    &copy; 2024 Projet Vivere. Tous droits réservés.
-  </footer>
-
-  <div id="note-popup-overlay"></div>
-  <div id="note-popup">
-    <p id="note-popup-title">How was that day?</p>
-    <button id="positive">Positive</button>
-    <button id="triggered">Triggered</button>
-    <button id="relapsed">Relapsed</button>
-    <button id="add-note">Add a Note</button>
-    <button id="view-day">View Day</button>
-    <button id="remove-note" style="display: none;">Remove Note</button>
-    <div id="notes-container"></div>
-  </div>
-
-  <div id="note-input-popup">
-    <p id="note-input-popup-title">Add your custom note:</p>
-    <textarea id="custom-note" rows="4" cols="50"></textarea>
-    <button id="save-note">Save Note</button>
-    <button id="cancel-note">Cancel</button>
-  </div>
-
-  <div id="journal-popup">
-    <p id="journal-popup-title">Journal Entries</p>
-    <div id="day-journal"></div>
-    <button id="close-journal">Close</button>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://cdnI see that the code was cut off at the end. Here is the full corrected version of the HTML, ensuring all functionalities work:
-
-```html
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mon Plan</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      background-color: #007BFF;
-      color: white;
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      text-align: left;
-      font-weight: bold;
-      color: white;
-    }
-    .login {
-      display: flex;
-      align-items: center;
-    }
-    .login button {
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-right: 10px;
-    }
-    .login button:hover {
-      background-color: #0056b3;
-    }
-    .lang-switch {
-      display: flex;
-      align-items: center;
-    }
-    .lang-switch button {
-      margin: 0 5px;
-      padding: 5px 10px;
-      cursor: pointer;
-      border: none;
-      background-color: #007BFF;
-      color: white;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .lang-switch button:hover {
-      background-color: #0056b3;
-    }
-    .container {
-      flex: 1;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      text-align: center;
-    }
-    .links {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-    }
-    .links a {
-      margin: 5px 10px;
-      text-decoration: none;
-      color: white;
-      background-color: #007BFF;
-      padding: 10px 20px;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .links a:hover {
-      background-color: #0056b3;
-    }
-    form {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    input[type="date"] {
-      padding: 10px;
-      margin-left: 10px;
-      font-size: 16px;
-    }
-    h3 {
-      margin: 0 10px 0 0;
-      font-size: 1rem;
-      color: #333;
-    }
-    button {
-      padding: 10px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #timeCounter {
-      text-align: center;
-      margin: 20px 0;
-      font-size: 20px;
-      color: #333;
-    }
-    #calendar {
-      max-width: 900px;
-      margin: 0 auto;
-      margin-top: 20px;
-    }
-    footer {
-      background-color: #f1f1f1;
-      padding: 10px;
-      text-align: center;
-      margin-top: auto;
-    }
-    .login-link {
-      color: white;
-      cursor: pointer;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    #note-popup, #note-input-popup, #journal-popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      border: 1px solid #ccc;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
-    #note-popup button, #note-input-popup button, #journal-popup button {
-      margin: 5px;
-      padding: 10px 20px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 5px;
-    }
-    #note-popup button:hover, #note-input-popup button:hover, #journal-popup button:hover {
-      background-color: #0056b3;
-    }
-    #note-popup-overlay, #note-input-popup-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
-    .note-block {
-      margin: 5px 0;
-      padding: 10px;
-      border-radius: 5px;
-    }
-    .patreon {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .patreon a {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #f96854;
-      color: white;
-      border-radius: 5px;
-      text-decoration: none;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-    }
-    .patreon a:hover {
-      background-color: #c65042;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1 id="header-title">Bienvenue sur Le Projet Vivere</h1>
-    <div class="login">
-      <button id="login">Connexion/Inscription</button>
-      <div class="lang-switch">
-        <button id="lang-en">EN</button>
-        <button id="lang-fr">FR</button>
-      </div>
-    </div>
-  </header>
-
-  <div class="container">
-    <div class="links">
-      <a id="home-link" href="index.html">Accueil</a>
-      <a id="resources-link" href="resources.html">Ressources</a>
-      <a id="plan-link" href="myplan.html">Mon Plan</a>
-    </div>
-
-    <h1 id="page-title">Mon Plan</h1>
-
-    <form id="dateForm">
-      <h3 id="select-date-title">Sélectionnez une date d'arrêt</h3>
-      <input type="date" id="startDate" value="">
-      <button type="submit" id="commit-button">C'est Fini!</button>
-    </form>
-    <div id="timeCounter">Temps écoulé depuis l'engagement: 00:00:00</div>
-    <div id="calendar"></div>
-
-    <!-- Patreon Button -->
-    <div class="patreon">
-      <a href="https://www.patreon.com/thevivereproject" target="_blank">Soutenez-nous sur Patreon</a>
-    </div>
-  </div>
-  <footer>
-    &copy; 2024 Projet Vivere. Tous droits réservés.
-  </footer>
-
-  <div id="note-popup-overlay"></div>
-  <div id="note-popup">
-    <p id="note-popup-title">How was that day?</p>
-    <button id="positive">Positive</button>
-    <button id="triggered">Triggered</button>
-    <button id="relapsed">Relapsed</button>
-    <button id="add-note">Add a Note</button>
-    <button id="view-day">View Day</button>
-    <button id="remove-note" style="display: none;">Remove Note</button>
-    <div id="notes-container"></div>
-  </div>
-
-  <div id="note-input-popup">
-    <p id="note-input-popup-title">Add your custom note:</p>
-    <textarea id="custom-note" rows="4" cols="50"></textarea>
-    <button id="save-note">Save Note</button>
-    <button id="cancel-note">Cancel</button>
-  </div>
-
-  <div id="journal-popup">
-    <p id="journal-popup-title">Journal Entries</p>
-    <div id="day-journal"></div>
-    <button id="close-journal">Close</button>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widgetHere's the fully complete and corrected version of the HTML code:
-
-```html
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mon Plan</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      background-color: #007BFF;
-      color: white;
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      text-align: left;
-      font-weight: bold;
-      color: white;
-    }
-    .login {
-      display: flex;
-      align-items: center;
-    }
-    .login button {
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-right: 10px;
-    }
-    .login button:hover {
-      background-color: #0056b3;
-    }
-    .lang-switch {
-      display: flex;
-      align-items: center;
-    }
-    .lang-switch button {
-      margin: 0 5px;
-      padding: 5px 10px;
-      cursor: pointer;
-      border: none;
-      background-color: #007BFF;
-      color: white;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .lang-switch button:hover {
-      background-color: #0056b3;
-    }
-    .container {
-      flex: 1;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      text-align: center;
-    }
-    .links {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-    }
-    .links a {
-      margin: 5px 10px;
-      text-decoration: none;
-      color: white;
-      background-color: #007BFF;
-      padding: 10px 20px;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .links a:hover {
-      background-color: #0056b3;
-    }
-    form {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    input[type="date"] {
-      padding: 10px;
-      margin-left: 10px;
-      font-size: 16px;
-    }
-    h3 {
-      margin: 0 10px 0 0;
-      font-size: 1rem;
-      color: #333;
-    }
-    button {
-      padding: 10px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #timeCounter {
-      text-align: center;
-      margin: 20px 0;
-      font-size: 20px;
-      color: #333;
-    }
-    #calendar {
-      max-width: 900px;
-      margin: 0 auto;
-      margin-top: 20px;
-    }
-    footer {
-      background-color: #f1f1f1;
-      padding: 10px;
-      text-align: center;
-      margin-top: auto;
-    }
-    .login-link {
-      color: white;
-      cursor: pointer;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    #note-popup, #note-input-popup, #journal-popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      border: 1px solid #ccc;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
-    #note-popup button, #note-input-popup button, #journal-popup button {
-      margin: 5px;
-      padding: 10px 20px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 5px;
-    }
-    #note-popup button:hover, #note-input-popup button:hover, #journal-popup button:hover {
-      background-color: #0056b3;
-    }
-    #note-popup-overlay, #note-input-popup-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
-    .note-block {
-      margin: 5px 0;
-      padding: 10px;
-      border-radius: 5px;
-    }
-    .patreon {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .patreon a {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #f96854;
-      color: white;
-      border-radius: 5px;
-      text-decoration: none;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-    }
-    .patreon a:hover {
-      background-color: #c65042;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1 id="header-title">Bienvenue sur Le Projet Vivere</h1>
-    <div class="login">
-      <button id="login">Connexion/Inscription</button>
-      <div class="lang-switch">
-        <button id="lang-en">EN</button>
-        <button id="lang-fr">FR</button>
-      </div>
-    </div>
-  </header>
-
-  <div class="container">
-    <div class="links">
-      <a id="home-link" href="index.html">Accueil</a>
-      <a id="resources-link" href="resources.html">Ressources</a>
-      <a id="plan-link" href="myplan.html">Mon Plan</a>
-    </div>
-
-    <h1 id="page-title">Mon Plan</h1>
-
-    <form id="dateForm">
-      <h3 id="select-date-title">Sélectionnez une date d'arrêt</h3>
-      <input type="date" id="startDate" value="">
-      <button type="submit" id="commit-button">C'est Fini!</button>
-    </form>
-    <div id="timeCounter">Temps écoulé depuis l'engagement: 00:00:00</div>
-    <div id="calendar"></div>
-
-    <!-- Patreon Button -->
-    <div class="patreon">
-      <a href="https://www.patreon.com/thevivereproject" target="_blank">Soutenez-nous sur Patreon</a>
-    </div>
-  </div>
-  <footer>
-    &copy; 2024 Projet Vivere. Tous droits réservés.
-  </footer>
-
-  <div id="note-popup-overlay"></div>
-  <div id="note-popup">
-    <p id="note-popup-title">How was that day?</p>
-    <button id="positive">Positive</button>
-    <button id="triggered">Triggered</button>
-    <button id="relapsed">Relapsed</button>
-    <button id="add-note">Add a Note</button>
-    <button id="view-day">View Day</button>
-    <button id="remove-note" style="display: none;">Remove Note</button>
-    <div id="notes-container"></div>
-  </div>
-
-  <div id="note-input-popup">
-    <p id="note-input-popup-title">Add your custom note:</p>
-    <textarea id="custom-note" rows="4" cols="50"></textarea>
-    <button id="save-note">Save Note</button>
-    <button id="cancel-note">Cancel</button>
-  </div>
-
-  <div id="journal-popup">
-    <p id="journal-popup-title">Journal Entries</p>
-    <div id="day-journal"></div>
-    <button id="close-journal">Close</button>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://cdn.jsdelivr.net/npmHere's the final portion of the code, ensuring that all functionalities and scripts are included:
-
-```html
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <script>
@@ -1089,21 +281,22 @@
       return supabase.createClient(supabaseUrl, supabaseKey);
     }
 
-    $(document).ready(async function () {
+    $(document).ready(async function() {
       // Check if user is logged in
-      netlifyIdentity.on('init', (user) => {
+      netlifyIdentity.on('init', async (user) => {
         if (!user) {
+          alert('Please log in to access this member-only feature.');
           netlifyIdentity.open();
           netlifyIdentity.on('login', () => {
-            window.location.reload(); // Reload the page after login
+            location.reload(); // Reload the page after login
           });
           return;
-        } else {
-          loadContent(user); // Proceed to load content if logged in
         }
+        // Continue loading the page only after user is logged in
+        loadPageContent();
       });
 
-      async function loadContent(user) {
+      function loadPageContent() {
         const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
         const storedCommitTime = localStorage.getItem('commitTime');
 
@@ -1141,7 +334,7 @@
             saveNoteButton: 'Enregistrer la note',
             cancelNoteButton: 'Annuler',
             closeJournalButton: 'Fermer',
-          },
+          }
         };
 
         function setLanguage(lang) {
@@ -1168,7 +361,7 @@
         document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
         document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
 
-        $('#dateForm').on('submit', async function (e) {
+        $('#dateForm').on('submit', async function(e) {
           e.preventDefault();
           const selectedDate = $('#startDate').val();
           if (selectedDate) {
@@ -1221,22 +414,22 @@
             defaultDate: date,
             editable: true,
             eventLimit: true, // allow "more" link when too many events
-            dayClick: function (date) {
+            dayClick: function(date) {
               const selectedDate = date.format('YYYY-MM-DD');
               $('#note-popup').data('date', selectedDate).show();
               displayNotes(selectedDate);
             },
-            events: getStoredEvents(),
+            events: getStoredEvents()
           });
         }
 
         function getStoredEvents() {
           let events = [];
           for (let date in storedNotes) {
-            storedNotes[date].forEach((note) => {
+            storedNotes[date].forEach(note => {
               events.push({
                 title: note.title,
-                start: date,
+                start: date
               });
             });
           }
@@ -1247,7 +440,7 @@
           const notesContainer = $('#notes-container');
           notesContainer.empty(); // Clear any previous notes
           if (storedNotes[date]) {
-            storedNotes[date].forEach((note) => {
+            storedNotes[date].forEach(note => {
               const noteBlock = `<div class="note-block">${note.note}</div>`;
               notesContainer.append(noteBlock);
             });
@@ -1277,7 +470,7 @@
           if (customNote) {
             addNoteToDate(selectedDate, {
               title: customNote,
-              note: customNote,
+              note: customNote
             });
             $('#custom-note').val(''); // Clear the input
             $('#note-input-popup').hide();
@@ -1293,7 +486,7 @@
           const selectedDate = $('#note-popup').data('date');
           addNoteToDate(selectedDate, {
             title: note,
-            note: note,
+            note: note
           });
           $('#note-popup').hide();
           displayCalendar($('#startDate').val());
@@ -1314,9 +507,6 @@
                 console.log('Note saved in Supabase');
               }
             } catch (e) {
-              console.error('UnexpectedHere's the continuation of the script:
-
-```html
               console.error('Unexpected error:', e);
               alert('An unexpected error occurred while saving your note. Check the console for details.');
             }
@@ -1342,7 +532,7 @@
         function viewDayJournal() {
           const selectedDate = $('#note-popup').data('date');
           const journalEntries = storedNotes[selectedDate]
-            ? storedNotes[selectedDate].map((note) => `<div class="note-block">${note.note}</div>`).join('')
+            ? storedNotes[selectedDate].map(note => `<div class="note-block">${note.note}</div>`).join('')
             : '<div class="note-block">No notes for this day.</div>';
           $('#day-journal').html(journalEntries);
           $('#note-popup').hide();
@@ -1362,16 +552,14 @@
         function startTimer(commitTime) {
           clearInterval(timerInterval); // Clear any existing timer
 
-          timerInterval = setInterval(function () {
+          timerInterval = setInterval(function() {
             const currentTime = new Date();
             const timeDiff = currentTime - new Date(commitTime);
             const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-            $('#timeCounter').text(
-              `${translations[localStorage.getItem('language') || document.documentElement.lang].timeSinceCommit} ${days}j ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`
-            );
+            $('#timeCounter').text(`${translations[localStorage.getItem('language') || document.documentElement.lang].timeSinceCommit} ${days}j ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
           }, 1000);
         }
 
@@ -1471,6 +659,7 @@
                 }
               }
             }
+
           } catch (e) {
             console.error('Unexpected error:', e);
             alert('An unexpected error occurred. Check the console for details.');
