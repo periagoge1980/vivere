@@ -211,9 +211,9 @@
 
   <div class="container">
     <div class="links">
-      <a id="home-link" href="index.html">Accueil</a>
-      <a id="resources-link" href="resources.html">Ressources</a>
-      <a id="plan-link" href="myplan.html">Mon Plan</a>
+      <a href="index.html">Accueil</a>
+      <a href="resources.html">Ressources</a>
+      <a href="myplan.html">Mon Plan</a>
     </div>
 
     <h1 id="page-title">Mon Plan</h1>
@@ -237,7 +237,7 @@
 
   <div id="note-popup-overlay"></div>
   <div id="note-popup">
-    <p id="note-popup-title">How was that day?</p>
+    <p>How was that day?</p>
     <button id="positive">Positive</button>
     <button id="triggered">Triggered</button>
     <button id="relapsed">Relapsed</button>
@@ -248,14 +248,14 @@
   </div>
 
   <div id="note-input-popup">
-    <p id="note-input-popup-title">Add your custom note:</p>
+    <p>Add your custom note:</p>
     <textarea id="custom-note" rows="4" cols="50"></textarea>
     <button id="save-note">Save Note</button>
     <button id="cancel-note">Cancel</button>
   </div>
 
   <div id="journal-popup">
-    <p id="journal-popup-title">Journal Entries</p>
+    <p>Journal Entries</p>
     <div id="day-journal"></div>
     <button id="close-journal">Close</button>
   </div>
@@ -281,408 +281,364 @@
       return supabase.createClient(supabaseUrl, supabaseKey);
     }
 
-    $(document).ready(async function() {
-      // Check if user is logged in
-      netlifyIdentity.on('init', async (user) => {
-        if (!user) {
-          alert('Please log in to access this member-only feature.');
-          netlifyIdentity.open();
-          netlifyIdentity.on('login', () => {
-            location.reload(); // Reload the page after login
-          });
-          return;
+    $(document).ready(function() {
+      const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
+      const storedCommitTime = localStorage.getItem('commitTime');
+
+      const translations = {
+        en: {
+          title: 'My Plan',
+          header: 'Welcome to the Vivere Project',
+          commitButton: 'Commit!',
+          timeSinceCommit: 'Time since commit:',
+          planTitle: 'My Plan',
+          selectDate: 'Select a quit date',
+        },
+        fr: {
+          title: 'Mon Plan',
+          header: 'Bienvenue sur Le Projet Vivere',
+          commitButton: "C'est Fini!",
+          timeSinceCommit: "Temps écoulé depuis l'engagement:",
+          planTitle: 'Mon Plan',
+          selectDate: "Sélectionnez une date d'arrêt",
         }
-        // Continue loading the page only after user is logged in
-        loadPageContent();
-      });
+      };
 
-      function loadPageContent() {
-        const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
-        const storedCommitTime = localStorage.getItem('commitTime');
-
-        const translations = {
-          en: {
-            title: 'My Plan',
-            header: 'Welcome to the Vivere Project',
-            commitButton: 'Commit!',
-            timeSinceCommit: 'Time since commit:',
-            planTitle: 'My Plan',
-            selectDate: 'Select a quit date',
-            homeLink: 'Home',
-            resourcesLink: 'Resources',
-            planLink: 'My Plan',
-            notePopupTitle: 'How was that day?',
-            noteInputPopupTitle: 'Add your custom note:',
-            journalPopupTitle: 'Journal Entries',
-            saveNoteButton: 'Save Note',
-            cancelNoteButton: 'Cancel',
-            closeJournalButton: 'Close',
-          },
-          fr: {
-            title: 'Mon Plan',
-            header: 'Bienvenue sur Le Projet Vivere',
-            commitButton: "C'est Fini!",
-            timeSinceCommit: "Temps écoulé depuis l'engagement:",
-            planTitle: 'Mon Plan',
-            selectDate: "Sélectionnez une date d'arrêt",
-            homeLink: 'Accueil',
-            resourcesLink: 'Ressources',
-            planLink: 'Mon Plan',
-            notePopupTitle: 'Comment s\'est passée la journée?',
-            noteInputPopupTitle: 'Ajoutez votre note personnalisée :',
-            journalPopupTitle: 'Entrées du Journal',
-            saveNoteButton: 'Enregistrer la note',
-            cancelNoteButton: 'Annuler',
-            closeJournalButton: 'Fermer',
-          }
-        };
-
-        function setLanguage(lang) {
-          if (translations[lang]) {
-            localStorage.setItem('language', lang);
-            document.title = translations[lang].title;
-            document.getElementById('header-title').textContent = translations[lang].header;
-            document.getElementById('commit-button').textContent = translations[lang].commitButton;
-            document.getElementById('timeCounter').textContent = translations[lang].timeSinceCommit + ' 00:00:00';
-            document.getElementById('page-title').textContent = translations[lang].planTitle;
-            document.getElementById('select-date-title').textContent = translations[lang].selectDate;
-            document.getElementById('home-link').textContent = translations[lang].homeLink;
-            document.getElementById('resources-link').textContent = translations[lang].resourcesLink;
-            document.getElementById('plan-link').textContent = translations[lang].planLink;
-            document.getElementById('note-popup-title').textContent = translations[lang].notePopupTitle;
-            document.getElementById('note-input-popup-title').textContent = translations[lang].noteInputPopupTitle;
-            document.getElementById('journal-popup-title').textContent = translations[lang].journalPopupTitle;
-            document.getElementById('save-note').textContent = translations[lang].saveNoteButton;
-            document.getElementById('cancel-note').textContent = translations[lang].cancelNoteButton;
-            document.getElementById('close-journal').textContent = translations[lang].closeJournalButton;
-          }
+      function setLanguage(lang) {
+        if (translations[lang]) {
+          document.title = translations[lang].title;
+          document.getElementById('header-title').textContent = translations[lang].header;
+          document.getElementById('commit-button').textContent = translations[lang].commitButton;
+          document.getElementById('timeCounter').textContent = translations[lang].timeSinceCommit + ' 00:00:00';
+          document.getElementById('page-title').textContent = translations[lang].planTitle;
+          document.getElementById('select-date-title').textContent = translations[lang].selectDate;
         }
+      }
 
-        document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
-        document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
+      document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+      document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
 
-        $('#dateForm').on('submit', async function(e) {
-          e.preventDefault();
-          const selectedDate = $('#startDate').val();
-          if (selectedDate) {
-            const commitTime = new Date(); // Capture the exact time of commit
-            const selectedDateArray = selectedDate.split('-');
-            commitTime.setFullYear(
-              selectedDateArray[0],
-              selectedDateArray[1] - 1,
-              selectedDateArray[2]
-            );
-            localStorage.setItem('commitTime', commitTime.toISOString());
-            displayCalendar(selectedDate);
-            startTimer(commitTime);
-
-            // Save commit time to Supabase
-            const user = netlifyIdentity.currentUser();
-            if (user) {
-              try {
-                const supabase = await initSupabase();
-                const { data, error } = await supabase
-                  .from('commit_times')
-                  .insert([{ user_id: user.id, commit_time: commitTime.toISOString() }]);
-
-                if (error) {
-                  console.error('Error inserting commit time:', error);
-                  alert('There was an error saving your commitment time. Check the console for details.');
-                } else {
-                  console.log('Commit time saved in Supabase');
-                }
-              } catch (e) {
-                console.error('Unexpected error:', e);
-                alert('An unexpected error occurred while saving your commit time. Check the console for details.');
-              }
-            }
-          }
-        });
-
-        if (storedCommitTime) {
-          const commitTime = new Date(storedCommitTime);
-          $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
-          displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
+      $('#dateForm').on('submit', async function(e) {
+        e.preventDefault();
+        const selectedDate = $('#startDate').val();
+        if (selectedDate) {
+          const commitTime = new Date(); // Capture the exact time of commit
+          const selectedDateArray = selectedDate.split('-');
+          commitTime.setFullYear(
+            selectedDateArray[0],
+            selectedDateArray[1] - 1,
+            selectedDateArray[2]
+          );
+          localStorage.setItem('commitTime', commitTime.toISOString());
+          displayCalendar(selectedDate);
           startTimer(commitTime);
-        } else {
-          displayCalendar(new Date());
-        }
 
-        function displayCalendar(date) {
-          $('#calendar').fullCalendar('destroy'); // Destroy any existing calendar
-          $('#calendar').fullCalendar({
-            defaultDate: date,
-            editable: true,
-            eventLimit: true, // allow "more" link when too many events
-            dayClick: function(date) {
-              const selectedDate = date.format('YYYY-MM-DD');
-              $('#note-popup').data('date', selectedDate).show();
-              displayNotes(selectedDate);
-            },
-            events: getStoredEvents()
-          });
-        }
-
-        function getStoredEvents() {
-          let events = [];
-          for (let date in storedNotes) {
-            storedNotes[date].forEach(note => {
-              events.push({
-                title: note.title,
-                start: date
-              });
-            });
-          }
-          return events;
-        }
-
-        function displayNotes(date) {
-          const notesContainer = $('#notes-container');
-          notesContainer.empty(); // Clear any previous notes
-          if (storedNotes[date]) {
-            storedNotes[date].forEach(note => {
-              const noteBlock = `<div class="note-block">${note.note}</div>`;
-              notesContainer.append(noteBlock);
-            });
-            $('#remove-note').show();
-          } else {
-            notesContainer.append('<div class="note-block">No notes for this day.</div>');
-            $('#remove-note').hide();
-          }
-        }
-
-        $('#positive').click(() => saveNoteToCalendar('Positive'));
-        $('#triggered').click(() => saveNoteToCalendar('Triggered'));
-        $('#relapsed').click(() => {
-          saveNoteToCalendar('Relapsed');
-          resetTimer();
-        });
-        $('#add-note').click(() => {
-          $('#note-popup').hide();
-          $('#note-input-popup').show();
-        });
-        $('#remove-note').click(() => removeNoteFromCalendar());
-        $('#view-day').click(() => viewDayJournal());
-
-        $('#save-note').click(() => {
-          const selectedDate = $('#note-popup').data('date');
-          const customNote = $('#custom-note').val();
-          if (customNote) {
-            addNoteToDate(selectedDate, {
-              title: customNote,
-              note: customNote
-            });
-            $('#custom-note').val(''); // Clear the input
-            $('#note-input-popup').hide();
-            displayCalendar($('#startDate').val());
-          }
-        });
-
-        $('#cancel-note').click(() => {
-          $('#note-input-popup').hide();
-        });
-
-        async function saveNoteToCalendar(note) {
-          const selectedDate = $('#note-popup').data('date');
-          addNoteToDate(selectedDate, {
-            title: note,
-            note: note
-          });
-          $('#note-popup').hide();
-          displayCalendar($('#startDate').val());
-
-          // Save note to Supabase
+          // Save commit time to Supabase
           const user = netlifyIdentity.currentUser();
           if (user) {
             try {
               const supabase = await initSupabase();
               const { data, error } = await supabase
-                .from('notes')
-                .insert([{ user_id: user.id, note_date: selectedDate, note_title: note }]);
+                .from('commit_times')
+                .insert([{ user_id: user.id, commit_time: commitTime.toISOString() }]);
 
               if (error) {
-                console.error('Error saving note:', error);
-                alert('There was an error saving your note. Check the console for details.');
+                console.error('Error inserting commit time:', error);
+                alert('There was an error saving your commitment time. Check the console for details.');
               } else {
-                console.log('Note saved in Supabase');
+                console.log('Commit time saved in Supabase');
               }
             } catch (e) {
               console.error('Unexpected error:', e);
-              alert('An unexpected error occurred while saving your note. Check the console for details.');
+              alert('An unexpected error occurred while saving your commit time. Check the console for details.');
             }
           }
         }
+      });
 
-        function addNoteToDate(date, note) {
-          if (!storedNotes[date]) {
-            storedNotes[date] = [];
-          }
-          storedNotes[date].push(note);
-          localStorage.setItem('notes', JSON.stringify(storedNotes));
+      if (storedCommitTime) {
+        const commitTime = new Date(storedCommitTime);
+        $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
+        displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
+        startTimer(commitTime);
+      } else {
+        displayCalendar(new Date());
+      }
+
+      function displayCalendar(date) {
+        $('#calendar').fullCalendar('destroy'); // Destroy any existing calendar
+        $('#calendar').fullCalendar({
+          defaultDate: date,
+          editable: true,
+          eventLimit: true, // allow "more" link when too many events
+          dayClick: function(date) {
+            const selectedDate = date.format('YYYY-MM-DD');
+            $('#note-popup').data('date', selectedDate).show();
+            displayNotes(selectedDate);
+          },
+          events: getStoredEvents()
+        });
+      }
+
+      function getStoredEvents() {
+        let events = [];
+        for (let date in storedNotes) {
+          storedNotes[date].forEach(note => {
+            events.push({
+              title: note.title,
+              start: date
+            });
+          });
         }
+        return events;
+      }
 
-        function removeNoteFromCalendar() {
-          const selectedDate = $('#note-popup').data('date');
-          delete storedNotes[selectedDate];
-          localStorage.setItem('notes', JSON.stringify(storedNotes));
-          $('#note-popup').hide();
+      function displayNotes(date) {
+        const notesContainer = $('#notes-container');
+        notesContainer.empty(); // Clear any previous notes
+        if (storedNotes[date]) {
+          storedNotes[date].forEach(note => {
+            const noteBlock = `<div class="note-block">${note.note}</div>`;
+            notesContainer.append(noteBlock);
+          });
+          $('#remove-note').show();
+        } else {
+          notesContainer.append('<div class="note-block">No notes for this day.</div>');
+          $('#remove-note').hide();
+        }
+      }
+
+      $('#positive').click(() => saveNoteToCalendar('Positive'));
+      $('#triggered').click(() => saveNoteToCalendar('Triggered'));
+      $('#relapsed').click(() => {
+        saveNoteToCalendar('Relapsed');
+        resetTimer();
+      });
+      $('#add-note').click(() => {
+        $('#note-popup').hide();
+        $('#note-input-popup').show();
+      });
+      $('#remove-note').click(() => removeNoteFromCalendar());
+      $('#view-day').click(() => viewDayJournal());
+
+      $('#save-note').click(() => {
+        const selectedDate = $('#note-popup').data('date');
+        const customNote = $('#custom-note').val();
+        if (customNote) {
+          addNoteToDate(selectedDate, {
+            title: customNote,
+            note: customNote
+          });
+          $('#custom-note').val(''); // Clear the input
+          $('#note-input-popup').hide();
           displayCalendar($('#startDate').val());
         }
+      });
 
-        function viewDayJournal() {
-          const selectedDate = $('#note-popup').data('date');
-          const journalEntries = storedNotes[selectedDate]
-            ? storedNotes[selectedDate].map(note => `<div class="note-block">${note.note}</div>`).join('')
-            : '<div class="note-block">No notes for this day.</div>';
-          $('#day-journal').html(journalEntries);
-          $('#note-popup').hide();
-          $('#journal-popup').show();
-        }
+      $('#cancel-note').click(() => {
+        $('#note-input-popup').hide();
+      });
 
-        $('#close-journal').click(() => {
-          $('#journal-popup').hide();
+      async function saveNoteToCalendar(note) {
+        const selectedDate = $('#note-popup').data('date');
+        addNoteToDate(selectedDate, {
+          title: note,
+          note: note
         });
+        $('#note-popup').hide();
+        displayCalendar($('#startDate').val());
 
-        $('#popup-overlay, #note-popup-overlay').on('click', () => {
-          $('#note-popup').hide();
-          $('#journal-popup').hide();
-          $('#note-input-popup').hide();
-        });
-
-        function startTimer(commitTime) {
-          clearInterval(timerInterval); // Clear any existing timer
-
-          timerInterval = setInterval(function() {
-            const currentTime = new Date();
-            const timeDiff = currentTime - new Date(commitTime);
-            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-            $('#timeCounter').text(`${translations[localStorage.getItem('language') || document.documentElement.lang].timeSinceCommit} ${days}j ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
-          }, 1000);
-        }
-
-        function resetTimer() {
-          clearInterval(timerInterval);
-          const newCommitTime = new Date();
-          localStorage.setItem('commitTime', newCommitTime.toISOString());
-          startTimer(newCommitTime);
-        }
-
-        function formatTime(unit) {
-          return unit < 10 ? '0' + unit : unit;
-        }
-
-        const loginButton = document.getElementById('login');
-        loginButton.addEventListener('click', () => {
-          netlifyIdentity.open();
-        });
-
-        netlifyIdentity.on('login', async (user) => {
-          console.log('User logged in:', user);
-          netlifyIdentity.close();
-
+        // Save note to Supabase
+        const user = netlifyIdentity.currentUser();
+        if (user) {
           try {
             const supabase = await initSupabase();
+            const { data, error } = await supabase
+              .from('notes')
+              .insert([{ user_id: user.id, note_date: selectedDate, note_title: note }]);
 
-            // Check if user exists in Supabase
-            const { data: userData, error: userError } = await supabase
+            if (error) {
+              console.error('Error saving note:', error);
+              alert('There was an error saving your note. Check the console for details.');
+            } else {
+              console.log('Note saved in Supabase');
+            }
+          } catch (e) {
+            console.error('Unexpected error:', e);
+            alert('An unexpected error occurred while saving your note. Check the console for details.');
+          }
+        }
+      }
+
+      function addNoteToDate(date, note) {
+        if (!storedNotes[date]) {
+          storedNotes[date] = [];
+        }
+        storedNotes[date].push(note);
+        localStorage.setItem('notes', JSON.stringify(storedNotes));
+      }
+
+      function removeNoteFromCalendar() {
+        const selectedDate = $('#note-popup').data('date');
+        delete storedNotes[selectedDate];
+        localStorage.setItem('notes', JSON.stringify(storedNotes));
+        $('#note-popup').hide();
+        displayCalendar($('#startDate').val());
+      }
+
+      function viewDayJournal() {
+        const selectedDate = $('#note-popup').data('date');
+        const journalEntries = storedNotes[selectedDate]
+          ? storedNotes[selectedDate].map(note => `<div class="note-block">${note.note}</div>`).join('')
+          : '<div class="note-block">No notes for this day.</div>';
+        $('#day-journal').html(journalEntries);
+        $('#note-popup').hide();
+        $('#journal-popup').show();
+      }
+
+      $('#close-journal').click(() => {
+        $('#journal-popup').hide();
+      });
+
+      $('#popup-overlay, #note-popup-overlay').on('click', () => {
+        $('#note-popup').hide();
+        $('#journal-popup').hide();
+        $('#note-input-popup').hide();
+      });
+
+      function startTimer(commitTime) {
+        clearInterval(timerInterval); // Clear any existing timer
+
+        timerInterval = setInterval(function() {
+          const currentTime = new Date();
+          const timeDiff = currentTime - new Date(commitTime);
+          const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+          $('#timeCounter').text(`${translations[document.documentElement.lang].timeSinceCommit} ${days}j ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
+        }, 1000);
+      }
+
+      function resetTimer() {
+        clearInterval(timerInterval);
+        const newCommitTime = new Date();
+        localStorage.setItem('commitTime', newCommitTime.toISOString());
+        startTimer(newCommitTime);
+      }
+
+      function formatTime(unit) {
+        return unit < 10 ? '0' + unit : unit;
+      }
+
+      const loginButton = document.getElementById('login');
+      loginButton.addEventListener('click', () => {
+        netlifyIdentity.open();
+      });
+
+      netlifyIdentity.on('login', async (user) => {
+        console.log('User logged in:', user);
+        netlifyIdentity.close();
+
+        try {
+          const supabase = await initSupabase();
+
+          // Check if user exists in Supabase
+          const { data: userData, error: userError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('user_id', user.id);
+
+          if (userError) {
+            console.error('Error fetching user data:', userError);
+            alert('There was an error fetching user data. Check the console for details.');
+          } else if (userData.length === 0) {
+            const { error: insertError } = await supabase
               .from('users')
+              .insert([{ user_id: user.id, email: user.email }]);
+
+            if (insertError) {
+              console.error('Error inserting new user:', insertError);
+              alert('There was an error inserting new user. Check the console for details.');
+            } else {
+              console.log('New user created in Supabase');
+            }
+          } else {
+            console.log('User already exists in Supabase');
+          }
+
+          // Sync commit time if it exists
+          const storedCommitTime = localStorage.getItem('commitTime');
+          if (storedCommitTime) {
+            const { data: commitData, error: commitError } = await supabase
+              .from('commit_times')
               .select('*')
               .eq('user_id', user.id);
 
-            if (userError) {
-              console.error('Error fetching user data:', userError);
-              alert('There was an error fetching user data. Check the console for details.');
-            } else if (userData.length === 0) {
-              const { error: insertError } = await supabase
-                .from('users')
-                .insert([{ user_id: user.id, email: user.email }]);
-
-              if (insertError) {
-                console.error('Error inserting new user:', insertError);
-                alert('There was an error inserting new user. Check the console for details.');
-              } else {
-                console.log('New user created in Supabase');
-              }
-            } else {
-              console.log('User already exists in Supabase');
-            }
-
-            // Sync commit time if it exists
-            const storedCommitTime = localStorage.getItem('commitTime');
-            if (storedCommitTime) {
-              const { data: commitData, error: commitError } = await supabase
+            if (commitError) {
+              console.error('Error fetching commit time data:', commitError);
+            } else if (commitData.length === 0) {
+              const { error: insertCommitError } = await supabase
                 .from('commit_times')
-                .select('*')
-                .eq('user_id', user.id);
+                .insert([{ user_id: user.id, commit_time: storedCommitTime }]);
 
-              if (commitError) {
-                console.error('Error fetching commit time data:', commitError);
-              } else if (commitData.length === 0) {
-                const { error: insertCommitError } = await supabase
-                  .from('commit_times')
-                  .insert([{ user_id: user.id, commit_time: storedCommitTime }]);
-
-                if (insertCommitError) {
-                  console.error('Error inserting commit time:', insertCommitError);
-                } else {
-                  console.log('Commit time synced to Supabase');
-                }
+              if (insertCommitError) {
+                console.error('Error inserting commit time:', insertCommitError);
+              } else {
+                console.log('Commit time synced to Supabase');
               }
             }
-
-            // Sync notes if they exist
-            const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
-            for (let date in storedNotes) {
-              for (let note of storedNotes[date]) {
-                const { data: noteData, error: noteError } = await supabase
-                  .from('notes')
-                  .select('*')
-                  .eq('user_id', user.id)
-                  .eq('note_date', date)
-                  .eq('note_title', note.title);
-
-                if (noteError) {
-                  console.error('Error fetching note data:', noteError);
-                } else if (noteData.length === 0) {
-                  const { error: insertNoteError } = await supabase
-                    .from('notes')
-                    .insert([{ user_id: user.id, note_date: date, note_title: note.title }]);
-
-                  if (insertNoteError) {
-                    console.error('Error inserting note:', insertNoteError);
-                  } else {
-                    console.log('Note synced to Supabase');
-                  }
-                }
-              }
-            }
-
-          } catch (e) {
-            console.error('Unexpected error:', e);
-            alert('An unexpected error occurred. Check the console for details.');
           }
-        });
 
-        netlifyIdentity.on('logout', () => {
-          console.log('User logged out');
-          window.location.href = 'index.html';
-        });
+          // Sync notes if they exist
+          const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
+          for (let date in storedNotes) {
+            for (let note of storedNotes[date]) {
+              const { data: noteData, error: noteError } = await supabase
+                .from('notes')
+                .select('*')
+                .eq('user_id', user.id)
+                .eq('note_date', date)
+                .eq('note_title', note.title);
 
-        // Initialize the calendar with stored events
-        const commitTime = localStorage.getItem('commitTime');
-        if (commitTime) {
-          displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
-          startTimer(new Date(commitTime));
-        } else {
-          displayCalendar(new Date());
+              if (noteError) {
+                console.error('Error fetching note data:', noteError);
+              } else if (noteData.length === 0) {
+                const { error: insertNoteError } = await supabase
+                  .from('notes')
+                  .insert([{ user_id: user.id, note_date: date, note_title: note.title }]);
+
+                if (insertNoteError) {
+                  console.error('Error inserting note:', insertNoteError);
+                } else {
+                  console.log('Note synced to Supabase');
+                }
+              }
+            }
+          }
+
+        } catch (e) {
+          console.error('Unexpected error:', e);
+          alert('An unexpected error occurred. Check the console for details.');
         }
+      });
 
-        // Set default language
-        setLanguage(localStorage.getItem('language') || 'fr');
+      netlifyIdentity.on('logout', () => {
+        console.log('User logged out');
+        window.location.href = 'index.html';
+      });
+
+      // Initialize the calendar with stored events
+      const commitTime = localStorage.getItem('commitTime');
+      if (commitTime) {
+        displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
+        startTimer(new Date(commitTime));
+      } else {
+        displayCalendar(new Date());
       }
+
+      // Set default language
+      setLanguage('fr');
     });
   </script>
 </body>
