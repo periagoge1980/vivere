@@ -6,195 +6,7 @@
   <title>Mon Plan</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      background-color: #007BFF;
-      color: white;
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      text-align: left;
-      font-weight: bold;
-      color: white;
-    }
-    .login {
-      display: flex;
-      align-items: center;
-    }
-    .login button {
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-right: 10px;
-    }
-    .login button:hover {
-      background-color: #0056b3;
-    }
-    .lang-switch {
-      display: flex;
-      align-items: center;
-    }
-    .lang-switch button {
-      margin: 0 5px;
-      padding: 5px 10px;
-      cursor: pointer;
-      border: none;
-      background-color: #007BFF;
-      color: white;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .lang-switch button:hover {
-      background-color: #0056b3;
-    }
-    .container {
-      flex: 1;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      text-align: center;
-    }
-    .links {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-    }
-    .links a {
-      margin: 5px 10px;
-      text-decoration: none;
-      color: white;
-      background-color: #007BFF;
-      padding: 10px 20px;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .links a:hover {
-      background-color: #0056b3;
-    }
-    form {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    input[type="date"] {
-      padding: 10px;
-      margin-left: 10px;
-      font-size: 16px;
-    }
-    h3 {
-      margin: 0 10px 0 0;
-      font-size: 1rem;
-      color: #333;
-    }
-    button {
-      padding: 10px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #timeCounter {
-      text-align: center;
-      margin: 20px 0;
-      font-size: 20px;
-      color: #333;
-    }
-    #calendar {
-      max-width: 900px;
-      margin: 0 auto;
-      margin-top: 20px;
-    }
-    footer {
-      background-color: #f1f1f1;
-      padding: 10px;
-      text-align: center;
-      margin-top: auto;
-    }
-    .login-link {
-      color: white;
-      cursor: pointer;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    #note-popup, #note-input-popup, #journal-popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      border: 1px solid #ccc;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
-    #note-popup button, #note-input-popup button, #journal-popup button {
-      margin: 5px;
-      padding: 10px 20px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 5px;
-    }
-    #note-popup button:hover, #note-input-popup button:hover, #journal-popup button:hover {
-      background-color: #0056b3;
-    }
-    #note-popup-overlay, #note-input-popup-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
-    .note-block {
-      margin: 5px 0;
-      padding: 10px;
-      border-radius: 5px;
-    }
-    .patreon {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .patreon a {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #f96854;
-      color: white;
-      border-radius: 5px;
-      text-decoration: none;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-    }
-    .patreon a:hover {
-      background-color: #c65042;
-    }
+    /* Your existing CSS styles */
   </style>
 </head>
 <body>
@@ -281,15 +93,27 @@
       return supabase.createClient(supabaseUrl, supabaseKey);
     }
 
-    $(document).ready(async function() {
-      // Check if user is logged in
-      netlifyIdentity.on('init', user => {
-        if (!user) {
-          alert('Please log in to access this member-only feature.');
-          netlifyIdentity.open();
-          return;
-        }
+    async function ensureLoggedIn() {
+      return new Promise((resolve, reject) => {
+        netlifyIdentity.on('init', user => {
+          if (!user) {
+            netlifyIdentity.open();
+            netlifyIdentity.on('login', () => resolve(true));
+            netlifyIdentity.on('close', () => reject(new Error('User not logged in')));
+          } else {
+            resolve(true);
+          }
+        });
       });
+    }
+
+    $(document).ready(async function() {
+      try {
+        await ensureLoggedIn();
+      } catch (error) {
+        alert('Please log in to access this member-only feature.');
+        return;
+      }
 
       const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
       const storedCommitTime = localStorage.getItem('commitTime');
@@ -397,6 +221,7 @@
         }
       });
 
+      // Initialize the calendar and timer if commit time exists
       if (storedCommitTime) {
         const commitTime = new Date(storedCommitTime);
         $('#startDate').val(moment(commitTime).format('YYYY-MM-DD'));
@@ -577,109 +402,11 @@
         netlifyIdentity.open();
       });
 
-      netlifyIdentity.on('login', async (user) => {
-        console.log('User logged in:', user);
-        netlifyIdentity.close();
-
-        try {
-          const supabase = await initSupabase();
-
-          // Check if user exists in Supabase
-          const { data: userData, error: userError } = await supabase
-            .from('users')
-            .select('*')
-            .eq('user_id', user.id);
-
-          if (userError) {
-            console.error('Error fetching user data:', userError);
-            alert('There was an error fetching user data. Check the console for details.');
-          } else if (userData.length === 0) {
-            const { error: insertError } = await supabase
-              .from('users')
-              .insert([{ user_id: user.id, email: user.email }]);
-
-            if (insertError) {
-              console.error('Error inserting new user:', insertError);
-              alert('There was an error inserting new user. Check the console for details.');
-            } else {
-              console.log('New user created in Supabase');
-            }
-          } else {
-            console.log('User already exists in Supabase');
-          }
-
-          // Sync commit time if it exists
-          const storedCommitTime = localStorage.getItem('commitTime');
-          if (storedCommitTime) {
-            const { data: commitData, error: commitError } = await supabase
-              .from('commit_times')
-              .select('*')
-              .eq('user_id', user.id);
-
-            if (commitError) {
-              console.error('Error fetching commit time data:', commitError);
-            } else if (commitData.length === 0) {
-              const { error: insertCommitError } = await supabase
-                .from('commit_times')
-                .insert([{ user_id: user.id, commit_time: storedCommitTime }]);
-
-              if (insertCommitError) {
-                console.error('Error inserting commit time:', insertCommitError);
-              } else {
-                console.log('Commit time synced to Supabase');
-              }
-            }
-          }
-
-          // Sync notes if they exist
-          const storedNotes = JSON.parse(localStorage.getItem('notes')) || {};
-          for (let date in storedNotes) {
-            for (let note of storedNotes[date]) {
-              const { data: noteData, error: noteError } = await supabase
-                .from('notes')
-                .select('*')
-                .eq('user_id', user.id)
-                .eq('note_date', date)
-                .eq('note_title', note.title);
-
-              if (noteError) {
-                console.error('Error fetching note data:', noteError);
-              } else if (noteData.length === 0) {
-                const { error: insertNoteError } = await supabase
-                  .from('notes')
-                  .insert([{ user_id: user.id, note_date: date, note_title: note.title }]);
-
-                if (insertNoteError) {
-                  console.error('Error inserting note:', insertNoteError);
-                } else {
-                  console.log('Note synced to Supabase');
-                }
-              }
-            }
-          }
-
-        } catch (e) {
-          console.error('Unexpected error:', e);
-          alert('An unexpected error occurred. Check the console for details.');
-        }
-      });
-
       netlifyIdentity.on('logout', () => {
         console.log('User logged out');
         window.location.href = 'index.html';
       });
 
-      // Initialize the calendar with stored events
-      const commitTime = localStorage.getItem('commitTime');
-      if (commitTime) {
-        displayCalendar(moment(commitTime).format('YYYY-MM-DD'));
-        startTimer(new Date(commitTime));
-      } else {
-        displayCalendar(new Date());
-      }
-
-      // Set default language
-      setLanguage(localStorage.getItem('language') || 'fr');
     });
   </script>
 </body>
