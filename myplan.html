@@ -355,6 +355,10 @@
       document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
       document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
 
+      // Trigger language setting on page load
+      setLanguage(localStorage.getItem('language') || 'fr');
+
+      // Handle commit time form submission
       $('#dateForm').on('submit', async function(e) {
         e.preventDefault();
         const selectedDate = $('#startDate').val();
