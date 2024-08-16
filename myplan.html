@@ -22,6 +22,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      z-index: 1001; /* Ensure the header, including the login button, is above other content */
+      position: relative;
     }
     header h1 {
       margin: 0;
@@ -75,6 +77,8 @@
       display: flex;
       justify-content: center;
       margin: 20px 0;
+      z-index: 1001; /* Ensure navigation links are above other content */
+      position: relative;
     }
     .links a {
       margin: 5px 10px;
@@ -201,6 +205,8 @@
       font-size: 1.5rem;
       font-weight: bold;
       margin-top: 50px;
+      z-index: 1000; /* Ensures that the message is above most content but below the header and links */
+      position: relative; /* Makes sure the message doesn't block other interactive elements */
     }
   </style>
 </head>
