@@ -165,9 +165,9 @@
 
   <div class="container">
     <div class="links">
-      <a href="index.html">Accueil</a>
-      <a href="resources.html">Ressources</a>
-      <a href="myplan.html">Mon Plan</a>
+      <a href="index.html" id="homeLink">Accueil</a>
+      <a href="resources.html" id="resourcesLink">Ressources</a>
+      <a href="myplan.html" id="myPlanLink">Mon Plan</a>
     </div>
     
     <h1 id="page-title">Trouvez des ressources en matière de dépendance</h1>
@@ -182,6 +182,7 @@
       </select>
       <input type="text" id="postalCode" placeholder="Entrez le code postal" required>
       <button type="submit">Rechercher</button>
+      <button type="button" id="seeAllButton">Voir toutes les ressources</button>
     </form>
     <div id="map"></div>
     <ul id="resourceList"></ul>
@@ -206,12 +207,16 @@
         selectDependency: 'Select Dependency',
         placeholder: 'Enter Postal Code',
         searchButton: 'Search',
+        seeAllButton: 'See All Resources',
         dependencies: {
           alcohol: 'Alcohol',
           drugs: 'Drugs',
           gambling: 'Gambling',
           sex: 'Sex'
-        }
+        },
+        home: 'Home',
+        resources: 'Resources',
+        myPlan: 'My Plan',
       },
       fr: {
         title: 'Recherche de ressources en matière de dépendance',
@@ -219,12 +224,16 @@
         selectDependency: 'Sélectionner la dépendance',
         placeholder: 'Entrez le code postal',
         searchButton: 'Rechercher',
+        seeAllButton: 'Voir toutes les ressources',
         dependencies: {
           alcohol: 'Alcool',
           drugs: 'Drogues',
           gambling: 'Jeux',
           sex: 'Sexe'
-        }
+        },
+        home: 'Accueil',
+        resources: 'Ressources',
+        myPlan: 'Mon Plan',
       }
     };
 
@@ -239,6 +248,15 @@
         document.getElementById('dependency').options[4].text = translations[lang].dependencies.sex;
         document.getElementById('postalCode').placeholder = translations[lang].placeholder;
         document.querySelector('button[type="submit"]').textContent = translations[lang].searchButton;
+        document.getElementById('seeAllButton').textContent = translations[lang].seeAllButton;
+
+        // Update navigation links
+        document.getElementById('homeLink').textContent = translations[lang].home;
+        document.getElementById('resourcesLink').textContent = translations[lang].resources;
+        document.getElementById('myPlanLink').textContent = translations[lang].myPlan;
+
+        // Store the selected language in localStorage
+        localStorage.setItem('selectedLanguage', lang);
       }
     };
 
@@ -345,7 +363,15 @@
       });
     });
 
+    document.getElementById('seeAllButton').addEventListener('click', function () {
+      renderResourceList(resources);
+      loadMarkers(resources);
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
+      const selectedLanguage = localStorage.getItem('selectedLanguage') || 'fr';
+      setLanguage(selectedLanguage);
+
       fetch('/.netlify/functions/getApiKey')
         .then(response => response.json())
         .then(data => {
@@ -355,7 +381,7 @@
     });
 
     // Set default language
-    setLanguage('fr');  
+    setLanguage('fr');
   </script>
   <!-- Include Netlify Identity script -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
@@ -418,3 +444,4 @@
   </script>
 </body>
 </html>
+
