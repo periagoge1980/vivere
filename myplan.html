@@ -38,7 +38,7 @@
     .login {
       display: flex;
       align-items: center;
-      z-index: 1004; /* Ensures it is always in the forefront */
+      z-index: 1004;
     }
     .login button {
       background-color: #007BFF;
@@ -49,6 +49,7 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
       margin-right: 10px;
+      z-index: 1005; /* Ensure it appears above other elements */
     }
     .login button:hover {
       background-color: #0056b3;
@@ -88,7 +89,7 @@
       right: 0;
       z-index: 1002;
       padding: 10px 0;
-      background-color: transparent; /* Removed the blue background */
+      background-color: transparent; /* Remove the blue background */
     }
     .links a {
       margin: 5px 10px;
@@ -98,8 +99,8 @@
       padding: 10px 20px;
       border-radius: 5px;
       transition: background-color 0.3s ease;
-      white-space: nowrap; /* Ensures links are displayed as buttons, not stretched across the screen */
-      display: inline-block; /* Make sure each link behaves as a button */
+      white-space: nowrap;
+      display: inline-block; /* Ensure links behave as buttons */
     }
     .links a:hover {
       background-color: #003f7f;
@@ -158,14 +159,14 @@
     #note-popup, #note-input-popup, #journal-popup {
       display: none;
       position: fixed;
-      top: 50%;
+      top: 60%;
       left: 50%;
       transform: translate(-50%, -50%);
       background-color: white;
       border: 1px solid #ccc;
       padding: 20px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
+      z-index: 1006; /* Ensure the popup is on top */
     }
     #note-popup button, #note-input-popup button, #journal-popup button {
       margin: 5px;
@@ -218,7 +219,7 @@
       font-size: 1.5rem;
       font-weight: bold;
       margin-top: 150px; /* Below header and navigation */
-      z-index: 999; /* Below the header and links */
+      z-index: 999;
     }
   </style>
 </head>
@@ -235,9 +236,9 @@
   </header>
 
   <div class="links">
-    <a href="index.html">Accueil</a>
-    <a href="resources.html">Ressources</a>
-    <a href="myplan.html">Mon Plan</a>
+    <a id="link-home" href="index.html">Accueil</a>
+    <a id="link-resources" href="resources.html">Ressources</a>
+    <a id="link-plan" href="myplan.html">Mon Plan</a>
   </div>
 
   <div id="restricted-message"></div>
@@ -310,17 +311,42 @@
     $(document).ready(function() {
       const translations = {
         en: {
+          title: 'My Plan',
+          header: 'Welcome to the Vivere Project',
+          home: 'Home',
+          resources: 'Resources',
+          plan: 'My Plan',
+          commitButton: 'Commit!',
+          timeSinceCommit: 'Time since commit:',
+          selectDate: 'Select a quit date',
           restrictedMessage: 'This section is only available to members. Please log in.',
         },
         fr: {
+          title: 'Mon Plan',
+          header: 'Bienvenue sur Le Projet Vivere',
+          home: 'Accueil',
+          resources: 'Ressources',
+          plan: 'Mon Plan',
+          commitButton: "C'est Fini!",
+          timeSinceCommit: "Temps écoulé depuis l'engagement:",
+          selectDate: "Sélectionnez une date d'arrêt",
           restrictedMessage: 'Cette section est uniquement disponible pour les membres. Veuillez vous connecter.',
         }
       };
 
       function setLanguage(lang) {
         if (translations[lang]) {
-          if (!netlifyIdentity.currentUser()) {
-            $('#restricted-message').text(translations[lang].restrictedMessage);
+          document.title = translations[lang].title;
+          $('#header-title').text(translations[lang].header);
+          $('#link-home').text(translations[lang].home);
+          $('#link-resources').text(translations[lang].resources);
+          $('#link-plan').text(translations[lang].plan);
+          $('#commit-button').text(translations[lang].commitButton);
+          $('#select-date-title').text(translations[lang].selectDate);
+          $('#restricted-message').text(translations[lang].restrictedMessage);
+          if (timerInterval) {
+            clearInterval(timerInterval);
+            startTimer(new Date(localStorage.getItem('commitTime')));
           }
         }
       }
