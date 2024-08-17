@@ -71,15 +71,15 @@
     .container {
       flex: 1;
       max-width: 800px;
-      margin: 80px auto 0; /* Adjusted margin-top to reduce space */
+      margin: 60px auto 0; /* Further reduced space */
       padding: 20px;
       text-align: center;
     }
     .links {
       display: flex;
       justify-content: center;
-      margin: 20px 0;
-      padding: 10px 0;
+      margin: 10px 0; /* Reduced margin between buttons and H1 */
+      padding: 5px 0;
       background-color: transparent;
     }
     .links a {
@@ -97,7 +97,7 @@
       background-color: #003f7f;
     }
     h1 {
-      margin: 10px 0 20px 0; /* Reduced top margin */
+      margin: 5px 0 10px 0; /* Further reduced top margin */
       font-size: 1.5rem;
       color: #333;
     }
@@ -307,7 +307,7 @@
           resources: 'Resources',
           plan: 'My Plan',
           commitButton: 'Commit!',
-          timeSinceCommit: 'Time since commit:',
+          timeSinceCommit: 'Time since commitment:',
           selectDate: 'Select a quit date',
           restrictedMessage: 'This section is only available to members. Please log in.',
         },
@@ -333,6 +333,7 @@
           $('#link-plan').text(translations[lang].plan);
           $('#commit-button').text(translations[lang].commitButton);
           $('#select-date-title').text(translations[lang].selectDate);
+          $('#timeCounter').text(translations[lang].timeSinceCommit + ' 00:00:00');
           $('#restricted-message').text(translations[lang].restrictedMessage);
           if (timerInterval) {
             clearInterval(timerInterval);
@@ -574,7 +575,7 @@
           const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
           const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-          $('#timeCounter').text(`${days}j ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
+          $('#timeCounter').text(`${translations[document.documentElement.lang].timeSinceCommit} ${days}j ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
         }, 1000);
       }
 
