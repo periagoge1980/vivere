@@ -99,6 +99,7 @@
       border-radius: 5px;
       transition: background-color 0.3s ease;
       white-space: nowrap; /* Ensures links are displayed as buttons, not stretched across the screen */
+      display: inline-block; /* Make sure each link behaves as a button */
     }
     .links a:hover {
       background-color: #003f7f;
@@ -353,6 +354,10 @@
         setLanguage('fr');
         document.documentElement.lang = 'fr';
         checkLoginStatus();
+      });
+
+      document.getElementById('login').addEventListener('click', () => {
+        netlifyIdentity.open();
       });
 
       $('#dateForm').on('submit', async function(e) {
