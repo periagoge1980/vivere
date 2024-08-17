@@ -22,8 +22,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      z-index: 1001; /* Ensure the header, including the login button, is above other content */
-      position: relative;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1001;
     }
     header h1 {
       margin: 0;
@@ -69,7 +72,7 @@
     .container {
       flex: 1;
       max-width: 800px;
-      margin: 0 auto;
+      margin: 80px auto 0; /* Adjusted for fixed header */
       padding: 20px;
       text-align: center;
     }
@@ -77,8 +80,13 @@
       display: flex;
       justify-content: center;
       margin: 20px 0;
-      z-index: 1001; /* Ensure navigation links are above other content */
-      position: relative;
+      position: fixed;
+      top: 60px; /* Below the header */
+      left: 0;
+      right: 0;
+      z-index: 1001;
+      background-color: #007BFF;
+      padding: 10px 0;
     }
     .links a {
       margin: 5px 10px;
@@ -204,9 +212,8 @@
       color: red;
       font-size: 1.5rem;
       font-weight: bold;
-      margin-top: 50px;
-      z-index: 1000; /* Ensures that the message is above most content but below the header and links */
-      position: relative; /* Makes sure the message doesn't block other interactive elements */
+      margin-top: 150px; /* Below header and navigation */
+      z-index: 999; /* Below the header and links */
     }
   </style>
 </head>
@@ -222,15 +229,15 @@
     </div>
   </header>
 
+  <div class="links">
+    <a href="index.html">Accueil</a>
+    <a href="resources.html">Ressources</a>
+    <a href="myplan.html">Mon Plan</a>
+  </div>
+
   <div id="restricted-message"></div>
 
   <div class="container" id="main-content" style="display: none;">
-    <div class="links">
-      <a href="index.html">Accueil</a>
-      <a href="resources.html">Ressources</a>
-      <a href="myplan.html">Mon Plan</a>
-    </div>
-
     <h1 id="page-title">Mon Plan</h1>
 
     <form id="dateForm">
