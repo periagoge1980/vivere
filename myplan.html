@@ -22,10 +22,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
       z-index: 1002;
     }
     header h1 {
@@ -49,7 +45,7 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
       margin-right: 10px;
-      z-index: 1005; /* Ensure it appears above other elements */
+      z-index: 1005;
     }
     .login button:hover {
       background-color: #0056b3;
@@ -75,7 +71,7 @@
     .container {
       flex: 1;
       max-width: 800px;
-      margin: 120px auto 0; /* Adjusted for fixed header and navigation */
+      margin: 120px auto 0;
       padding: 20px;
       text-align: center;
     }
@@ -83,13 +79,8 @@
       display: flex;
       justify-content: center;
       margin: 20px 0;
-      position: fixed;
-      top: 60px; /* Below the header */
-      left: 0;
-      right: 0;
-      z-index: 1002;
       padding: 10px 0;
-      background-color: transparent; /* Remove the blue background */
+      background-color: transparent;
     }
     .links a {
       margin: 5px 10px;
@@ -100,7 +91,7 @@
       border-radius: 5px;
       transition: background-color 0.3s ease;
       white-space: nowrap;
-      display: inline-block; /* Ensure links behave as buttons */
+      display: inline-block;
     }
     .links a:hover {
       background-color: #003f7f;
@@ -159,14 +150,14 @@
     #note-popup, #note-input-popup, #journal-popup {
       display: none;
       position: fixed;
-      top: 60%;
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       background-color: white;
       border: 1px solid #ccc;
       padding: 20px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 1006; /* Ensure the popup is on top */
+      z-index: 1006;
     }
     #note-popup button, #note-input-popup button, #journal-popup button {
       margin: 5px;
@@ -218,8 +209,7 @@
       color: red;
       font-size: 1.5rem;
       font-weight: bold;
-      margin-top: 150px; /* Below header and navigation */
-      z-index: 999;
+      margin-top: 20px; 
     }
   </style>
 </head>
@@ -235,13 +225,14 @@
     </div>
   </header>
 
+  <div id="note-popup-overlay"></div>
+  <div id="restricted-message"></div>
+
   <div class="links">
     <a id="link-home" href="index.html">Accueil</a>
     <a id="link-resources" href="resources.html">Ressources</a>
     <a id="link-plan" href="myplan.html">Mon Plan</a>
   </div>
-
-  <div id="restricted-message"></div>
 
   <div class="container" id="main-content" style="display: none;">
     <h1 id="page-title">Mon Plan</h1>
@@ -262,7 +253,6 @@
     &copy; 2024 Projet Vivere. Tous droits réservés.
   </footer>
 
-  <div id="note-popup-overlay"></div>
   <div id="note-popup">
     <p>How was that day?</p>
     <button id="positive">Positive</button>
