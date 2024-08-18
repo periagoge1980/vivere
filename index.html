@@ -217,18 +217,18 @@
         en: {
           title: 'Welcome to the Vivere Project',
           header: 'Welcome to the Vivere Project',
-          blurb: 
+          blurb: `
             <p>Welcome to The Vivere Project. Our mission is to provide comprehensive online resources for individuals struggling with various forms of addiction. We understand the challenges and the courage it takes to seek help and make a change.</p>
             <p>The Vivere Project is entirely free to use. We believe that support should be accessible to everyone without financial barriers.</p>
-          
+          `
         },
         fr: {
           title: 'Bienvenue sur Le Projet Vivere',
           header: 'Bienvenue sur Le Projet Vivere',
-          blurb: 
+          blurb: `
             <p>Bienvenue sur Le Projet Vivere. Notre mission est de fournir des ressources en ligne complètes pour les personnes confrontées à divers types de dépendances. Nous comprenons les défis et le courage qu'il faut pour demander de l'aide et changer.</p>
             <p>Le Projet Vivere est entièrement gratuit à utiliser. Nous croyons que le soutien doit être accessible à tous sans barrières financières.</p>       
-          
+          `
         }
       };
 
@@ -351,7 +351,7 @@
         try {
           const response = await fetch('/.netlify/functions/supabaseProxy');
           if (!response.ok) {
-            throw new Error(HTTP error! status: ${response.status});
+            throw new Error(`HTTP error! status: ${response.status}`);
           }
           const data = await response.json();
           console.log(data);
