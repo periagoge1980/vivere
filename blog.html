@@ -122,12 +122,6 @@
     .blog-post a:hover {
       text-decoration: underline;
     }
-    .blog-footer {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 0.9rem;
-      color: #999;
-    }
     footer {
       background-color: #f1f1f1;
       padding: 10px;
@@ -208,72 +202,66 @@
   <footer>
     &copy; 2024 Projet Vivere. Tous droits réservés.
   </footer>
-
-  <script>
-    const translations = {
-      en: {
-        header: 'Welcome to the Vivere Project',
-        testimonies: 'Recovery Testimonies',
-        home: 'Home',
-        resources: 'Resources',
-        plan: 'My Plan',
-        testimoniesLink: 'Testimonies',
-        support: 'Support us on Patreon',
-        testimonyTitle1: 'Title of the First Testimony',
-        testimonyContent1: 'Here is an example of content for the first testimony. It could be a preview of the article with a link to read more. This space is intended to offer a captivating preview that encourages visitors to click to learn more. <a href="#">Read more</a>',
-        testimonyTitle2: 'Title of the Second Testimony',
-        testimonyContent2: 'Here is an example of content for the second testimony. You can customize this section with excerpts or introductions for each article. This allows multiple testimonies to be presented on one page while keeping a neat appearance. <a href="#">Read more</a>',
-      },
-      fr: {
-        header: 'Bienvenue sur Le Projet Vivere',
-        testimonies: 'Témoignages',
-        home: 'Accueil',
-        resources: 'Ressources',
-        plan: 'Mon Plan',
-        testimoniesLink: 'Témoignages',
-        support: 'Soutenez-nous sur Patreon',
-        testimonyTitle1: 'Titre du premier témoignage',
-        testimonyContent1: 'Voici un exemple de contenu pour le premier témoignage. Il pourrait s\'agir d\'un aperçu de l\'article avec un lien pour lire la suite. Cet espace est destiné à offrir un aperçu captivant qui encourage les visiteurs à cliquer pour en savoir plus. <a href="#">Lire la suite</a>',
-        testimonyTitle2: 'Titre du deuxième témoignage',
-        testimonyContent2: 'Voici un exemple de contenu pour le deuxième témoignage. Vous pouvez personnaliser cette section avec des extraits ou des introductions pour chaque article. Cela permet de présenter plusieurs témoignages sur une même page tout en gardant un aspect soigné. <a href="#">Lire la suite</a>',
-      }
-    };
-
-    function setLanguage(lang) {
-      if (translations[lang]) {
-        document.getElementById('header-title').textContent = translations[lang].Let me continue and make sure the code is complete and error-free.
-
-```html
-        document.getElementById('header-title').textContent = translations[lang].header;
-        document.getElementById('page-title').textContent = translations[lang].testimonies;
-        document.getElementById('home-link').textContent = translations[lang].home;
-        document.getElementById('resources-link').textContent = translations[lang].resources;
-        document.getElementById('plan-link').textContent = translations[lang].plan;
-        document.getElementById('testimonies-link').textContent = translations[lang].testimoniesLink;
-        document.getElementById('patreon-link').textContent = translations[lang].support;
-
-        // Update testimonies content
-        document.getElementById('testimony-title-1').textContent = translations[lang].testimonyTitle1;
-        document.getElementById('testimony-content-1').innerHTML = translations[lang].testimonyContent1;
-        document.getElementById('testimony-title-2').textContent = translations[lang].testimonyTitle2;
-        document.getElementById('testimony-content-2').innerHTML = translations[lang].testimonyContent2;
-      }
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+  const translations = {
+    en: {
+      header: 'Welcome to the Vivere Project',
+      testimonies: 'Recovery Testimonies',
+      home: 'Home',
+      resources: 'Resources',
+      plan: 'My Plan',
+      testimoniesLink: 'Testimonies',
+      support: 'Support us on Patreon',
+      testimonyTitle1: 'Title of the First Testimony',
+      testimonyContent1: 'Here is an example of content for the first testimony. It could be a preview of the article with a link to read more. This space is intended to offer a captivating preview that encourages visitors to click to learn more. <a href="#">Read more</a>',
+      testimonyTitle2: 'Title of the Second Testimony',
+      testimonyContent2: 'Here is an example of content for the second testimony. You can customize this section with excerpts or introductions for each article. This allows multiple testimonies to be presented on one page while keeping a neat appearance. <a href="#">Read more</a>',
+    },
+    fr: {
+      header: 'Bienvenue sur Le Projet Vivere',
+      testimonies: 'Témoignages',
+      home: 'Accueil',
+      resources: 'Ressources',
+      plan: 'Mon Plan',
+      testimoniesLink: 'Témoignages',
+      support: 'Soutenez-nous sur Patreon',
+      testimonyTitle1: 'Titre du premier témoignage',
+      testimonyContent1: 'Voici un exemple de contenu pour le premier témoignage. Il pourrait s\'agir d\'un aperçu de l\'article avec un lien pour lire la suite. Cet espace est destiné à offrir un aperçu captivant qui encourage les visiteurs à cliquer pour en savoir plus. <a href="#">Lire la suite</a>',
+      testimonyTitle2: 'Titre du deuxième témoignage',
+      testimonyContent2: 'Voici un exemple de contenu pour le deuxième témoignage. Vous pouvez personnaliser cette section avec des extraits ou des introductions pour chaque article. Cela permet de présenter plusieurs témoignages sur une même page tout en gardant un aspect soigné. <a href="#">Lire la suite</a>',
     }
+  };
 
-    document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
-    document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
+  function setLanguage(lang) {
+    if (translations[lang]) {
+      document.getElementById('header-title').textContent = translations[lang].header;
+      document.getElementById('page-title').textContent = translations[lang].testimonies;
+      document.getElementById('home-link').textContent = translations[lang].home;
+      document.getElementById('resources-link').textContent = translations[lang].resources;
+      document.getElementById('plan-link').textContent = translations[lang].plan;
+      document.getElementById('testimonies-link').textContent = translations[lang].testimoniesLink;
+      document.getElementById('patreon-link').textContent = translations[lang].support;
 
-    document.addEventListener('DOMContentLoaded', () => {
-      setLanguage('fr'); // Default language set to French
-    });
+      // Update testimonies content
+      document.getElementById('testimony-title-1').textContent = translations[lang].testimonyTitle1;
+      document.getElementById('testimony-content-1').innerHTML = translations[lang].testimonyContent1;
+      document.getElementById('testimony-title-2').textContent = translations[lang].testimonyTitle2;
+      document.getElementById('testimony-content-2').innerHTML = translations[lang].testimonyContent2;
+    }
+  }
 
-    const loginButton = document.getElementById('login');
-    loginButton.addEventListener('click', () => {
-      netlifyIdentity.open();
-    });
-  </script>
+  document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+  document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
 
-  <!-- Netlify Identity script -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  document.addEventListener('DOMContentLoaded', () => {
+    setLanguage('fr'); // Default language set to French
+  });
+
+  const loginButton = document.getElementById('login');
+  loginButton.addEventListener('click', () => {
+    netlifyIdentity.open();
+  });
+</script>
 </body>
 </html>
