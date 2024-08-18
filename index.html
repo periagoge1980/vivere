@@ -169,15 +169,15 @@
     </div>
     <nav>
       <div class="links">
-        <a href="index.html">Home</a>
-        <a href="resources.html">Resources</a>
-        <a href="myplan.html" id="myPlanLink">My Plan</a>
-        <a href="blog.html">Blog</a>
+        <a href="index.html">Accueil</a>
+        <a href="resources.html">Ressources</a>
+        <a href="myplan.html" id="myPlanLink">Mon Plan</a>
+        <a href="blog.html">Blogue</a>
       </div>
     </nav>
-    <div id="message" class="message" style="display: none;">Please log in to access this member-only feature.</div>
+    <div id="message" class="message" style="display: none;">Veuillez vous connecter pour accéder à cette fonctionnalité réservée aux membres.</div>
     <div class="patreon">
-      <a href="https://www.patreon.com/thevivereproject" target="_blank">Support Us on Patreon</a>
+      <a href="https://www.patreon.com/thevivereproject" target="_blank">Soutenez-nous sur Patreon</a>
     </div>
   </div>
   <footer>
@@ -220,7 +220,15 @@
           blurb: `
             <p>Welcome to The Vivere Project. Our mission is to provide comprehensive online resources for individuals struggling with various forms of addiction. We understand the challenges and the courage it takes to seek help and make a change.</p>
             <p>The Vivere Project is entirely free to use. We believe that support should be accessible to everyone without financial barriers.</p>
-          `
+          `,
+          nav: {
+            home: 'Home',
+            resources: 'Resources',
+            plan: 'My Plan',
+            blog: 'Blog'
+          },
+          message: 'Please log in to access this member-only feature.',
+          patreon: 'Support Us on Patreon'
         },
         fr: {
           title: 'Bienvenue sur Le Projet Vivere',
@@ -228,7 +236,15 @@
           blurb: `
             <p>Bienvenue sur Le Projet Vivere. Notre mission est de fournir des ressources en ligne complètes pour les personnes confrontées à divers types de dépendances. Nous comprenons les défis et le courage qu'il faut pour demander de l'aide et changer.</p>
             <p>Le Projet Vivere est entièrement gratuit à utiliser. Nous croyons que le soutien doit être accessible à tous sans barrières financières.</p>       
-          `
+          `,
+          nav: {
+            home: 'Accueil',
+            resources: 'Ressources',
+            plan: 'Mon Plan',
+            blog: 'Blogue'
+          },
+          message: 'Veuillez vous connecter pour accéder à cette fonctionnalité réservée aux membres.',
+          patreon: 'Soutenez-nous sur Patreon'
         }
       };
 
@@ -237,6 +253,14 @@
           blurbElement.innerHTML = translations[lang].blurb;
           pageTitle.textContent = translations[lang].title;
           headerTitle.textContent = translations[lang].header;
+
+          document.querySelector('.links a[href="index.html"]').textContent = translations[lang].nav.home;
+          document.querySelector('.links a[href="resources.html"]').textContent = translations[lang].nav.resources;
+          document.querySelector('.links a[href="myplan.html"]').textContent = translations[lang].nav.plan;
+          document.querySelector('.links a[href="blog.html"]').textContent = translations[lang].nav.blog;
+
+          message.textContent = translations[lang].message;
+          document.querySelector('.patreon a').textContent = translations[lang].patreon;
         }
       };
 
