@@ -167,39 +167,41 @@
 
   <div class="container">
     <div class="links">
-      <a href="index.html">Accueil</a>
-      <a href="resources.html">Ressources</a>
-      <a href="myplan.html">Mon Plan</a>
-      <a href="testimonies.html">Témoignages</a>
+      <a id="home-link" href="index.html">Accueil</a>
+      <a id="resources-link" href="resources.html">Ressources</a>
+      <a id="plan-link" href="myplan.html">Mon Plan</a>
+      <a id="testimonies-link" href="testimonies.html">Témoignages</a>
     </div>
 
     <div class="blog-header">
       <h1 id="page-title">Témoignages</h1>
     </div>
 
-    <div class="blog-post">
-      <h2>Titre du premier témoignage</h2>
-      <p>
-        Voici un exemple de contenu pour le premier témoignage. Il pourrait
-        s'agir d'un aperçu de l'article avec un lien pour lire la suite. Cet
-        espace est destiné à offrir un aperçu captivant qui encourage les
-        visiteurs à cliquer pour en savoir plus. <a href="#">Lire la suite</a>
-      </p>
-    </div>
+    <div id="testimonies-content">
+      <div class="blog-post">
+        <h2 id="testimony-title-1">Titre du premier témoignage</h2>
+        <p id="testimony-content-1">
+          Voici un exemple de contenu pour le premier témoignage. Il pourrait
+          s'agir d'un aperçu de l'article avec un lien pour lire la suite. Cet
+          espace est destiné à offrir un aperçu captivant qui encourage les
+          visiteurs à cliquer pour en savoir plus. <a href="#">Lire la suite</a>
+        </p>
+      </div>
 
-    <div class="blog-post">
-      <h2>Titre du deuxième témoignage</h2>
-      <p>
-        Voici un exemple de contenu pour le deuxième témoignage. Vous
-        pouvez personnaliser cette section avec des extraits ou des introductions
-        pour chaque article. Cela permet de présenter plusieurs témoignages sur une
-        même page tout en gardant un aspect soigné. <a href="#">Lire la suite</a>
-      </p>
+      <div class="blog-post">
+        <h2 id="testimony-title-2">Titre du deuxième témoignage</h2>
+        <p id="testimony-content-2">
+          Voici un exemple de contenu pour le deuxième témoignage. Vous
+          pouvez personnaliser cette section avec des extraits ou des introductions
+          pour chaque article. Cela permet de présenter plusieurs témoignages sur une
+          même page tout en gardant un aspect soigné. <a href="#">Lire la suite</a>
+        </p>
+      </div>
     </div>
 
     <!-- Patreon Button -->
     <div class="patreon">
-      <a href="https://www.patreon.com/thevivereproject" target="_blank">Soutenez-nous sur Patreon</a>
+      <a href="https://www.patreon.com/thevivereproject" target="_blank" id="patreon-link">Soutenez-nous sur Patreon</a>
     </div>
   </div>
 
@@ -217,6 +219,10 @@
         plan: 'My Plan',
         testimoniesLink: 'Testimonies',
         support: 'Support us on Patreon',
+        testimonyTitle1: 'Title of the First Testimony',
+        testimonyContent1: 'Here is an example of content for the first testimony. It could be a preview of the article with a link to read more. This space is intended to offer a captivating preview that encourages visitors to click to learn more. <a href="#">Read more</a>',
+        testimonyTitle2: 'Title of the Second Testimony',
+        testimonyContent2: 'Here is an example of content for the second testimony. You can customize this section with excerpts or introductions for each article. This allows multiple testimonies to be presented on one page while keeping a neat appearance. <a href="#">Read more</a>',
       },
       fr: {
         header: 'Bienvenue sur Le Projet Vivere',
@@ -226,18 +232,28 @@
         plan: 'Mon Plan',
         testimoniesLink: 'Témoignages',
         support: 'Soutenez-nous sur Patreon',
+        testimonyTitle1: 'Titre du premier témoignage',
+        testimonyContent1: 'Voici un exemple de contenu pour le premier témoignage. Il pourrait s\'agir d\'un aperçu de l\'article avec un lien pour lire la suite. Cet espace est destiné à offrir un aperçu captivant qui encourage les visiteurs à cliquer pour en savoir plus. <a href="#">Lire la suite</a>',
+        testimonyTitle2: 'Titre du deuxième témoignage',
+        testimonyContent2: 'Voici un exemple de contenu pour le deuxième témoignage. Vous pouvez personnaliser cette section avec des extraits ou des introductions pour chaque article. Cela permet de présenter plusieurs témoignages sur une même page tout en gardant un aspect soigné. <a href="#">Lire la suite</a>',
       }
     };
 
     function setLanguage(lang) {
       if (translations[lang]) {
-        document.getElementById('header-title').textContent = translations[lang].header;
+        document.getElementById('header-title').textContent = translations[lang].header```html
         document.getElementById('page-title').textContent = translations[lang].testimonies;
-        document.querySelector('.links a[href="index.html"]').textContent = translations[lang].home;
-        document.querySelector('.links a[href="resources.html"]').textContent = translations[lang].resources;
-        document.querySelector('.links a[href="myplan.html"]').textContent = translations[lang].plan;
-        document.querySelector('.links a[href="testimonies.html"]').textContent = translations[lang].testimoniesLink;
-        document.querySelector('.patreon a').textContent = translations[lang].support;
+        document.getElementById('home-link').textContent = translations[lang].home;
+        document.getElementById('resources-link').textContent = translations[lang].resources;
+        document.getElementById('plan-link').textContent = translations[lang].plan;
+        document.getElementById('testimonies-link').textContent = translations[lang].testimoniesLink;
+        document.getElementById('patreon-link').textContent = translations[lang].support;
+
+        // Update testimonies content
+        document.getElementById('testimony-title-1').textContent = translations[lang].testimonyTitle1;
+        document.getElementById('testimony-content-1').innerHTML = translations[lang].testimonyContent1;
+        document.getElementById('testimony-title-2').textContent = translations[lang].testimonyTitle2;
+        document.getElementById('testimony-content-2').innerHTML = translations[lang].testimonyContent2;
       }
     }
 
@@ -245,7 +261,7 @@
     document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
 
     document.addEventListener('DOMContentLoaded', () => {
-      setLanguage('fr');
+      setLanguage('fr'); // Default language set to French
     });
 
     const loginButton = document.getElementById('login');
