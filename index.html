@@ -169,15 +169,15 @@
     </div>
     <nav>
       <div class="links">
-        <a href="index.html">Accueil</a>
-        <a href="resources.html">Ressources</a>
-        <a href="myplan.html" id="myPlanLink">Mon Plan</a>
-        <a href="blog.html">Blogue</a>
+        <a href="index.html" id="nav-home">Home</a>
+        <a href="resources.html" id="nav-resources">Resources</a>
+        <a href="myplan.html" id="nav-plan">My Plan</a>
+        <a href="blog.html" id="nav-blog">Blog</a>
       </div>
     </nav>
-    <div id="message" class="message" style="display: none;">Veuillez vous connecter pour accéder à cette fonctionnalité réservée aux membres.</div>
+    <div id="message" class="message" style="display: none;">Please log in to access this member-only feature.</div>
     <div class="patreon">
-      <a href="https://www.patreon.com/thevivereproject" target="_blank">Soutenez-nous sur Patreon</a>
+      <a href="https://www.patreon.com/thevivereproject" target="_blank" id="patreon-link">Support Us on Patreon</a>
     </div>
   </div>
   <footer>
@@ -212,6 +212,11 @@
       const blurbElement = document.getElementById('blurb');
       const pageTitle = document.getElementById('page-title');
       const headerTitle = document.getElementById('header-title');
+      const navHome = document.getElementById('nav-home');
+      const navResources = document.getElementById('nav-resources');
+      const navPlan = document.getElementById('nav-plan');
+      const navBlog = document.getElementById('nav-blog');
+      const patreonLink = document.getElementById('patreon-link');
 
       const translations = {
         en: {
@@ -243,7 +248,8 @@
             plan: 'Mon Plan',
             blog: 'Blogue'
           },
-          message: 'Veuillez vous connecter pour accéder à cette fonctionnalité réservée aux membres.',
+          message: 'Veuillez vous connecter pour accéder à cette```html
+          fonctionnalité réservée aux membres.',
           patreon: 'Soutenez-nous sur Patreon'
         }
       };
@@ -254,13 +260,13 @@
           pageTitle.textContent = translations[lang].title;
           headerTitle.textContent = translations[lang].header;
 
-          document.querySelector('.links a[href="index.html"]').textContent = translations[lang].nav.home;
-          document.querySelector('.links a[href="resources.html"]').textContent = translations[lang].nav.resources;
-          document.querySelector('.links a[href="myplan.html"]').textContent = translations[lang].nav.plan;
-          document.querySelector('.links a[href="blog.html"]').textContent = translations[lang].nav.blog;
+          navHome.textContent = translations[lang].nav.home;
+          navResources.textContent = translations[lang].nav.resources;
+          navPlan.textContent = translations[lang].nav.plan;
+          navBlog.textContent = translations[lang].nav.blog;
 
           message.textContent = translations[lang].message;
-          document.querySelector('.patreon a').textContent = translations[lang].patreon;
+          patreonLink.textContent = translations[lang].patreon;
         }
       };
 
