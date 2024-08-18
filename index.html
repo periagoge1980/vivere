@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">Welcome to the Vivere Project</title>
+  <title id="page-title">Bienvenue sur Le Projet Vivere</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -148,9 +148,9 @@
 </head>
 <body>
   <header>
-    <h1 id="header-title">Welcome to the Vivere Project</h1>
+    <h1 id="header-title">Bienvenue sur Le Projet Vivere</h1>
     <div class="login">
-      <button id="login">Login/Signup</button>
+      <button id="login">Connexion/Inscription</button>
       <div class="lang-switch">
         <button id="lang-en">EN</button>
         <button id="lang-fr">FR</button>
@@ -163,21 +163,21 @@
     </div>
     <div class="blurb-box">
       <div class="blurb" id="blurb">
-        <p>Welcome to The Vivere Project. Our mission is to provide comprehensive online resources for individuals struggling with various forms of addiction. We understand the challenges and the courage it takes to seek help and make a change.</p>
-        <p>The Vivere Project is entirely free to use. We believe that support should be accessible to everyone without financial barriers.</p>
+        <p>Bienvenue sur Le Projet Vivere. Notre mission est de fournir des ressources en ligne complètes pour les personnes confrontées à divers types de dépendances. Nous comprenons les défis et le courage qu'il faut pour demander de l'aide et changer.</p>
+        <p>Le Projet Vivere est entièrement gratuit à utiliser. Nous croyons que le soutien doit être accessible à tous sans barrières financières.</p>
       </div>
     </div>
     <nav>
       <div class="links">
-        <a href="index.html" id="nav-home">Home</a>
-        <a href="resources.html" id="nav-resources">Resources</a>
-        <a href="myplan.html" id="nav-plan">My Plan</a>
-        <a href="blog.html" id="nav-blog">Blog</a>
+        <a href="index.html" id="nav-home">Accueil</a>
+        <a href="resources.html" id="nav-resources">Ressources</a>
+        <a href="myplan.html" id="nav-plan">Mon Plan</a>
+        <a href="blog.html" id="nav-blog">Blogue</a>
       </div>
     </nav>
-    <div id="message" class="message" style="display: none;">Please log in to access this member-only feature.</div>
+    <div id="message" class="message" style="display: none;">Veuillez vous connecter pour accéder à cette fonctionnalité réservée aux membres.</div>
     <div class="patreon">
-      <a href="https://www.patreon.com/thevivereproject" target="_blank" id="patreon-link">Support Us on Patreon</a>
+      <a href="https://www.patreon.com/thevivereproject" target="_blank" id="patreon-link">Soutenez-nous sur Patreon</a>
     </div>
   </div>
   <footer>
@@ -207,7 +207,6 @@
       netlifyIdentity.init();
 
       const loginButton = document.getElementById('login');
-      const myPlanLink = document.getElementById('myPlanLink');
       const message = document.getElementById('message');
       const blurbElement = document.getElementById('blurb');
       const pageTitle = document.getElementById('page-title');
@@ -240,7 +239,7 @@
           header: 'Bienvenue sur Le Projet Vivere',
           blurb: `
             <p>Bienvenue sur Le Projet Vivere. Notre mission est de fournir des ressources en ligne complètes pour les personnes confrontées à divers types de dépendances. Nous comprenons les défis et le courage qu'il faut pour demander de l'aide et changer.</p>
-            <p>Le Projet Vivere est entièrement gratuit à utiliser. Nous croyons que le soutien doit être accessible à tous sans barrières financières.</p>       
+            <p>Le Projet Vivere est entièrement gratuit à utiliser. Nous croyons que le soutien doit être accessible à tous sans barrières financières.</p>
           `,
           nav: {
             home: 'Accueil',
@@ -248,8 +247,7 @@
             plan: 'Mon Plan',
             blog: 'Blogue'
           },
-          message: 'Veuillez vous connecter pour accéder à cette```html
-          fonctionnalité réservée aux membres.',
+          message: 'Veuillez vous connecter pour accéder à cette fonctionnalité réservée aux membres.',
           patreon: 'Soutenez-nous sur Patreon'
         }
       };
@@ -357,8 +355,8 @@
         console.log('User logged out');
       });
 
-      if (myPlanLink) {
-        myPlanLink.addEventListener('click', (e) => {
+      if (document.getElementById('myPlanLink')) {
+        document.getElementById('myPlanLink').addEventListener('click', (e) => {
           const user = netlifyIdentity.currentUser();
           if (!user) {
             e.preventDefault();
