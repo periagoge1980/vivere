@@ -213,38 +213,55 @@
       const pageTitle = document.getElementById('page-title');
       const headerTitle = document.getElementById('header-title');
 
-      const translations = {
-        en: {
-          title: 'Welcome to the Vivere Project',
-          header: 'Welcome to the Vivere Project',
-          blurb: `
-            <p>Welcome to The Vivere Project. Our mission is to provide comprehensive online resources for individuals struggling with various forms of addiction. We understand the challenges and the courage it takes to seek help and make a change.</p>
-            <p>The Vivere Project is entirely free to use. We believe that support should be accessible to everyone without financial barriers.</p>
-          `
-        },
-        fr: {
-          title: 'Bienvenue sur Le Projet Vivere',
-          header: 'Bienvenue sur Le Projet Vivere',
-          blurb: `
-            <p>Bienvenue sur Le Projet Vivere. Notre mission est de fournir des ressources en ligne complètes pour les personnes confrontées à divers types de dépendances. Nous comprenons les défis et le courage qu'il faut pour demander de l'aide et changer.</p>
-            <p>Le Projet Vivere est entièrement gratuit à utiliser. Nous croyons que le soutien doit être accessible à tous sans barrières financières.</p>       
-          `
-        }
-      };
+    const translations = {
+  en: {
+    title: 'Welcome to the Vivere Project',
+    header: 'Welcome to the Vivere Project',
+    blurb: `
+      <p>Welcome to The Vivere Project. Our mission is to provide comprehensive online resources for individuals struggling with various forms of addiction. We understand the challenges and the courage it takes to seek help and make a change.</p>
+      <p>The Vivere Project is entirely free to use. We believe that support should be accessible to everyone without financial barriers.</p>
+    `,
+    home: 'Home',
+    resources: 'Resources',
+    plan: 'My Plan',
+    testimoniesLink: 'Testimonies',
+    support: 'Support Us on Patreon',
+  },
+  fr: {
+    title: 'Bienvenue sur Le Projet Vivere',
+    header: 'Bienvenue sur Le Projet Vivere',
+    blurb: `
+      <p>Bienvenue sur Le Projet Vivere. Notre mission est de fournir des ressources en ligne complètes pour les personnes confrontées à divers types de dépendances. Nous comprenons les défis et le courage qu'il faut pour demander de l'aide et changer.</p>
+      <p>Le Projet Vivere est entièrement gratuit à utiliser. Nous croyons que le soutien doit être accessible à tous sans barrières financières.</p>       
+    `,
+    home: 'Accueil',
+    resources: 'Ressources',
+    plan: 'Mon Plan',
+    testimoniesLink: 'Témoignages',
+    support: 'Soutenez-nous sur Patreon',
+  }
+};
 
-      const setLanguage = (lang) => {
-        if (translations[lang]) {
-          blurbElement.innerHTML = translations[lang].blurb;
-          pageTitle.textContent = translations[lang].title;
-          headerTitle.textContent = translations[lang].header;
-        }
-      };
+const setLanguage = (lang) => {
+  if (translations[lang]) {
+    document.getElementById('page-title').textContent = translations[lang].title;
+    document.getElementById('header-title').textContent = translations[lang].header;
+    document.getElementById('home-link').textContent = translations[lang].home;
+    document.getElementById('resources-link').textContent = translations[lang].resources;
+    document.getElementById('plan-link').textContent = translations[lang].plan;
+    document.getElementById('testimonies-link').textContent = translations[lang].testimoniesLink;
+    document.getElementById('patreon-link').textContent = translations[lang].support;
+    document.getElementById('blurb').innerHTML = translations[lang].blurb;
+  }
+};
 
-      document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
-      document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
+// Add event listeners for language change
+document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+document.getElementById('lang-fr').addEventListener('click', () => setLanguage('fr'));
 
-      // Set default language
-      setLanguage('fr');
+// Set default language
+setLanguage('fr');
+
 
       // Handle Netlify Identity events
       netlifyIdentity.on('init', async (user) => {
